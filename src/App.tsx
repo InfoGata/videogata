@@ -1,9 +1,19 @@
-import { List, ListItem, ListItemText } from '@material-ui/core';
-import React from 'react';
-import { Video } from './models';
-import InvidiousService from './services/invidious';
-import PeerTubeService from './services/peertube';
-import { VideoService } from './services/VideoService';
+import {
+  Box,
+  Button,
+  CssBaseline,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+} from "@mui/material";
+import React from "react";
+import { Video } from "./models";
+import InvidiousService from "./services/invidious";
+import PeerTubeService from "./services/peertube";
+import { VideoService } from "./services/VideoService";
 
 const peertube = new PeerTubeService();
 const youtube = new InvidiousService();
@@ -42,9 +52,13 @@ const App: React.FC = () => {
         videoRef.current?.load();
       }
     };
-    return <ListItem onClick={onSearchItemClick} key={i} button={true}>
-      <ListItemText primary={v.title} />
-    </ListItem>
+    return (
+      <ListItem key={i}>
+        <ListItemButton onClick={onSearchItemClick}>
+          <ListItemText>{v.title}</ListItemText>
+        </ListItemButton>
+      </ListItem>
+    );
   });
 
   const onQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,19 +70,29 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
-      <video ref={videoRef} width="320" height="240" controls src={src} />
-      <input value={query} onChange={onQueryChange} />
-      <select value={serviceName} onChange={onServiceChange}>
-        <option value="">Select Service</option>
-        <option value="youtube">Youtube</option>
-        <option value="peertube">Peertube</option>
-      </select>
-      <button onClick={onSearch}>Search</button>
-      <List>
-        {searchItems}
-      </List>
-    </div>
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <Grid sx={{ width: "640px", height: "480px" }}>
+        {src && (
+          <video ref={videoRef} width="640" height="480" controls src={src} />
+        )}
+      </Grid>
+      <Grid>
+        <TextField
+          variant="outlined"
+          label="Search"
+          value={query}
+          onChange={onQueryChange}
+        />
+        <select value={serviceName} onChange={onServiceChange}>
+          <option value="">Select Service</option>
+          <option value="youtube">Youtube</option>
+          <option value="peertube">Peertube</option>
+        </select>
+        <Button onClick={onSearch}>Search</Button>
+        <List>{searchItems}</List>
+      </Grid>
+    </Box>
   );
 };
 
