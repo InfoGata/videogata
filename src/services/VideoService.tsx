@@ -1,4 +1,4 @@
-import { Video } from "../models";
+import { Video } from "../plugintypes";
 
 export interface VideoService {
   searchVideo: (query: string) => Promise<Video[]>;

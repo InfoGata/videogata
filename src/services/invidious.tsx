@@ -1,5 +1,5 @@
-import { Video } from "../models";
 import axios from "axios";
+import { Video } from "../plugintypes";
 import { VideoService } from "./VideoService";
 
 interface InvidiousVideoResult {
@@ -18,27 +18,22 @@ interface IInvidiousFormat {
 interface Image {
   url: string;
   height: number;
-  width: number
+  width: number;
 }
 
 const instance = "https://invidious.tube";
 class InvidiousService implements VideoService {
   resultToVideo(results: InvidiousVideoResult[]): Video[] {
-    return results.map(
-      (r) =>
-        ({
-          apiId: r.videoId,
-          duration: r.lengthSeconds,
-          title: r.title,
-          from: "youtube"
-        } as Video)
-    );
+    return results.map((r) => ({
+      apiId: r.videoId,
+      duration: r.lengthSeconds,
+      title: r.title,
+      from: "youtube",
+    }));
   }
 
   async searchVideo(query: string): Promise<Video[]> {
-    const url = `${instance}/api/v1/search?q=${encodeURIComponent(
-      query
-    )}`;
+    const url = `${instance}/api/v1/search?q=${encodeURIComponent(query)}`;
     const results = await axios.get<InvidiousVideoResult[]>(url);
     return this.resultToVideo(results.data);
   }
