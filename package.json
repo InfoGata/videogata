@@ -18,6 +18,7 @@
     "@types/node": "^16.11.41",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
+    "@types/video.js": "^7.3.42",
     "@types/webpack-env": "^1.17.0",
     "axios": "^0.21.1",
     "babel-plugin-import": "^1.13.5",
@@ -28,11 +29,13 @@
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.1",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
     "typescript": "^4.7.4",
+    "video.js": "^7.19.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -19,9 +19,14 @@ export interface Video {
   id?: string;
   title: string;
   apiId?: string;
-  source?: string;
   duration: number;
   pluginId?: string;
+  sources?: VideoSource[];
+}
+
+export interface VideoSource {
+  source: string;
+  type: string;
 }
 
 export interface PluginInfo {
