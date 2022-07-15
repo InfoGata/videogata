@@ -100,6 +100,13 @@ export async function getPlugin(
     plugin.optionsHtml = optionsText;
   }
 
+  if (manifest.player) {
+    const playerText = await getFileText(fileType, manifest.player);
+    if (!playerText) return null;
+
+    plugin.playerHtml = playerText;
+  }
+
   return plugin;
 }
 

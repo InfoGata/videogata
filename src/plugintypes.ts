@@ -36,6 +36,7 @@ export interface PluginInfo {
   version?: string;
   description?: string;
   optionsHtml?: string;
+  playerHtml?: string;
   optionsSameOrigin?: boolean;
   manifestUrl?: string;
 }

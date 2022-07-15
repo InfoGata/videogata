@@ -19,6 +19,7 @@ export interface Manifest {
   version?: string;
   description?: string;
   options?: string | ManifestOptions;
+  player?: string;
 }
 
 export interface ManifestOptions {

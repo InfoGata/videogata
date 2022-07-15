@@ -139,14 +139,8 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   // };
 
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
-  //if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
-  //  srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
-  //}
   let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
   if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
-  // window.open needs allow-top-navigation-by-user-activiation
-  // if (Capacitor.isNativePlatform())
-  //   sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
 
   const pluginIframe = plugin.optionsSameOrigin ? (
     <iframe
