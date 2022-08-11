@@ -31,7 +31,7 @@ const Routing: React.FC = () => {
           element={<PluginVideo />}
         />
         <Route
-          path="/plugins/:pluginId/playlists/:playlistId"
+          path="/plugins/:pluginId/playlists/:apiId"
           element={<PluginPlaylist />}
         />
         <Route path="/plugins/:pluginId" element={<PluginDetails />} />

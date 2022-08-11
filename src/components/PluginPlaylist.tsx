@@ -10,7 +10,7 @@ import VideoSearchResult from "./VideoSearchResult";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
-  const { playlistId } = useParams<"playlistId">();
+  const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const location = useLocation();
@@ -23,7 +23,7 @@ const PluginPlaylist: React.FC = () => {
   const getPlaylistVideos = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistVideos())) {
       const t = await plugin.remote.onGetPlaylistVideos({
-        apiId: playlistId,
+        apiId: apiId,
         isUserPlaylist: params.has("isuserplaylist"),
       });
 
@@ -39,7 +39,7 @@ const PluginPlaylist: React.FC = () => {
   };
 
   const query = useQuery(
-    ["pluginplaylist", pluginId, playlistId],
+    ["pluginplaylist", pluginId, apiId],
     getPlaylistVideos,
     {
       enabled: pluginsLoaded,
