@@ -21,6 +21,7 @@ const Plugins: React.FC = () => {
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
+  const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -85,11 +86,16 @@ const Plugins: React.FC = () => {
       key={plugin.id}
       plugin={plugin}
       deletePlugin={deletePlugin}
+      isCheckingUpdate={isCheckingUpdate}
     />
   ));
 
+  const onCheckUpdates = () => {
+    setIsCheckingUpdate(true);
+  };
+
   return (
-    <Grid>
+    <Grid sx={{ "& button": { m: 1 } }}>
       <Grid>
         <label htmlFor="contained-button-file">
           <FileInput
@@ -124,6 +130,13 @@ const Plugins: React.FC = () => {
         />
         <Button onClick={onLoadUrl}>Load Url</Button>
       </Grid>
+      {plugins.length > 0 && (
+        <Grid>
+          <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
+            Check For Updates
+          </Button>
+        </Grid>
+      )}
       <Grid>{pluginComponents}</Grid>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}

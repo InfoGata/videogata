@@ -1,22 +1,37 @@
 import React from "react";
 import {
+  NotificationMessage,
+  PlaylistVideoRequest,
+  PlaylistVideosResult,
   PluginInfo,
   SearchAllResult,
+  SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
+  UserPlaylistRequest,
   Video,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
+import { useSnackbar } from "notistack";
 
 export interface PluginMethodInterface {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   onSearchVideos: (request: SearchRequest) => Promise<SearchVideoResult>;
   onGetVideoFromApiId: (apiId: string) => Promise<Video>;
+  onGetUserPlaylists: (
+    request: UserPlaylistRequest
+  ) => Promise<SearchPlaylistResult>;
+  onGetPlaylistVideos: (
+    request: PlaylistVideoRequest
+  ) => Promise<PlaylistVideosResult>;
+  onUiMessage: (message: any) => Promise<void>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
   postUiMessage: (message: any) => Promise<void>;
+  getPluginId: () => Promise<string>;
+  createNotification: (notification: NotificationMessage) => Promise<void>;
 }
 
 interface PluginMessage {
@@ -45,21 +60,30 @@ export interface PluginContextInterface {
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
+  pluginsLoaded: boolean;
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 
 export const PluginsProvider: React.FC = (props) => {
+  const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  const { enqueueSnackbar } = useSnackbar();
 
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
         postUiMessage: async (message: any) => {
           setPluginMessage({ pluginId: plugin.id, message });
+        },
+        getPluginId: async () => {
+          return plugin.id || "";
+        },
+        createNotification: async (notification: NotificationMessage) => {
+          enqueueSnackbar(notification.message, { variant: notification.type });
         },
       };
 
@@ -102,16 +126,20 @@ export const PluginsProvider: React.FC = (props) => {
       await host.executeCode(plugin.script);
       return host;
     },
-    []
+    [enqueueSnackbar]
   );
 
   React.useEffect(() => {
     const getPlugins = async () => {
-      const plugs = await db.plugins.toArray();
+      try {
+        const plugs = await db.plugins.toArray();
 
-      const framePromises = plugs.map((p) => loadPlugin(p));
-      const frames = await Promise.all(framePromises);
-      setPluginFrames(frames);
+        const framePromises = plugs.map((p) => loadPlugin(p));
+        const frames = await Promise.all(framePromises);
+        setPluginFrames(frames);
+      } finally {
+        setPluginsLoaded(true);
+      }
     };
     getPlugins();
   }, [loadPlugin]);
@@ -146,6 +174,7 @@ export const PluginsProvider: React.FC = (props) => {
     updatePlugin: updatePlugin,
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
+    pluginsLoaded,
   };
 
   return (

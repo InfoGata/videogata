@@ -1,5 +1,6 @@
-import { PluginInfo } from "./plugintypes";
+import { ImageInfo, PluginInfo } from "./plugintypes";
 import { DirectoryFile, FileType, Manifest } from "./types";
+import thumbnail from "./thumbnail.png";
 
 export const directoryProps = {
   directory: "",
@@ -21,6 +22,22 @@ export function getFileByDirectoryAndName(files: FileList, name: string) {
   }
   return null;
 }
+
+// Retreive smallest image bigger than thumbnail size
+export const getThumbnailImage = (
+  images: ImageInfo[] | undefined,
+  size: number
+): string => {
+  if (!images) {
+    return thumbnail;
+  }
+
+  const sortedImages = [...images].sort((a, b) => a.height - b.height);
+  const thumbnailImage = sortedImages.find((i) => i.height >= size);
+  return thumbnailImage
+    ? thumbnailImage.url
+    : sortedImages[0]?.url ?? thumbnail;
+};
 
 export function getFileTypeFromPluginUrl(url: string) {
   const headers = new Headers();
@@ -124,3 +141,7 @@ export async function filterAsync<T>(
   const filterMap = await mapAsync(array, callbackfn);
   return array.filter((_value, index) => filterMap[index]);
 }
+
+export const searchThumbnailSize = 40;
+
+export const playlistThumbnailSize = 200;

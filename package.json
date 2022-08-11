@@ -25,6 +25,7 @@
     "customize-cra": "^1.0.0",
     "dexie": "^3.2.2",
     "dompurify": "^2.3.8",
+    "notistack": "^2.0.5",
     "plugin-frame": "^0.4.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.2.1",

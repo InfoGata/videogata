@@ -2,6 +2,9 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
+import PluginDetails from "./PluginDetails";
+import PluginOptions from "./PluginOptions";
+import PluginPlaylist from "./PluginPlaylist";
 import Plugins from "./Plugins";
 import PluginVideo from "./PluginVideo";
 import Search from "./Search";
@@ -27,6 +30,12 @@ const Routing: React.FC = () => {
           path="/plugins/:pluginId/videos/:apiId"
           element={<PluginVideo />}
         />
+        <Route
+          path="/plugins/:pluginId/playlists/:playlistId"
+          element={<PluginPlaylist />}
+        />
+        <Route path="/plugins/:pluginId" element={<PluginDetails />} />
+        <Route path="/plugins/:pluginId/options" element={<PluginOptions />} />
       </Routes>
     </Box>
   );

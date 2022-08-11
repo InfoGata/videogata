@@ -26,3 +26,8 @@ export interface ManifestOptions {
   page: string;
   sameOrigin?: boolean;
 }
+
+export const enum SearchResultType {
+  Videos = "videos",
+  Playlists = "playlists",
+}

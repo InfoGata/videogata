@@ -1,10 +1,20 @@
-import { Button, Grid, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
-import { db } from "../database";
-import { directoryProps, getPlugin } from "../utils";
-import { FileType } from "../types";
+import {
+  directoryProps,
+  getPlugin,
+  getFileText,
+  getFileTypeFromPluginUrl,
+} from "../utils";
+import { FileType, Manifest } from "../types";
 import { Link } from "react-router-dom";
 
 const FileInput = styled("input")({
@@ -14,67 +24,32 @@ const FileInput = styled("input")({
 interface PluginContainerProps {
   plugin: PluginFrameContainer;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
+  isCheckingUpdate: boolean;
 }
 
 const PluginContainer: React.FC<PluginContainerProps> = (props) => {
-  const { plugin, deletePlugin } = props;
-  const [optionsOpen, setOptionsOpen] = React.useState(false);
+  const { plugin, deletePlugin, isCheckingUpdate } = props;
   const { updatePlugin } = usePlugins();
-  const [optionsHtml, setOptionsHtml] = React.useState<string>();
-  // const [hasUpdate, setHasUpdate] = React.useState(false);
-  const ref = React.useRef<HTMLIFrameElement>(null);
+  const [hasUpdate, setHasUpdate] = React.useState(false);
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
 
-  //const iframeListener = React.useCallback(
-  //  async (event: MessageEvent<any>) => {
-  //    if (ref.current?.contentWindow === event.source) {
-  //      if (await plugin.hasDefined.onUiMessage()) {
-  //        plugin.remote.onUiMessage(event.data);
-  //      }
-  //    }
-  //  },
-  //  [plugin]
-  //);
-
-  // React.useEffect(() => {
-  //   window.addEventListener("message", iframeListener);
-  //   return () => window.removeEventListener("message", iframeListener);
-  // }, [iframeListener]);
-
-  // React.useEffect(() => {
-  //   if (pluginMessage?.pluginId === plugin.id) {
-  //     ref.current?.contentWindow?.postMessage(pluginMessage?.message, "*");
-  //   }
-  // }, [pluginMessage, plugin.id]);
-
-  // React.useEffect(() => {
-  //   const checkUpdate = async () => {
-  //     if (isCheckingUpdate && plugin.manifestUrl) {
-  //       const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
-  //       const manifestText = await getFileText(fileType, "manifest.json");
-  //       if (manifestText) {
-  //         const manifest = JSON.parse(manifestText) as Manifest;
-  //         if (manifest.version !== plugin.version) {
-  //           setHasUpdate(true);
-  //         } else {
-  //           setHasUpdate(false);
-  //         }
-  //       }
-  //     }
-  //   };
-  //   checkUpdate();
-  // }, [isCheckingUpdate, plugin]);
-
-  const onOpenOptions = async () => {
-    setOptionsOpen(true);
-    if (!plugin.optionsSameOrigin) {
-      const pluginData = await db.plugins.get(plugin.id || "");
-      setOptionsHtml(pluginData?.optionsHtml);
-    }
-  };
-
-  const onCloseOptions = () => {
-    setOptionsOpen(false);
-  };
+  React.useEffect(() => {
+    const checkUpdate = async () => {
+      if (isCheckingUpdate && plugin.manifestUrl) {
+        const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
+        const manifestText = await getFileText(fileType, "manifest.json");
+        if (manifestText) {
+          const manifest = JSON.parse(manifestText) as Manifest;
+          if (manifest.version !== plugin.version) {
+            setHasUpdate(true);
+          } else {
+            setHasUpdate(false);
+          }
+        }
+      }
+    };
+    checkUpdate();
+  }, [isCheckingUpdate, plugin]);
 
   const onDelete = async () => {
     const confirmDelete = window.confirm(
@@ -94,7 +69,6 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     if (newPlugin && plugin.id) {
       newPlugin.id = plugin.id;
       await updatePlugin(newPlugin, plugin.id, files);
-      setOptionsOpen(false);
     }
   };
 
@@ -102,73 +76,46 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     const files = e.target.files;
     if (!files) return;
 
+    setBackdropOpen(true);
     await updatePluginFromFilelist(files);
+    setBackdropOpen(false);
   };
 
   const onReload = async () => {
     const files = plugin.fileList;
     if (!files) return;
 
+    setBackdropOpen(true);
     await updatePluginFromFilelist(files);
+    setBackdropOpen(false);
   };
 
-  const iframeOnload = async () => {
-    const pluginData = await db.plugins.get(plugin.id || "");
-    if (pluginData) {
-      ref.current?.contentWindow?.postMessage(
-        {
-          type: "init",
-          srcdoc: pluginData?.optionsHtml,
-        },
-        "*"
-      );
+  const onUpdate = async () => {
+    if (plugin?.manifestUrl) {
+      const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
+      const newPlugin = await getPlugin(fileType);
+
+      if (newPlugin && plugin.id) {
+        newPlugin.id = plugin.id;
+        newPlugin.manifestUrl = plugin.manifestUrl;
+        await updatePlugin(newPlugin, plugin.id);
+      }
     }
   };
 
-  // const onUpdate = async () => {
-  //   if (plugin?.manifestUrl) {
-  //     const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
-  //     const newPlugin = await getPlugin(fileType);
-
-  //     if (newPlugin && plugin.id) {
-  //       newPlugin.id = plugin.id;
-  //       newPlugin.manifestUrl = plugin.manifestUrl;
-  //       await updatePlugin(newPlugin, plugin.id);
-  //     }
-  //   }
-  // };
-
-  let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
-  let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
-  if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
-
-  const pluginIframe = plugin.optionsSameOrigin ? (
-    <iframe
-      ref={ref}
-      name={plugin.id}
-      title={plugin.name}
-      sandbox={sandbox}
-      src={srcUrl}
-      onLoad={iframeOnload}
-    />
-  ) : (
-    <iframe
-      ref={ref}
-      name={plugin.id}
-      title={plugin.name}
-      sandbox={sandbox}
-      srcDoc={optionsHtml}
-    />
-  );
   return (
-    <Grid key={plugin.id}>
+    <Grid>
+      <Backdrop open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Typography>
         {plugin.name} {plugin.version}
       </Typography>
-      {plugin.hasOptions && !optionsOpen && (
-        <Button onClick={onOpenOptions}>Open Options</Button>
+      {plugin.hasOptions && (
+        <Button component={Link} to={`/plugins/${plugin.id}/options`}>
+          Options
+        </Button>
       )}
-      {optionsOpen && <Button onClick={onCloseOptions}>Close Options</Button>}
       <Button onClick={onDelete}>Delete</Button>
       <label htmlFor={`update-plugin-${plugin.id}`}>
         <FileInput
@@ -183,7 +130,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         Details
       </Button>
       {plugin.fileList && <Button onClick={onReload}>Reload</Button>}
-      <Grid>{optionsOpen && pluginIframe}</Grid>
+      {hasUpdate && <Button onClick={onUpdate}>Update</Button>}
     </Grid>
   );
 };

@@ -1,5 +1,6 @@
 export interface SearchAllResult {
   videos?: SearchVideoResult;
+  playlists?: SearchPlaylistResult;
 }
 
 export interface SearchRequest {
@@ -21,12 +22,37 @@ export interface Video {
   apiId?: string;
   duration: number;
   pluginId?: string;
+  images?: ImageInfo[];
   sources?: VideoSource[];
 }
 
 export interface VideoSource {
   source: string;
   type: string;
+}
+
+export interface PlaylistInfo {
+  id?: string;
+  images?: ImageInfo[];
+  name?: string;
+  isUserPlaylist?: boolean;
+  apiId?: string;
+  pluginId?: string;
+}
+
+export interface Playlist extends PlaylistInfo {
+  videos: Video[];
+}
+
+export interface ImageInfo {
+  url: string;
+  height: number;
+  width: number;
+}
+
+export interface NotificationMessage {
+  message: string;
+  type?: "default" | "success" | "error" | "warning" | "info";
 }
 
 export interface PluginInfo {
@@ -44,4 +70,28 @@ export interface PluginInfo {
 export interface SearchVideoResult {
   items: Video[];
   pageInfo?: PageInfo;
+}
+
+export interface SearchPlaylistResult {
+  items: PlaylistInfo[];
+  pageInfo?: PageInfo;
+}
+
+export interface UserPlaylistRequest {
+  page?: PageInfo;
+}
+
+export interface SearchPlaylistResult {
+  items: PlaylistInfo[];
+  pageInfo?: PageInfo;
+}
+
+export interface PlaylistVideoRequest {
+  apiId?: string;
+  isUserPlaylist: boolean;
+  page?: PageInfo;
+}
+
+export interface PlaylistVideosResult extends SearchVideoResult {
+  playlist?: PlaylistInfo;
 }
