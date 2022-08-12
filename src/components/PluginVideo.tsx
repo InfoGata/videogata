@@ -16,11 +16,11 @@ const PluginVideo: React.FC = () => {
   React.useEffect(() => {
     const getVideo = async () => {
       if (plugin && apiId) {
-        if (plugin.hasPlayer) {
-          setUsePlayer(true);
-        } else if (await plugin.hasDefined.onGetVideoFromApiId()) {
+        if (await plugin.hasDefined.onGetVideoFromApiId()) {
           const video = await plugin.remote.onGetVideoFromApiId(apiId);
           setVideo(video);
+        } else if (plugin.hasPlayer) {
+          setUsePlayer(true);
         }
       }
     };
