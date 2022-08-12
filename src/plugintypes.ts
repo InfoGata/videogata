@@ -1,6 +1,7 @@
 export interface SearchAllResult {
   videos?: SearchVideoResult;
   playlists?: SearchPlaylistResult;
+  channels?: SearchChannelResult;
 }
 
 export interface SearchRequest {
@@ -37,6 +38,13 @@ export interface PlaylistInfo {
   name?: string;
   isUserPlaylist?: boolean;
   apiId?: string;
+  pluginId?: string;
+}
+
+export interface Channel {
+  name: string;
+  apiId?: string;
+  images?: ImageInfo[];
   pluginId?: string;
 }
 
@@ -77,13 +85,13 @@ export interface SearchPlaylistResult {
   pageInfo?: PageInfo;
 }
 
-export interface UserPlaylistRequest {
-  page?: PageInfo;
+export interface SearchChannelResult {
+  items: Channel[];
+  pageInfo?: PageInfo;
 }
 
-export interface SearchPlaylistResult {
-  items: PlaylistInfo[];
-  pageInfo?: PageInfo;
+export interface UserPlaylistRequest {
+  page?: PageInfo;
 }
 
 export interface PlaylistVideoRequest {
@@ -94,4 +102,13 @@ export interface PlaylistVideoRequest {
 
 export interface PlaylistVideosResult extends SearchVideoResult {
   playlist?: PlaylistInfo;
+}
+
+export interface ChannelVideosRequest {
+  apiId?: string;
+  page?: PageInfo;
+}
+
+export interface ChannelVideosResult extends SearchVideoResult {
+  channel?: Channel;
 }

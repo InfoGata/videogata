@@ -30,4 +30,5 @@ export interface ManifestOptions {
 export const enum SearchResultType {
   Videos = "videos",
   Playlists = "playlists",
+  Channels = "channels",
 }

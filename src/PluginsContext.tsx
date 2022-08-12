@@ -1,10 +1,13 @@
 import React from "react";
 import {
+  ChannelVideosRequest,
+  ChannelVideosResult,
   NotificationMessage,
   PlaylistVideoRequest,
   PlaylistVideosResult,
   PluginInfo,
   SearchAllResult,
+  SearchChannelResult,
   SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
@@ -18,6 +21,7 @@ import { useSnackbar } from "notistack";
 export interface PluginMethodInterface {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   onSearchVideos: (request: SearchRequest) => Promise<SearchVideoResult>;
+  onSearchPlaylists?: (request: SearchRequest) => Promise<SearchPlaylistResult>;
   onGetVideoFromApiId: (apiId: string) => Promise<Video>;
   onGetUserPlaylists: (
     request: UserPlaylistRequest
@@ -25,6 +29,10 @@ export interface PluginMethodInterface {
   onGetPlaylistVideos: (
     request: PlaylistVideoRequest
   ) => Promise<PlaylistVideosResult>;
+  onSearchChannels: (request: SearchRequest) => Promise<SearchChannelResult>;
+  onGetChannelVideos: (
+    request: ChannelVideosRequest
+  ) => Promise<ChannelVideosResult>;
   onUiMessage: (message: any) => Promise<void>;
 }
 

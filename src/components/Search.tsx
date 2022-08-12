@@ -12,8 +12,9 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
-import { PlaylistInfo, Video } from "../plugintypes";
+import { Channel, PlaylistInfo, Video } from "../plugintypes";
 import { SearchResultType } from "../types";
+import ChannelSearchResult from "./ChannelSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import SelectPlugin from "./SelectPlugin";
 import VideoSearchResult from "./VideoSearchResult";
@@ -52,23 +53,28 @@ const Search: React.FC = () => {
   const onSearch = async () => {
     let videos: Video[] | undefined = [];
     let playlists: PlaylistInfo[] | undefined = [];
+    let channels: Channel[] | undefined = [];
 
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
       const searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
       videos = searchAll.videos?.items || [];
       playlists = searchAll.playlists?.items || [];
+      channels = searchAll.channels?.items || [];
     }
 
     if (videos) {
       setTabValue(SearchResultType.Videos);
     } else if (playlists) {
       setTabValue(SearchResultType.Playlists);
+    } else if (channels) {
+      setTabValue(SearchResultType.Channels);
     }
 
     return {
       videos,
       playlists,
+      channels,
     };
   };
 
@@ -80,6 +86,10 @@ const Search: React.FC = () => {
 
   const playlistList = query.data?.playlists.map((p) => (
     <PlaylistSearchResult key={p.apiId} playlist={p} pluginId={pluginId} />
+  ));
+
+  const channelList = query.data?.channels.map((c) => (
+    <ChannelSearchResult key={c.apiId} channel={c} pluginId={pluginId} />
   ));
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
@@ -107,6 +117,9 @@ const Search: React.FC = () => {
           {videoList && videoList.length > 0 ? (
             <Tab label="Tracks" value={SearchResultType.Videos} />
           ) : null}
+          {channelList && channelList.length > 0 ? (
+            <Tab label="Channels" value={SearchResultType.Channels} />
+          ) : null}
           {playlistList && playlistList.length > 0 ? (
             <Tab label="Playlists" value={SearchResultType.Playlists} />
           ) : null}
@@ -114,6 +127,9 @@ const Search: React.FC = () => {
       </AppBar>
       <TabPanel value={tabValue} index={SearchResultType.Videos}>
         <List dense={true}>{videoList}</List>
+      </TabPanel>
+      <TabPanel value={tabValue} index={SearchResultType.Channels}>
+        <List dense={true}>{channelList}</List>
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Playlists}>
         <List dense={true}>{playlistList}</List>

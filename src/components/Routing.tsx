@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
+import ChannelPage from "./ChannelPage";
 import Home from "./Home";
 import PluginDetails from "./PluginDetails";
 import PluginOptions from "./PluginOptions";
@@ -33,6 +34,10 @@ const Routing: React.FC = () => {
         <Route
           path="/plugins/:pluginId/playlists/:apiId"
           element={<PluginPlaylist />}
+        />
+        <Route
+          path="/plugins/:pluginId/channels/:apiId"
+          element={<ChannelPage />}
         />
         <Route path="/plugins/:pluginId" element={<PluginDetails />} />
         <Route path="/plugins/:pluginId/options" element={<PluginOptions />} />
