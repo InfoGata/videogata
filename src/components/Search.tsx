@@ -4,6 +4,7 @@ import {
   Box,
   CircularProgress,
   List,
+  Menu,
   Tab,
   Tabs,
   Typography,
@@ -13,11 +14,14 @@ import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
 import { Channel, PlaylistInfo, Video } from "../plugintypes";
+import { useAppSelector } from "../store/hooks";
 import { SearchResultType } from "../types";
 import ChannelSearchResult from "./ChannelSearchResult";
+import PlaylistMenuItem from "./PlaylistMenuItem";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import SelectPlugin from "./SelectPlugin";
 import VideoSearchResult from "./VideoSearchResult";
+import useVideoMenu from "../hooks/useVideoMenu";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,8 +51,10 @@ const Search: React.FC = () => {
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const { plugins } = usePlugins();
   const location = useLocation();
+  const playlists = useAppSelector((state) => state.playlist.playlists);
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
+  const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
 
   const onSearch = async () => {
     let videos: Video[] | undefined = [];
@@ -81,7 +87,7 @@ const Search: React.FC = () => {
   const query = useQuery(["search", pluginId, searchQuery], onSearch);
 
   const videoList = query.data?.videos.map((v) => (
-    <VideoSearchResult key={v.apiId} video={v} />
+    <VideoSearchResult key={v.apiId} video={v} openMenu={openMenu} />
   ));
 
   const playlistList = query.data?.playlists.map((p) => (
@@ -115,7 +121,7 @@ const Search: React.FC = () => {
           variant="fullWidth"
         >
           {videoList && videoList.length > 0 ? (
-            <Tab label="Tracks" value={SearchResultType.Videos} />
+            <Tab label="Videos" value={SearchResultType.Videos} />
           ) : null}
           {channelList && channelList.length > 0 ? (
             <Tab label="Channels" value={SearchResultType.Channels} />
@@ -134,6 +140,16 @@ const Search: React.FC = () => {
       <TabPanel value={tabValue} index={SearchResultType.Playlists}>
         <List dense={true}>{playlistList}</List>
       </TabPanel>
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        {playlists.map((p) => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            videos={menuVideo ? [menuVideo] : []}
+            closeMenu={closeMenu}
+          />
+        ))}
+      </Menu>
     </>
   );
 };

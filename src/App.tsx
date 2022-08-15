@@ -7,6 +7,8 @@ import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
 import { PluginsProvider } from "./PluginsContext";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { useAppDispatch } from "./store/hooks";
+import { initializePlaylists } from "./store/reducers/playlistReducer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,10 +19,15 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const notistackRef = React.createRef<SnackbarProvider>();
   const onClickDismiss = (key: SnackbarKey) => () => {
     notistackRef?.current?.closeSnackbar(key);
   };
+
+  React.useEffect(() => {
+    dispatch(initializePlaylists());
+  }, [dispatch]);
 
   return (
     <SnackbarProvider
