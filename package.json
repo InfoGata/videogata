@@ -45,7 +45,10 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cors-server": "node servers/cors/server.js",
+    "postinstall": "cd servers/cors && npm install",
+    "dev": "concurrently --kill-others \"npm run cors-server\" \"npm start\""
   },
   "eslintConfig": {
     "plugins": [
@@ -72,6 +75,7 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-jam3": "^0.2.3"
+    "eslint-plugin-jam3": "^0.2.3",
+    "concurrently": "^6.0.0"
   }
 }
