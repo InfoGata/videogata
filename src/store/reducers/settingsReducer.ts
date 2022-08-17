@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface SettingsState {
   currentPluginId?: string;
+  corsProxyUrl?: string;
 }
 
 const initialState: SettingsState = {};
@@ -16,8 +17,14 @@ const settingsSlice = createSlice({
         currentPluginId: action.payload,
       };
     },
+    saveCorsProxyUrl: (state, action: PayloadAction<string | undefined>) => {
+      return {
+        ...state,
+        corsProxyUrl: action.payload,
+      };
+    },
   },
 });
 
-export const { setCurrentPluginId } = settingsSlice.actions;
+export const { setCurrentPluginId, saveCorsProxyUrl } = settingsSlice.actions;
 export default settingsSlice.reducer;

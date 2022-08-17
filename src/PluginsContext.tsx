@@ -17,6 +17,7 @@ import {
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
 import { useSnackbar } from "notistack";
+import { useAppSelector } from "./store/hooks";
 
 export interface PluginMethodInterface {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
@@ -40,6 +41,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   postUiMessage: (message: any) => Promise<void>;
   getPluginId: () => Promise<string>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
+  getCorsProxy: () => Promise<string | undefined>;
 }
 
 interface PluginMessage {
@@ -80,6 +82,9 @@ export const PluginsProvider: React.FC = (props) => {
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const { enqueueSnackbar } = useSnackbar();
+  const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
+  const corsProxyUrlRef = React.useRef(corsProxyUrl);
+  corsProxyUrlRef.current = corsProxyUrl;
 
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
@@ -92,6 +97,16 @@ export const PluginsProvider: React.FC = (props) => {
         },
         createNotification: async (notification: NotificationMessage) => {
           enqueueSnackbar(notification.message, { variant: notification.type });
+        },
+        getCorsProxy: async () => {
+          if (
+            process.env.NODE_ENV === "production" ||
+            corsProxyUrlRef.current
+          ) {
+            return corsProxyUrlRef.current;
+          } else {
+            return "http://localhost:8085/";
+          }
         },
       };
 
