@@ -1,6 +1,8 @@
 import {
+  Avatar,
   IconButton,
   ListItem,
+  ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
   Typography,
@@ -10,6 +12,7 @@ import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
 import { MoreHoriz } from "@mui/icons-material";
+import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface VideoSearchResultProps {
   video: Video;
@@ -24,12 +27,16 @@ const VideoSearchResult: React.FC<VideoSearchResultProps> = (props) => {
     openMenu(event, video);
   };
 
+  const image = getThumbnailImage(video.images, searchThumbnailSize);
   return (
     <ListItem
       button={true}
       component={Link}
       to={`/plugins/${video.pluginId}/videos/${video.apiId}`}
     >
+      <ListItemAvatar>
+        <Avatar alt={video.title} src={image} style={{ borderRadius: 0 }} />
+      </ListItemAvatar>
       <ListItemText
         primary={
           <Typography
