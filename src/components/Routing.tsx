@@ -11,6 +11,7 @@ import PluginPlaylist from "./PluginPlaylist";
 import Plugins from "./Plugins";
 import PluginVideo from "./PluginVideo";
 import Search from "./Search";
+import Settings from "./Settings";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -29,6 +30,7 @@ const Routing: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/plugins" element={<Plugins />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistVideos />} />
         <Route

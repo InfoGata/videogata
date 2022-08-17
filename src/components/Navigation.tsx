@@ -7,7 +7,13 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Extension, Home, Menu, PlaylistAdd } from "@mui/icons-material";
+import {
+  Extension,
+  Home,
+  Menu,
+  PlaylistAdd,
+  SettingsApplications,
+} from "@mui/icons-material";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 import { useAppSelector } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -45,6 +51,14 @@ const Navigation: React.FC = () => {
           </Tooltip>
         </ListItemIcon>
         <ListItemText>Plugins</ListItemText>
+      </ListItem>
+      <ListItem button={true} component={Link} to="/settings" key="Settings">
+        <ListItemIcon>
+          <Tooltip title="Settings" placement="right">
+            <SettingsApplications />
+          </Tooltip>
+        </ListItemIcon>
+        <ListItemText>Settings</ListItemText>
       </ListItem>
       <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
         <ListItemIcon>
