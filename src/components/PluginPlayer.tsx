@@ -21,6 +21,22 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     getPlayerHtml();
   }, [plugin?.id]);
 
+  const iframeListener = React.useCallback(
+    async (event: MessageEvent<any>) => {
+      if (ref.current?.contentWindow === event.source && plugin) {
+        if (await plugin.hasDefined.onUiMessage()) {
+          plugin.remote.onUiMessage(event.data);
+        }
+      }
+    },
+    [plugin]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("message", iframeListener);
+    return () => window.removeEventListener("message", iframeListener);
+  }, [iframeListener]);
+
   React.useEffect(() => {
     if (pluginMessage?.pluginId === plugin?.id) {
       ref.current?.contentWindow?.postMessage(pluginMessage?.message, "*");
