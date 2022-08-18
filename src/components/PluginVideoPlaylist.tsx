@@ -47,7 +47,9 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
 
   React.useEffect(() => {
     const onNextVideo = () => {
-      navigate(nextVideoUrl);
+      if (nextVideoUrl) {
+        navigate(nextVideoUrl);
+      }
     };
 
     document.addEventListener("nextVideo", onNextVideo);
