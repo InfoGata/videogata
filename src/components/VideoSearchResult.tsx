@@ -29,7 +29,9 @@ const VideoSearchResult: React.FC<VideoSearchResultProps> = (props) => {
   };
 
   let videoUrl = `/plugins/${video.pluginId}/videos/${video.apiId}`;
-  videoUrl = playlistId ? `${videoUrl}?playlistId=${playlistId}` : videoUrl;
+  videoUrl = playlistId
+    ? `${videoUrl}?playlistId=${playlistId}&videoId=${video.id}`
+    : videoUrl;
 
   const image = getThumbnailImage(video.images, searchThumbnailSize);
   return (

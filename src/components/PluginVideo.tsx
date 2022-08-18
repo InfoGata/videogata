@@ -13,6 +13,7 @@ const PluginVideo: React.FC = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const playlistId = params.get("playlistId") || "";
+  const videoId = params.get("videoId") || "";
   const { plugins } = usePlugins();
   const [video, setVideo] = React.useState<Video>();
   const [usePlayer, setUsePlayer] = React.useState(false);
@@ -41,7 +42,6 @@ const PluginVideo: React.FC = () => {
         setPlaylistVideos(playlist?.videos);
       }
     };
-    console.log(playlistId);
     getPlaylistVideos();
   }, [playlistId]);
 
@@ -50,7 +50,11 @@ const PluginVideo: React.FC = () => {
       {video && <VideoPlayer video={video} />}
       {usePlayer && <PluginPlayer apiId={apiId} plugin={plugin} />}
       {playlistVideos && (
-        <PluginVideoPlaylist videos={playlistVideos} playlistId={playlistId} />
+        <PluginVideoPlaylist
+          videos={playlistVideos}
+          playlistId={playlistId}
+          videoId={videoId}
+        />
       )}
     </>
   );
