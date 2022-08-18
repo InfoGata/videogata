@@ -95,6 +95,11 @@ export const setPlaylistVideos =
 export const addPlaylistVideos =
   (playlistInfo: PlaylistInfo, videos: Video[]): AppThunk =>
   async (_dispatch) => {
+    videos.forEach((v) => {
+      if (!v.id) {
+        v.id = nanoid();
+      }
+    });
     const playlist = await db.playlists.get(playlistInfo.id || "");
     if (playlist) {
       const newVideos = unionBy(playlist.videos, videos, "id");

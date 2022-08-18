@@ -58,7 +58,12 @@ const PlaylistVideos: React.FC = () => {
   };
 
   const videoList = videos.map((v) => (
-    <VideoSearchResult key={v.apiId} video={v} openMenu={openMenu} />
+    <VideoSearchResult
+      key={v.apiId}
+      video={v}
+      openMenu={openMenu}
+      playlistId={playlistId}
+    />
   ));
 
   return (
