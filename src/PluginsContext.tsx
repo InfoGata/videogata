@@ -41,6 +41,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   postUiMessage: (message: any) => Promise<void>;
   getPluginId: () => Promise<string>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
+  endVideo: () => Promise<void>;
   getCorsProxy: () => Promise<string | undefined>;
 }
 
@@ -82,9 +83,14 @@ export const PluginsProvider: React.FC = (props) => {
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const { enqueueSnackbar } = useSnackbar();
+  // Store variables being used by plugin methods in refs
+  // in order to not get stale state
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const corsProxyUrlRef = React.useRef(corsProxyUrl);
   corsProxyUrlRef.current = corsProxyUrl;
+  const currentVideo = useAppSelector((state) => state.queue.currentVideo);
+  const currentVideoRef = React.useRef(currentVideo);
+  currentVideoRef.current = currentVideo;
 
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
@@ -106,6 +112,13 @@ export const PluginsProvider: React.FC = (props) => {
             return corsProxyUrlRef.current;
           } else {
             return "http://localhost:8085/";
+          }
+        },
+        endVideo: async () => {
+          const video = currentVideoRef.current;
+          if (video?.pluginId === plugin.id) {
+            const event = new CustomEvent("nextVideo");
+            document.dispatchEvent(event);
           }
         },
       };

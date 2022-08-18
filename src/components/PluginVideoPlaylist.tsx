@@ -12,8 +12,10 @@ import React from "react";
 import { Video } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import DOMPurify from "dompurify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SkipNext, SkipPrevious } from "@mui/icons-material";
+import { useAppDispatch } from "../store/hooks";
+import { setCurrentVideo } from "../store/reducers/queueReducer";
 
 interface PluginVideoPlaylistProps {
   videos: Video[];
@@ -27,14 +29,30 @@ const getVideoUrl = (video?: Video, playlistId?: string) => {
 
 const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
   const { videos, playlistId, videoId } = props;
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const sanitizer = DOMPurify.sanitize;
   const videoIndex = videos.findIndex((v) => v.id === videoId);
+  const currentVideo = videos[videoIndex];
   const prevDisabled = videoIndex <= 0;
   const nextDisabled = videoIndex >= videos.length - 1;
   const prevVideo = prevDisabled ? undefined : videos[videoIndex - 1];
   const nextVideo = nextDisabled ? undefined : videos[videoIndex + 1];
   const prevVideoUrl = prevDisabled ? "" : getVideoUrl(prevVideo, playlistId);
   const nextVideoUrl = nextDisabled ? "" : getVideoUrl(nextVideo, playlistId);
+
+  React.useEffect(() => {
+    dispatch(setCurrentVideo(currentVideo));
+  }, [currentVideo, dispatch]);
+
+  React.useEffect(() => {
+    const onNextVideo = () => {
+      navigate(nextVideoUrl);
+    };
+
+    document.addEventListener("nextVideo", onNextVideo);
+    return () => document.removeEventListener("nextVideo", onNextVideo);
+  }, [navigate, nextVideoUrl]);
 
   const videoList = videos.map((v) => {
     const image = getThumbnailImage(v.images, searchThumbnailSize);
