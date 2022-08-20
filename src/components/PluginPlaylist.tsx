@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, List, Menu } from "@mui/material";
+import { Backdrop, CircularProgress, Menu } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
@@ -9,7 +9,7 @@ import { PlaylistInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import VideoSearchResult from "./VideoSearchResult";
+import VideoList from "./VideoList";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -51,10 +51,6 @@ const PluginPlaylist: React.FC = () => {
     }
   );
 
-  const videoList = query?.data?.map((v) => (
-    <VideoSearchResult key={v.apiId} video={v} openMenu={openMenu} />
-  ));
-
   return (
     <>
       <Backdrop open={query.isLoading}>
@@ -66,7 +62,11 @@ const PluginPlaylist: React.FC = () => {
           images={playlistInfo.images}
         />
       )}
-      <List>{videoList}</List>
+      <VideoList
+        videos={query?.data || []}
+        openMenu={openMenu}
+        dragDisabled={true}
+      />
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         {playlists.map((p) => (
           <PlaylistMenuItem

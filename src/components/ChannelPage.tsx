@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, List, Menu } from "@mui/material";
+import { Backdrop, CircularProgress, Menu } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -8,7 +8,7 @@ import { Channel } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import VideoSearchResult from "./VideoSearchResult";
+import VideoList from "./VideoList";
 
 const ChannelPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -43,10 +43,6 @@ const ChannelPage: React.FC = () => {
     }
   );
 
-  const videoList = query?.data?.map((v) => (
-    <VideoSearchResult key={v.apiId} video={v} openMenu={openMenu} />
-  ));
-
   return (
     <>
       <Backdrop open={query.isLoading}>
@@ -55,7 +51,11 @@ const ChannelPage: React.FC = () => {
       {channel && (
         <PlaylistInfoCard name={channel.name || ""} images={channel.images} />
       )}
-      <List>{videoList}</List>
+      <VideoList
+        videos={query?.data || []}
+        dragDisabled={true}
+        openMenu={openMenu}
+      />
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         {playlists.map((p) => (
           <PlaylistMenuItem

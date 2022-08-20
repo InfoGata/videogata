@@ -20,8 +20,8 @@ import ChannelSearchResult from "./ChannelSearchResult";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import SelectPlugin from "./SelectPlugin";
-import VideoSearchResult from "./VideoSearchResult";
 import useVideoMenu from "../hooks/useVideoMenu";
+import VideoList from "./VideoList";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -86,10 +86,6 @@ const Search: React.FC = () => {
 
   const query = useQuery(["search", pluginId, searchQuery], onSearch);
 
-  const videoList = query.data?.videos.map((v) => (
-    <VideoSearchResult key={v.apiId} video={v} openMenu={openMenu} />
-  ));
-
   const playlistList = query.data?.playlists.map((p) => (
     <PlaylistSearchResult key={p.apiId} playlist={p} pluginId={pluginId} />
   ));
@@ -120,7 +116,7 @@ const Search: React.FC = () => {
           textColor="primary"
           variant="fullWidth"
         >
-          {videoList && videoList.length > 0 ? (
+          {query.data?.videos && query.data.videos.length > 0 ? (
             <Tab label="Videos" value={SearchResultType.Videos} />
           ) : null}
           {channelList && channelList.length > 0 ? (
@@ -132,7 +128,11 @@ const Search: React.FC = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={tabValue} index={SearchResultType.Videos}>
-        <List dense={true}>{videoList}</List>
+        <VideoList
+          videos={query.data?.videos || []}
+          openMenu={openMenu}
+          dragDisabled={true}
+        />
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Channels}>
         <List dense={true}>{channelList}</List>

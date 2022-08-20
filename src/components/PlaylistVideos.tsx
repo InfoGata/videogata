@@ -2,7 +2,6 @@ import {
   Backdrop,
   CircularProgress,
   Grid,
-  List,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -14,11 +13,11 @@ import { useParams } from "react-router-dom";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import VideoSearchResult from "./VideoSearchResult";
 import { db } from "../database";
 import { Delete } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { setPlaylistVideos } from "../store/reducers/playlistReducer";
+import VideoList from "./VideoList";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -57,14 +56,12 @@ const PlaylistVideos: React.FC = () => {
     closeMenu();
   };
 
-  const videoList = videos.map((v) => (
-    <VideoSearchResult
-      key={v.apiId}
-      video={v}
-      openMenu={openMenu}
-      playlistId={playlistId}
-    />
-  ));
+  const onDragOver = (newVideoList: Video[]) => {
+    if (playlist) {
+      dispatch(setPlaylistVideos(playlist, newVideoList));
+      setVideos(newVideoList);
+    }
+  };
 
   return (
     <>
@@ -76,8 +73,12 @@ const PlaylistVideos: React.FC = () => {
           <Grid sx={{ display: "flex" }}>
             <Typography variant="h3">{playlistInfo?.name}</Typography>
           </Grid>
-          <List>{videoList}</List>
-
+          <VideoList
+            videos={videos}
+            openMenu={openMenu}
+            playlistId={playlistId}
+            onDragOver={onDragOver}
+          />
           <Menu
             open={Boolean(anchorEl)}
             onClose={closeMenu}
