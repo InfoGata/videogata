@@ -72,10 +72,9 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
           src={srcUrl}
           onLoad={iframeOnload}
           allow="autoplay; fullscreen; picture-in-picture"
-          width="800"
-          height="800"
           frameBorder="0"
           allowFullScreen
+          style={{ width: "100%", height: "75vh" }}
         />
       )}
     </>
