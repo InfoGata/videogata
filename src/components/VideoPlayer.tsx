@@ -11,7 +11,7 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
   const { video } = props;
   const options: VideoJsPlayerOptions = {
-    autoplay: false,
+    autoplay: true,
     controls: true,
   };
 
