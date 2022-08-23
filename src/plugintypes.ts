@@ -25,6 +25,12 @@ export interface Video {
   pluginId?: string;
   images?: ImageInfo[];
   sources?: VideoSource[];
+  views?: number;
+  likes?: number;
+  dislikes?: number;
+  description?: string;
+  channelName?: string;
+  channelApiId?: string;
 }
 
 export interface VideoSource {
