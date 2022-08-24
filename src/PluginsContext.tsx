@@ -35,6 +35,7 @@ export interface PluginMethodInterface {
     request: ChannelVideosRequest
   ) => Promise<ChannelVideosResult>;
   onUiMessage: (message: any) => Promise<void>;
+  onUsePlayer: () => Promise<boolean>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {

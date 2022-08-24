@@ -6,6 +6,7 @@ import { Video } from "../plugintypes";
 import PluginPlayer from "./PluginPlayer";
 import { db } from "../database";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
+import PluginVideoInfo from "./PluginVideoInfo";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -23,11 +24,15 @@ const PluginVideo: React.FC = () => {
   React.useEffect(() => {
     const getVideo = async () => {
       if (plugin && apiId) {
+        if (plugin.hasPlayer) {
+          setUsePlayer(true);
+          if (await plugin.hasDefined.onUsePlayer()) {
+            setUsePlayer(await plugin.remote.onUsePlayer());
+          }
+        }
         if (await plugin.hasDefined.onGetVideoFromApiId()) {
           const video = await plugin.remote.onGetVideoFromApiId(apiId);
           setVideo(video);
-        } else if (plugin.hasPlayer) {
-          setUsePlayer(true);
         }
       }
     };
@@ -47,7 +52,7 @@ const PluginVideo: React.FC = () => {
 
   return (
     <>
-      {video && <VideoPlayer video={video} />}
+      {video && !usePlayer ? <VideoPlayer video={video} /> : null}
       {usePlayer && <PluginPlayer apiId={apiId} plugin={plugin} />}
       {playlistVideos && (
         <PluginVideoPlaylist
@@ -56,6 +61,7 @@ const PluginVideo: React.FC = () => {
           videoId={videoId}
         />
       )}
+      {video && <PluginVideoInfo video={video} />}
     </>
   );
 };
