@@ -45,6 +45,8 @@ const PluginVideo: React.FC = () => {
       if (playlistId) {
         const playlist = await db.playlists.get(playlistId);
         setPlaylistVideos(playlist?.videos);
+      } else {
+        setPlaylistVideos(undefined);
       }
     };
     getPlaylistVideos();
