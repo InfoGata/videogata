@@ -7,6 +7,7 @@ import PluginPlayer from "./PluginPlayer";
 import { db } from "../database";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import PluginVideoInfo from "./PluginVideoInfo";
+import RecommendedVideo from "./RecommendedVideo";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -52,10 +53,15 @@ const PluginVideo: React.FC = () => {
     getPlaylistVideos();
   }, [playlistId]);
 
+  const recommendations = video?.recommendedVideos?.map((v) => (
+    <RecommendedVideo parentVideo={video} video={v} />
+  ));
+
   return (
     <>
       {video && !usePlayer ? <VideoPlayer video={video} /> : null}
       {usePlayer && <PluginPlayer apiId={apiId} plugin={plugin} />}
+      {video && <PluginVideoInfo video={video} />}
       {playlistVideos && (
         <PluginVideoPlaylist
           videos={playlistVideos}
@@ -63,7 +69,7 @@ const PluginVideo: React.FC = () => {
           videoId={videoId}
         />
       )}
-      {video && <PluginVideoInfo video={video} />}
+      {recommendations}
     </>
   );
 };

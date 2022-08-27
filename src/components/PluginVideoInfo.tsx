@@ -3,7 +3,6 @@ import React from "react";
 import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
 import { Link } from "react-router-dom";
-import RecommendedVideo from "./RecommendedVideo";
 import { ThumbDown, ThumbUp, Visibility } from "@mui/icons-material";
 
 interface PluginVideoInfoProps {
@@ -17,9 +16,6 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
 
   const sanitizer = DOMPurify.sanitize;
 
-  const recommendations = video.recommendedVideos?.map((v) => (
-    <RecommendedVideo parentVideo={video} video={v} />
-  ));
   return (
     <Grid>
       <Typography
@@ -30,7 +26,7 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
         }}
       />
       {video.channelName ? (
-        <Button component={Link} to={channelUrl}>
+        <Button component={Link} to={channelUrl} disabled={!video.channelApiId}>
           {video.channelName}
         </Button>
       ) : null}
@@ -58,7 +54,6 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           </Typography>
         </Grid>
       ) : null}
-      {recommendations}
     </Grid>
   );
 };

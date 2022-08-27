@@ -7,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  Grid,
   Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
@@ -54,19 +55,28 @@ const RecommendedVideo: React.FC<RecommendedVideoProps> = (props) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        {video.channelName ? (
-          <Button size="small" component={Link} to={channelUrl}>
-            {video.channelName}
-          </Button>
-        ) : null}
-        {video.views ? (
-          <>
-            <Typography variant="body2">
-              {numberFormatter.format(video.views)}
-            </Typography>
-            <Visibility fontSize="small" />
-          </>
-        ) : null}
+        <Grid container justifyContent="center" alignItems="center">
+          {video.channelName ? (
+            <Grid item xs={9}>
+              <Button
+                size="small"
+                component={Link}
+                to={channelUrl}
+                disabled={!video.channelApiId}
+              >
+                {video.channelName}
+              </Button>
+            </Grid>
+          ) : null}
+          {video.views ? (
+            <Grid container xs={3}>
+              <Typography variant="body2">
+                {numberFormatter.format(video.views)}
+              </Typography>
+              <Visibility fontSize="small" />
+            </Grid>
+          ) : null}
+        </Grid>
       </CardActions>
     </Card>
   );
