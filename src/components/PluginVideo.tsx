@@ -8,6 +8,8 @@ import { db } from "../database";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import PluginVideoInfo from "./PluginVideoInfo";
 import RecommendedVideo from "./RecommendedVideo";
+import { Grid } from "@mui/material";
+import PluginVideoComments from "./PluginVideoComments";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -69,7 +71,17 @@ const PluginVideo: React.FC = () => {
           videoId={videoId}
         />
       )}
-      {recommendations}
+      <Grid container>
+        <Grid item xs={9}>
+          <PluginVideoComments
+            apiId={apiId || ""}
+            pluginId={video?.pluginId || ""}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          {recommendations}
+        </Grid>
+      </Grid>
     </>
   );
 };

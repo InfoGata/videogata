@@ -116,6 +116,21 @@ export interface ChannelVideosRequest {
   page?: PageInfo;
 }
 
+export interface VideoCommentsRequest {
+  apiId?: string;
+}
+
+export interface VideoComment {
+  apiId: string;
+  content: string;
+  images: ImageInfo[];
+  author: string;
+}
+
+export interface VideoCommentsResponse {
+  comments: VideoComment[];
+}
+
 export interface ChannelVideosResult extends SearchVideoResult {
   channel?: Channel;
 }

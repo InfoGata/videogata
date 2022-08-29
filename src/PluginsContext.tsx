@@ -13,6 +13,8 @@ import {
   SearchVideoResult,
   UserPlaylistRequest,
   Video,
+  VideoCommentsRequest,
+  VideoCommentsResponse,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -36,6 +38,9 @@ export interface PluginMethodInterface {
   ) => Promise<ChannelVideosResult>;
   onUiMessage: (message: any) => Promise<void>;
   onUsePlayer: () => Promise<boolean>;
+  onGetVideoComments: (
+    request: VideoCommentsRequest
+  ) => Promise<VideoCommentsResponse>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
