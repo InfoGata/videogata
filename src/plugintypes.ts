@@ -32,6 +32,7 @@ export interface Video {
   channelName?: string;
   channelApiId?: string;
   recommendedVideos?: Video[];
+  uploadDate?: string;
 }
 
 export interface VideoSource {

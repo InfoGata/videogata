@@ -56,7 +56,7 @@ const PluginVideo: React.FC = () => {
   }, [playlistId]);
 
   const recommendations = video?.recommendedVideos?.map((v) => (
-    <RecommendedVideo parentVideo={video} video={v} />
+    <RecommendedVideo key={v.apiId} parentVideo={video} video={v} />
   ));
 
   return (

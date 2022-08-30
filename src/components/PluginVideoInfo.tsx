@@ -13,6 +13,13 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
+  const uploadDate =
+    video.uploadDate &&
+    new Date(video.uploadDate).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
 
   const sanitizer = DOMPurify.sanitize;
 
@@ -52,6 +59,11 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           <Typography variant="body1">
             {numberFormatter.format(video.dislikes)}
           </Typography>
+        </Grid>
+      ) : null}
+      {uploadDate ? (
+        <Grid container>
+          <Typography variant="body1">{uploadDate}</Typography>
         </Grid>
       ) : null}
     </Grid>

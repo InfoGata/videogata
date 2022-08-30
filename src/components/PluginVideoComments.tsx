@@ -23,7 +23,9 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
   };
 
   const query = useQuery([pluginId, apiId], onGetPluginVideoComments);
-  const comments = query?.data?.map((c) => <Comment comment={c} />);
+  const comments = query?.data?.map((c) => (
+    <Comment key={c.apiId} comment={c} />
+  ));
   return <List>{comments}</List>;
 };
 

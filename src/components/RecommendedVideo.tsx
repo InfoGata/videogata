@@ -69,7 +69,7 @@ const RecommendedVideo: React.FC<RecommendedVideoProps> = (props) => {
             </Grid>
           ) : null}
           {video.views ? (
-            <Grid container xs={3}>
+            <Grid item xs={3}>
               <Typography variant="body2">
                 {numberFormatter.format(video.views)}
               </Typography>
