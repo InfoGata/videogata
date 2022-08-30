@@ -3,7 +3,7 @@ import React from "react";
 import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
 import { Link } from "react-router-dom";
-import { ThumbDown, ThumbUp, Visibility } from "@mui/icons-material";
+import { ThumbDown, ThumbUp } from "@mui/icons-material";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -11,6 +11,7 @@ interface PluginVideoInfoProps {
 
 const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
+  console.log(video);
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const uploadDate =
@@ -32,39 +33,45 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           __html: sanitizer(video.title),
         }}
       />
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          {video.views && (
+            <Grid container>
+              <Typography variant="body1">
+                {numberFormatter.format(video.views)} views
+              </Typography>
+            </Grid>
+          )}
+
+          {uploadDate ? (
+            <Grid container>
+              <Typography variant="body1">{uploadDate}</Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+        <Grid item>
+          {video.likes ? (
+            <Grid container>
+              <ThumbUp />
+              <Typography variant="body1">
+                {numberFormatter.format(video.likes)}
+              </Typography>
+            </Grid>
+          ) : null}
+          {video.dislikes ? (
+            <Grid container>
+              <ThumbDown />
+              <Typography variant="body1">
+                {numberFormatter.format(video.dislikes)}
+              </Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+      </Grid>
       {video.channelName ? (
         <Button component={Link} to={channelUrl} disabled={!video.channelApiId}>
           {video.channelName}
         </Button>
-      ) : null}
-      {video.views && (
-        <Grid container>
-          <Visibility />
-          <Typography variant="body1">
-            {numberFormatter.format(video.views)}
-          </Typography>
-        </Grid>
-      )}
-      {video.likes ? (
-        <Grid container>
-          <ThumbUp />
-          <Typography variant="body1">
-            {numberFormatter.format(video.likes)}
-          </Typography>
-        </Grid>
-      ) : null}
-      {video.dislikes ? (
-        <Grid container>
-          <ThumbDown />
-          <Typography variant="body1">
-            {numberFormatter.format(video.dislikes)}
-          </Typography>
-        </Grid>
-      ) : null}
-      {uploadDate ? (
-        <Grid container>
-          <Typography variant="body1">{uploadDate}</Typography>
-        </Grid>
       ) : null}
       <Divider />
       {video.description ? (
