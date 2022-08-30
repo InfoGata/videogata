@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
@@ -66,6 +66,18 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           <Typography variant="body1">{uploadDate}</Typography>
         </Grid>
       ) : null}
+      <Divider />
+      {video.description ? (
+        <Typography
+          sx={{ whiteSpace: "pre-line" }}
+          component="div"
+          variant="body1"
+          dangerouslySetInnerHTML={{
+            __html: sanitizer(video.description),
+          }}
+        />
+      ) : null}
+      <Divider />
     </Grid>
   );
 };
