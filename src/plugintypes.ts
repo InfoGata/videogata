@@ -114,11 +114,11 @@ export interface PlaylistVideosResult extends SearchVideoResult {
 
 export interface ChannelVideosRequest {
   apiId?: string;
-  page?: PageInfo;
 }
 
 export interface VideoCommentsRequest {
   apiId?: string;
+  page?: PageInfo;
 }
 
 export interface VideoComment {
@@ -130,6 +130,7 @@ export interface VideoComment {
 
 export interface VideoCommentsResult {
   comments: VideoComment[];
+  page?: PageInfo;
 }
 
 export interface ChannelVideosResult extends SearchVideoResult {
