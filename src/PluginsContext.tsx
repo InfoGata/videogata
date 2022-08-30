@@ -2,6 +2,7 @@ import React from "react";
 import {
   ChannelVideosRequest,
   ChannelVideosResult,
+  CommentReplyRequest,
   NotificationMessage,
   PlaylistVideoRequest,
   PlaylistVideosResult,
@@ -40,6 +41,9 @@ export interface PluginMethodInterface {
   onUsePlayer: () => Promise<boolean>;
   onGetVideoComments: (
     request: VideoCommentsRequest
+  ) => Promise<VideoCommentsResult>;
+  onGetCommentReplies: (
+    request: CommentReplyRequest
   ) => Promise<VideoCommentsResult>;
 }
 

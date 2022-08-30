@@ -43,7 +43,9 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
     }
   );
   const comments = query?.data?.pages?.map((p) =>
-    p?.comments.map((c) => <Comment key={c.apiId} comment={c} />)
+    p?.comments.map((c) => (
+      <Comment key={c.apiId} comment={c} plugin={plugin} />
+    ))
   );
   const onLoadMore = () => {
     query.fetchNextPage();

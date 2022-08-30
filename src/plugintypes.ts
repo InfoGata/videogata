@@ -121,16 +121,26 @@ export interface VideoCommentsRequest {
   page?: PageInfo;
 }
 
-export interface VideoComment {
-  apiId: string;
-  content: string;
-  images: ImageInfo[];
-  author: string;
-}
-
 export interface VideoCommentsResult {
   comments: VideoComment[];
   page?: PageInfo;
+}
+
+export interface CommentReplyRequest {
+  commentApiId: string;
+  videoApiId?: string;
+  page?: PageInfo;
+}
+
+export interface VideoComment {
+  apiId: string;
+  videoCommentId?: string;
+  content: string;
+  images?: ImageInfo[];
+  author: string;
+  replyCount?: number;
+  // Information passed to CommentReplyRequest.page.nextPage
+  replyPage?: string;
 }
 
 export interface ChannelVideosResult extends SearchVideoResult {
