@@ -128,7 +128,7 @@ export interface VideoComment {
   author: string;
 }
 
-export interface VideoCommentsResponse {
+export interface VideoCommentsResult {
   comments: VideoComment[];
 }
 
