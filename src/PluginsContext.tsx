@@ -3,6 +3,7 @@ import {
   ChannelVideosRequest,
   ChannelVideosResult,
   CommentReplyRequest,
+  GetVideoRequest,
   NotificationMessage,
   PlaylistVideoRequest,
   PlaylistVideosResult,
@@ -26,7 +27,7 @@ export interface PluginMethodInterface {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   onSearchVideos: (request: SearchRequest) => Promise<SearchVideoResult>;
   onSearchPlaylists?: (request: SearchRequest) => Promise<SearchPlaylistResult>;
-  onGetVideoFromApiId: (apiId: string) => Promise<Video>;
+  onGetVideo: (request: GetVideoRequest) => Promise<Video>;
   onGetUserPlaylists: (
     request: UserPlaylistRequest
   ) => Promise<SearchPlaylistResult>;
@@ -148,7 +149,7 @@ export const PluginsProvider: React.FC = (props) => {
           });
           return result;
         },
-        onGetVideoFromApiId: (video: Video) => {
+        onGetVideo: (video: Video) => {
           video.pluginId = plugin.id;
           return video;
         },

@@ -33,8 +33,8 @@ const PluginVideo: React.FC = () => {
             setUsePlayer(await plugin.remote.onUsePlayer());
           }
         }
-        if (await plugin.hasDefined.onGetVideoFromApiId()) {
-          const video = await plugin.remote.onGetVideoFromApiId(apiId);
+        if (await plugin.hasDefined.onGetVideo()) {
+          const video = await plugin.remote.onGetVideo({ apiId });
           setVideo(video);
         }
       }

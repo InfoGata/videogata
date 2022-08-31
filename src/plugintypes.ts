@@ -98,6 +98,10 @@ export interface SearchChannelResult {
   pageInfo?: PageInfo;
 }
 
+export interface GetVideoRequest {
+  apiId: string;
+}
+
 export interface UserPlaylistRequest {
   page?: PageInfo;
 }

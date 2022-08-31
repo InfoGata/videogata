@@ -11,7 +11,6 @@ interface PluginVideoInfoProps {
 
 const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
-  console.log(video);
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const uploadDate =
