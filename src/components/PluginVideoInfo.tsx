@@ -41,7 +41,6 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
               </Typography>
             </Grid>
           )}
-
           {uploadDate ? (
             <Grid container>
               <Typography variant="body1">{uploadDate}</Typography>
@@ -63,6 +62,13 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
               <Typography variant="body1">
                 {numberFormatter.format(video.dislikes)}
               </Typography>
+            </Grid>
+          ) : null}
+          {video.originalUrl ? (
+            <Grid container>
+              <Button component="a" href={video.originalUrl} target="_blank">
+                Link To Original
+              </Button>
             </Grid>
           ) : null}
         </Grid>
