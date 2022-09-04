@@ -153,6 +153,12 @@ export const PluginsProvider: React.FC = (props) => {
           video.pluginId = plugin.id;
           return video;
         },
+        onGetPlaylistVideos: (result: PlaylistVideosResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
       };
 
       const host = new PluginFrameContainer(api, {

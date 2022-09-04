@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Authentication callback processing..</title>
+</head>
+
+<body>
+    <noscript>
+        You need to enable JavaScript to run this app.
+    </noscript>
+
+    <h1>Authenticating...</h1>
+
+    <button id="continue-btn">Continue</button>
+
+    <script>
+        document.getElementById("continue-btn").addEventListener("click", () => {
+            const href = document.location.href;
+            let deepLink = new URL("com.audiogata.app://message");
+            deepLink.searchParams.append("message", href);
+            try {
+                const url = new URL(href);
+                let stateStr = url.searchParams.get("state");
+                if (!stateStr) {
+                    // Some providers put info in hash instead of params
+                    if (url.hash) {
+                        url.search = url.hash.substring(1);
+                        stateStr = url.searchParams.get("state");
+                    }
+                }
+                const state = JSON.parse(stateStr);
+                if (state && state.pluginId) {
+                    deepLink.searchParams.append("pluginId", state.pluginId);
+                }
+            } catch(e) {
+                console.log(e);
+            }finally {
+                document.location = deepLink;
+            }
+        });
+        if (window.opener) {
+            const data = {
+                url: window.location.href,
+            };
+            window.opener.postMessage(data, "*");
+        } else {
+            const data = {
+                url: window.location.href,
+            };
+            parent.postMessage(data, "*");
+        }
+    </script>
+
+</body>
+
+</html>

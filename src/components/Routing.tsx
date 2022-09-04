@@ -8,6 +8,7 @@ import PlaylistVideos from "./PlaylistVideos";
 import PluginDetails from "./PluginDetails";
 import PluginOptions from "./PluginOptions";
 import PluginPlaylist from "./PluginPlaylist";
+import PluginPlaylists from "./PluginPlaylists";
 import Plugins from "./Plugins";
 import PluginVideo from "./PluginVideo";
 import Search from "./Search";
@@ -36,6 +37,10 @@ const Routing: React.FC = () => {
         <Route
           path="/plugins/:pluginId/videos/:apiId"
           element={<PluginVideo />}
+        />
+        <Route
+          path="/plugins/:pluginId/playlists"
+          element={<PluginPlaylists />}
         />
         <Route
           path="/plugins/:pluginId/playlists/:apiId"
