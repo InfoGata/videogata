@@ -46,6 +46,7 @@ export interface PluginMethodInterface {
   onGetCommentReplies: (
     request: CommentReplyRequest
   ) => Promise<VideoCommentsResult>;
+  onGetTopItems: () => Promise<SearchAllResult>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
