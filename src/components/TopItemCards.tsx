@@ -108,7 +108,7 @@ const TopItemCards: React.FC = () => {
       <Fade in={!!topVideoComponents}>
         <Grid>
           <Typography variant="h5" style={{ marginLeft: "15px" }}>
-            Top Tracks
+            Top Videos
           </Typography>
           <Grid
             sx={{
