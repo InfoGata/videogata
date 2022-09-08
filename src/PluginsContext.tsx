@@ -5,6 +5,7 @@ import {
   CommentReplyRequest,
   GetVideoRequest,
   NotificationMessage,
+  Playlist,
   PlaylistVideoRequest,
   PlaylistVideosResult,
   PluginInfo,
@@ -21,7 +22,9 @@ import {
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
 import { useSnackbar } from "notistack";
-import { useAppSelector } from "./store/hooks";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
+import { addPlaylists } from "./store/reducers/playlistReducer";
 
 export interface PluginMethodInterface {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
@@ -55,6 +58,10 @@ interface ApplicationPluginInterface extends PluginInterface {
   createNotification: (notification: NotificationMessage) => Promise<void>;
   endVideo: () => Promise<void>;
   getCorsProxy: () => Promise<string | undefined>;
+  installPlugins: (plugins: PluginInfo[]) => Promise<void>;
+  getPlugins: () => Promise<PluginInfo[]>;
+  getPlaylists: () => Promise<Playlist[]>;
+  addPlaylists: (playlists: Playlist[]) => Promise<void>;
 }
 
 interface PluginMessage {
@@ -90,10 +97,15 @@ const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 
 export const PluginsProvider: React.FC = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
+  const [pendingPlugins, setPendingPlugins] = React.useState<
+    PluginInfo[] | null
+  >(null);
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  const dispatch = useAppDispatch();
+
   const { enqueueSnackbar } = useSnackbar();
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
@@ -126,12 +138,25 @@ export const PluginsProvider: React.FC = (props) => {
             return "http://localhost:8085/";
           }
         },
+        getPlugins: async () => {
+          const plugs = await db.plugins.toArray();
+          return plugs;
+        },
+        installPlugins: async (plugins: PluginInfo[]) => {
+          setPendingPlugins(plugins);
+        },
         endVideo: async () => {
           const video = currentVideoRef.current;
           if (video?.pluginId === plugin.id) {
             const event = new CustomEvent("nextVideo");
             document.dispatchEvent(event);
           }
+        },
+        getPlaylists: async () => {
+          return await db.playlists.toArray();
+        },
+        addPlaylists: async (playlists: Playlist[]) => {
+          dispatch(addPlaylists(playlists));
         },
       };
 
@@ -180,7 +205,7 @@ export const PluginsProvider: React.FC = (props) => {
       await host.executeCode(plugin.script);
       return host;
     },
-    [enqueueSnackbar]
+    [dispatch, enqueueSnackbar]
   );
 
   React.useEffect(() => {
@@ -231,9 +256,18 @@ export const PluginsProvider: React.FC = (props) => {
     pluginsLoaded,
   };
 
+  const handleClose = () => {
+    setPendingPlugins(null);
+  };
+
   return (
     <PluginsContext.Provider value={defaultContext}>
       {props.children}
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugins)}
+        plugins={pendingPlugins || []}
+        handleClose={handleClose}
+      />
     </PluginsContext.Provider>
   );
 };
