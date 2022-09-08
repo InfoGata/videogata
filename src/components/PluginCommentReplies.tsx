@@ -1,4 +1,4 @@
-import { Button, List } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import React from "react";
 import { useInfiniteQuery } from "react-query";
 import { PluginFrameContainer } from "../PluginsContext";
@@ -58,9 +58,9 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
 
   return (
     <>
-      <List sx={{ pl: 5 }}>{comments}</List>
+      <Box sx={{ pl: 5 }}>{comments}</Box>
       {query.hasNextPage && (
-        <Button onClick={onLoadMore} sx={{ pl: 7 }}>
+        <Button onClick={onLoadMore} sx={{ pl: 7 }} size="small">
           Load More Replies
         </Button>
       )}

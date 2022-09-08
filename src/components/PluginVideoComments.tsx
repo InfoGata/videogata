@@ -1,4 +1,4 @@
-import { Button, Grid, List } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import React from "react";
 import { useInfiniteQuery } from "react-query";
 import { usePlugins } from "../PluginsContext";
@@ -52,7 +52,7 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
   };
   return (
     <Grid>
-      <List>{comments}</List>
+      <Box>{comments}</Box>
       {query.hasNextPage && <Button onClick={onLoadMore}>Load More</Button>}
     </Grid>
   );

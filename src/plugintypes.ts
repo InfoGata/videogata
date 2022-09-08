@@ -143,6 +143,8 @@ export interface VideoComment {
   content: string;
   images?: ImageInfo[];
   author: string;
+  createdDate?: string;
+  likes?: number;
   replyCount?: number;
   // Information passed to CommentReplyRequest.page.nextPage
   replyPage?: string;
