@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import {
   Extension,
   Home,
+  Info,
   Menu,
   PlaylistAdd,
   SettingsApplications,
@@ -56,6 +57,14 @@ const Navigation: React.FC = () => {
         <ListItemIcon>
           <Tooltip title="Settings" placement="right">
             <SettingsApplications />
+          </Tooltip>
+        </ListItemIcon>
+        <ListItemText>Settings</ListItemText>
+      </ListItem>
+      <ListItem button={true} component={Link} to="/about" key="About">
+        <ListItemIcon>
+          <Tooltip title="About" placement="right">
+            <Info />
           </Tooltip>
         </ListItemIcon>
         <ListItemText>Settings</ListItemText>

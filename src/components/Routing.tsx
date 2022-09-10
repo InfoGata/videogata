@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
+import AboutPage from "./AboutPage";
 import ChannelPage from "./ChannelPage";
 import Home from "./Home";
 import Playlists from "./Playlists";
@@ -32,6 +33,7 @@ const Routing: React.FC = () => {
         <Route path="/plugins" element={<Plugins />} />
         <Route path="/search" element={<Search />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistVideos />} />
         <Route
