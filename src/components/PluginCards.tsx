@@ -25,12 +25,12 @@ interface PluginDescription {
 const pluginDescriptions: PluginDescription[] = [
   {
     name: "Plugin for Youtube",
-    description: "Plugin for playing music from youtube.com",
+    description: "Plugin for playing videos from youtube.com",
     url: "https://gitlab.com/api/v4/projects/37878305/repository/files/manifest.json/raw?ref=master",
   },
   {
     name: "Plugin for Vimeo",
-    description: "Play music from Vimeo.",
+    description: "Play videos from Vimeo.",
     url: "https://gitlab.com/api/v4/projects/38552874/repository/files/manifest.json/raw?ref=master",
   },
 ];
