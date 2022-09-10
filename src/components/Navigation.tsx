@@ -67,7 +67,7 @@ const Navigation: React.FC = () => {
             <Info />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Settings</ListItemText>
+        <ListItemText>About</ListItemText>
       </ListItem>
       <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
         <ListItemIcon>
