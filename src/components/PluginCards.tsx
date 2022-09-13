@@ -33,6 +33,16 @@ const pluginDescriptions: PluginDescription[] = [
     description: "Play videos from Vimeo.",
     url: "https://gitlab.com/api/v4/projects/38552874/repository/files/manifest.json/raw?ref=master",
   },
+  {
+    name: "Plugin for Google Drive",
+    description: "Store and retrieve playlists from Google Drive",
+    url: "https://gitlab.com/api/v4/projects/39354817/repository/files/manifest.json/raw?ref=master",
+  },
+  {
+    name: "Plugin for Dropbox",
+    description: "Store and retreive playlists from Dropbox",
+    url: "https://gitlab.com/api/v4/projects/35751390/repository/files/manifest.json/raw?ref=master",
+  },
 ];
 
 const PluginCards: React.FC = () => {
