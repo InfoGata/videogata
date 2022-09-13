@@ -41,7 +41,7 @@ const pluginDescriptions: PluginDescription[] = [
   {
     name: "Plugin for Dropbox",
     description: "Store and retreive playlists from Dropbox",
-    url: "https://gitlab.com/api/v4/projects/35751390/repository/files/manifest.json/raw?ref=master",
+    url: "https://gitlab.com/api/v4/projects/39316768/repository/files/manifest.json/raw?ref=master",
   },
 ];
 
