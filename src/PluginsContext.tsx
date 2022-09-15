@@ -185,6 +185,12 @@ export const PluginsProvider: React.FC = (props) => {
           });
           return result;
         },
+        onGetChannelVideos: (result: ChannelVideosResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
       };
 
       const host = new PluginFrameContainer(api, {
