@@ -30,8 +30,13 @@ const pluginDescriptions: PluginDescription[] = [
   },
   {
     name: "Plugin for Vimeo",
-    description: "Play videos from Vimeo.",
+    description: "Plugins for playing videos from Vimeo.",
     url: "https://gitlab.com/api/v4/projects/38552874/repository/files/manifest.json/raw?ref=master",
+  },
+  {
+    name: "Plugin for Rumble",
+    description: "Plugin for playing videos from rumble.com",
+    url: "https://gitlab.com/api/v4/projects/38710555/repository/files/manifest.json/raw?ref=master",
   },
   {
     name: "Plugin for Google Drive",
