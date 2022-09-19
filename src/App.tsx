@@ -9,6 +9,7 @@ import { PluginsProvider } from "./PluginsContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
+import MatomoRouterProvider from "./components/MatomoRouterProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,14 +39,16 @@ const App: React.FC = () => {
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <PluginsProvider>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline />
-              <TopBar />
-              <SideBar />
-              <Routing />
-            </Box>
-          </PluginsProvider>
+          <MatomoRouterProvider>
+            <PluginsProvider>
+              <Box sx={{ display: "flex" }}>
+                <CssBaseline />
+                <TopBar />
+                <SideBar />
+                <Routing />
+              </Box>
+            </PluginsProvider>
+          </MatomoRouterProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </SnackbarProvider>
