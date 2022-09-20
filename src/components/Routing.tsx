@@ -7,6 +7,7 @@ import Home from "./Home";
 import Playlists from "./Playlists";
 import PlaylistVideos from "./PlaylistVideos";
 import PluginDetails from "./PluginDetails";
+import PluginInstall from "./PluginInstall";
 import PluginOptions from "./PluginOptions";
 import PluginPlaylist from "./PluginPlaylist";
 import PluginPlaylists from "./PluginPlaylists";
@@ -31,6 +32,7 @@ const Routing: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/plugins" element={<Plugins />} />
+        <Route path="/plugininstall" element={<PluginInstall />} />
         <Route path="/search" element={<Search />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/about" element={<AboutPage />} />
