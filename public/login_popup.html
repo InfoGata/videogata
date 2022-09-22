@@ -17,7 +17,7 @@
     <script>
         document.getElementById("continue-btn").addEventListener("click", () => {
             const href = document.location.href;
-            let deepLink = new URL("com.audiogata.app://message");
+            let deepLink = new URL("com.videogata.app://message");
             deepLink.searchParams.append("message", href);
             try {
                 const url = new URL(href);

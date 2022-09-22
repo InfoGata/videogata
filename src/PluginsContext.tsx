@@ -161,6 +161,9 @@ export const PluginsProvider: React.FC = (props) => {
       };
 
       let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
+      if (process.env.NODE_ENV === "production") {
+        srcUrl = `https://${plugin.id}.videogata.com/pluginframe.html`;
+      }
 
       const completeMethods: { [key in keyof PluginMethodInterface]?: any } = {
         onSearchAll: (result: SearchAllResult) => {
