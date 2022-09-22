@@ -4,7 +4,10 @@ import {
   Box,
   CircularProgress,
   List,
+  ListItemIcon,
+  ListItemText,
   Menu,
+  MenuItem,
   Tab,
   Tabs,
   Typography,
@@ -22,6 +25,8 @@ import PlaylistSearchResult from "./PlaylistSearchResult";
 import SelectPlugin from "./SelectPlugin";
 import useVideoMenu from "../hooks/useVideoMenu";
 import VideoList from "./VideoList";
+import { PlaylistAdd } from "@mui/icons-material";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,6 +60,8 @@ const Search: React.FC = () => {
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
   const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const onSearch = async () => {
     let videos: Video[] | undefined = [];
@@ -96,6 +103,10 @@ const Search: React.FC = () => {
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
+  };
+
+  const addMenuVideoToNewPlaylist = () => {
+    setPlaylistDialogOpen(true);
   };
 
   return (
@@ -141,6 +152,12 @@ const Search: React.FC = () => {
         <List dense={true}>{playlistList}</List>
       </TabPanel>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={addMenuVideoToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
@@ -150,6 +167,11 @@ const Search: React.FC = () => {
           />
         ))}
       </Menu>
+      <AddPlaylistDialog
+        videos={menuVideo ? [menuVideo] : []}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
     </>
   );
 };
