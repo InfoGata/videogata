@@ -27,41 +27,41 @@ import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 
 export interface PluginMethodInterface {
-  onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
-  onSearchVideos: (request: SearchRequest) => Promise<SearchVideoResult>;
-  onSearchPlaylists?: (request: SearchRequest) => Promise<SearchPlaylistResult>;
-  onGetVideo: (request: GetVideoRequest) => Promise<Video>;
-  onGetUserPlaylists: (
+  onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
+  onSearchVideos(request: SearchRequest): Promise<SearchVideoResult>;
+  onSearchPlaylists(request: SearchRequest): Promise<SearchPlaylistResult>;
+  onGetVideo(request: GetVideoRequest): Promise<Video>;
+  onGetUserPlaylists(
     request: UserPlaylistRequest
-  ) => Promise<SearchPlaylistResult>;
-  onGetPlaylistVideos: (
+  ): Promise<SearchPlaylistResult>;
+  onGetPlaylistVideos(
     request: PlaylistVideoRequest
-  ) => Promise<PlaylistVideosResult>;
-  onSearchChannels: (request: SearchRequest) => Promise<SearchChannelResult>;
-  onGetChannelVideos: (
+  ): Promise<PlaylistVideosResult>;
+  onSearchChannels(request: SearchRequest): Promise<SearchChannelResult>;
+  onGetChannelVideos(
     request: ChannelVideosRequest
-  ) => Promise<ChannelVideosResult>;
-  onUiMessage: (message: any) => Promise<void>;
-  onUsePlayer: () => Promise<boolean>;
-  onGetVideoComments: (
+  ): Promise<ChannelVideosResult>;
+  onUiMessage(message: any): Promise<void>;
+  onUsePlayer(): Promise<boolean>;
+  onGetVideoComments(
     request: VideoCommentsRequest
-  ) => Promise<VideoCommentsResult>;
-  onGetCommentReplies: (
+  ): Promise<VideoCommentsResult>;
+  onGetCommentReplies(
     request: CommentReplyRequest
-  ) => Promise<VideoCommentsResult>;
-  onGetTopItems: () => Promise<SearchAllResult>;
+  ): Promise<VideoCommentsResult>;
+  onGetTopItems(): Promise<SearchAllResult>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
-  postUiMessage: (message: any) => Promise<void>;
-  getPluginId: () => Promise<string>;
-  createNotification: (notification: NotificationMessage) => Promise<void>;
-  endVideo: () => Promise<void>;
-  getCorsProxy: () => Promise<string | undefined>;
-  installPlugins: (plugins: PluginInfo[]) => Promise<void>;
-  getPlugins: () => Promise<PluginInfo[]>;
-  getPlaylists: () => Promise<Playlist[]>;
-  addPlaylists: (playlists: Playlist[]) => Promise<void>;
+  postUiMessage(message: any): Promise<void>;
+  getPluginId(): Promise<string>;
+  createNotification(notification: NotificationMessage): Promise<void>;
+  endVideo(): Promise<void>;
+  getCorsProxy(): Promise<string | undefined>;
+  installPlugins(plugins: PluginInfo[]): Promise<void>;
+  getPlugins(): Promise<PluginInfo[]>;
+  getPlaylists(): Promise<Playlist[]>;
+  addPlaylists(playlists: Playlist[]): Promise<void>;
 }
 
 interface PluginMessage {
