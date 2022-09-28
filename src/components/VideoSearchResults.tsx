@@ -19,7 +19,6 @@ import { useAppSelector } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import VideoCards from "./VideoCards";
-import VideoList from "./VideoList";
 
 interface VideoSearchResultsProps {
   pluginId: string;
