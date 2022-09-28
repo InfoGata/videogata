@@ -1,10 +1,12 @@
-import { Backdrop, CircularProgress, Menu } from "@mui/material";
+import { Backdrop, Button, CircularProgress, Grid, Menu } from "@mui/material";
+import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import usePagination from "../hooks/usePagination";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
-import { Channel } from "../plugintypes";
+import { Channel, PageInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
@@ -17,6 +19,9 @@ const ChannelPage: React.FC = () => {
   const plugin = plugins.find((p) => p.id === pluginId);
   const location = useLocation();
   const state = location.state as Channel | null;
+  const [currentPage, setCurrentPage] = React.useState<PageInfo>();
+  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
+    usePagination(currentPage);
   const [channel, setChannel] = React.useState<Channel | null>(state);
   const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
   const playlists = useAppSelector((state) => state.playlist.playlists);
@@ -25,18 +30,23 @@ const ChannelPage: React.FC = () => {
     if (plugin && (await plugin.hasDefined.onGetChannelVideos())) {
       const channelInfo = await plugin.remote.onGetChannelVideos({
         apiId: apiId,
+        page,
       });
 
       if (channelInfo.channel) {
         setChannel(channelInfo.channel);
       }
+      channelInfo.items.forEach((v) => {
+        v.id = nanoid();
+      });
+      setCurrentPage(channelInfo.pageInfo);
       return channelInfo.items;
     }
     return [];
   };
 
   const query = useQuery(
-    ["pluginplaylist", pluginId, apiId],
+    ["pluginplaylist", pluginId, apiId, page],
     getChannelVideos,
     {
       enabled: pluginsLoaded,
@@ -56,6 +66,10 @@ const ChannelPage: React.FC = () => {
         dragDisabled={true}
         openMenu={openMenu}
       />
+      <Grid>
+        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
+        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
+      </Grid>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         {playlists.map((p) => (
           <PlaylistMenuItem

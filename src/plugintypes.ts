@@ -119,6 +119,7 @@ export interface PlaylistVideosResult extends SearchVideoResult {
 
 export interface ChannelVideosRequest {
   apiId?: string;
+  page?: PageInfo;
 }
 
 export interface VideoCommentsRequest {
