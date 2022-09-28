@@ -68,7 +68,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
           ref={ref}
           name={plugin?.id}
           title={plugin?.name}
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin  allow-popups allow-popups-to-escape-sandbox"
           src={srcUrl}
           onLoad={iframeOnload}
           allow="autoplay; fullscreen; picture-in-picture"
