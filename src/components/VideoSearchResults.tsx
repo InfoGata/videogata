@@ -18,6 +18,7 @@ import { PageInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
+import VideoCards from "./VideoCards";
 import VideoList from "./VideoList";
 
 interface VideoSearchResultsProps {
@@ -67,11 +68,7 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <VideoList
-        videos={query.data || []}
-        openMenu={openMenu}
-        dragDisabled={true}
-      />
+      <VideoCards videos={query.data || []} openMenu={openMenu} />
       <Grid>
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}

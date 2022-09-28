@@ -10,7 +10,7 @@ import { Channel, PageInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import VideoList from "./VideoList";
+import VideoCards from "./VideoCards";
 
 const ChannelPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -61,11 +61,7 @@ const ChannelPage: React.FC = () => {
       {channel && (
         <PlaylistInfoCard name={channel.name || ""} images={channel.images} />
       )}
-      <VideoList
-        videos={query?.data || []}
-        dragDisabled={true}
-        openMenu={openMenu}
-      />
+      <VideoCards videos={query?.data || []} openMenu={openMenu} />
       <Grid>
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}

@@ -1,4 +1,4 @@
-import { Visibility } from "@mui/icons-material";
+import { MoreVert, Visibility } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -8,6 +8,7 @@ import {
   CardMedia,
   Chip,
   Grid,
+  IconButton,
   Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
@@ -17,23 +18,30 @@ import { Video } from "../plugintypes";
 import {
   formatSeconds,
   getThumbnailImage,
-  searchThumbnailSize,
+  playlistThumbnailSize,
 } from "../utils";
 
-interface RecommendedVideoProps {
-  parentVideo: Video;
+interface VideoCardProps {
+  pluginId: string;
   video: Video;
+  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, video: Video) => void;
 }
 
-const RecommendedVideo: React.FC<RecommendedVideoProps> = (props) => {
-  const { parentVideo, video } = props;
+const VideoCard: React.FC<VideoCardProps> = (props) => {
+  const { pluginId, video, openMenu } = props;
   const sanitizer = DOMPurify.sanitize;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
 
-  const image = getThumbnailImage(video.images, searchThumbnailSize);
+  const image = getThumbnailImage(video.images, playlistThumbnailSize);
 
-  const url = `/plugins/${parentVideo.pluginId}/videos/${video.apiId}`;
-  const channelUrl = `/plugins/${parentVideo.pluginId}/channels/${video.channelApiId}`;
+  const url = `/plugins/${pluginId}/videos/${video.apiId}`;
+  const channelUrl = `/plugins/${pluginId}/channels/${video.channelApiId}`;
+
+  const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (openMenu) {
+      openMenu(event, video);
+    }
+  };
 
   return (
     <Card sx={{ maxWidth: "250px" }}>
@@ -57,7 +65,7 @@ const RecommendedVideo: React.FC<RecommendedVideoProps> = (props) => {
       <CardActions>
         <Grid container justifyContent="center" alignItems="center">
           {video.channelName ? (
-            <Grid item xs={9}>
+            <Grid item xs={8}>
               <Button
                 size="small"
                 component={Link}
@@ -76,10 +84,17 @@ const RecommendedVideo: React.FC<RecommendedVideoProps> = (props) => {
               <Visibility fontSize="small" />
             </Grid>
           ) : null}
+          <Grid item xs={1}>
+            {openMenu && (
+              <IconButton onClick={openVideoMenu} size="small">
+                <MoreVert fontSize="inherit" />
+              </IconButton>
+            )}
+          </Grid>
         </Grid>
       </CardActions>
     </Card>
   );
 };
 
-export default RecommendedVideo;
+export default VideoCard;

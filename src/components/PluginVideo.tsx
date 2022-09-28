@@ -7,9 +7,9 @@ import PluginPlayer from "./PluginPlayer";
 import { db } from "../database";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import PluginVideoInfo from "./PluginVideoInfo";
-import RecommendedVideo from "./RecommendedVideo";
 import { Grid } from "@mui/material";
 import PluginVideoComments from "./PluginVideoComments";
+import RecommendedVideos from "./RecommendVideos";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -55,10 +55,6 @@ const PluginVideo: React.FC = () => {
     getPlaylistVideos();
   }, [playlistId]);
 
-  const recommendations = video?.recommendedVideos?.map((v) => (
-    <RecommendedVideo key={v.apiId} parentVideo={video} video={v} />
-  ));
-
   return (
     <>
       {video && !usePlayer ? <VideoPlayer video={video} /> : null}
@@ -78,9 +74,10 @@ const PluginVideo: React.FC = () => {
             pluginId={video?.pluginId || ""}
           />
         </Grid>
-        <Grid item xs={3}>
-          {recommendations}
-        </Grid>
+        <RecommendedVideos
+          pluginId={video?.pluginId || ""}
+          videos={video?.recommendedVideos || []}
+        />
       </Grid>
     </>
   );
