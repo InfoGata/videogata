@@ -3,30 +3,20 @@ import {
   Backdrop,
   Box,
   CircularProgress,
-  List,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
   Tab,
   Tabs,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
-import { Channel, PlaylistInfo, Video } from "../plugintypes";
-import { useAppSelector } from "../store/hooks";
 import { SearchResultType } from "../types";
-import ChannelSearchResult from "./ChannelSearchResult";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import PlaylistSearchResult from "./PlaylistSearchResult";
 import SelectPlugin from "./SelectPlugin";
-import useVideoMenu from "../hooks/useVideoMenu";
-import VideoList from "./VideoList";
-import { PlaylistAdd } from "@mui/icons-material";
-import AddPlaylistDialog from "./AddPlaylistDialog";
+import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
+import VideoSearchResults from "./VideoSearchResults";
+import ChannelSearchResults from "./ChannelSearchResults";
+import PlaylistSearchResults from "./PlaylistSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,57 +46,48 @@ const Search: React.FC = () => {
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const { plugins } = usePlugins();
   const location = useLocation();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
-  const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const queryClient = useQueryClient();
 
   const onSearch = async () => {
-    let videos: Video[] | undefined = [];
-    let playlists: PlaylistInfo[] | undefined = [];
-    let channels: Channel[] | undefined = [];
-
+    let searchAll: SearchAllResult | undefined;
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
-      const searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
-      videos = searchAll.videos?.items || [];
-      playlists = searchAll.playlists?.items || [];
-      channels = searchAll.channels?.items || [];
+      searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
     }
 
-    if (videos) {
+    if (searchAll?.videos) {
       setTabValue(SearchResultType.Videos);
-    } else if (playlists) {
+    } else if (searchAll?.playlists) {
       setTabValue(SearchResultType.Playlists);
-    } else if (channels) {
+    } else if (searchAll?.channels) {
       setTabValue(SearchResultType.Channels);
     }
 
-    return {
-      videos,
-      playlists,
-      channels,
-    };
+    queryClient.setQueryData<Video[] | undefined>(
+      ["searchVideos", pluginId, searchQuery, undefined],
+      searchAll?.videos?.items
+    );
+    queryClient.setQueryData<Channel[] | undefined>(
+      ["searchChannels", pluginId, searchQuery, undefined],
+      searchAll?.channels?.items
+    );
+    queryClient.setQueryData<PlaylistInfo[] | undefined>(
+      ["searchPlaylists", pluginId, searchQuery, undefined],
+      searchAll?.playlists?.items
+    );
+
+    return searchAll;
   };
 
   const query = useQuery(["search", pluginId, searchQuery], onSearch);
-
-  const playlistList = query.data?.playlists.map((p) => (
-    <PlaylistSearchResult key={p.apiId} playlist={p} pluginId={pluginId} />
-  ));
-
-  const channelList = query.data?.channels.map((c) => (
-    <ChannelSearchResult key={c.apiId} channel={c} pluginId={pluginId} />
-  ));
+  const videoList = query?.data?.videos?.items || [];
+  const channelList = query?.data?.channels?.items || [];
+  const playlistList = query?.data?.playlists?.items || [];
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
-  };
-
-  const addMenuVideoToNewPlaylist = () => {
-    setPlaylistDialogOpen(true);
   };
 
   return (
@@ -127,51 +108,38 @@ const Search: React.FC = () => {
           textColor="primary"
           variant="fullWidth"
         >
-          {query.data?.videos && query.data.videos.length > 0 ? (
+          {videoList.length > 0 ? (
             <Tab label="Videos" value={SearchResultType.Videos} />
           ) : null}
-          {channelList && channelList.length > 0 ? (
+          {channelList.length > 0 ? (
             <Tab label="Channels" value={SearchResultType.Channels} />
           ) : null}
-          {playlistList && playlistList.length > 0 ? (
+          {playlistList.length > 0 ? (
             <Tab label="Playlists" value={SearchResultType.Playlists} />
           ) : null}
         </Tabs>
       </AppBar>
       <TabPanel value={tabValue} index={SearchResultType.Videos}>
-        <VideoList
-          videos={query.data?.videos || []}
-          openMenu={openMenu}
-          dragDisabled={true}
+        <VideoSearchResults
+          pluginId={pluginId}
+          searchQuery={searchQuery}
+          initialPage={query.data?.videos?.pageInfo}
         />
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Channels}>
-        <List dense={true}>{channelList}</List>
+        <ChannelSearchResults
+          pluginId={pluginId}
+          searchQuery={searchQuery}
+          initialPage={query.data?.channels?.pageInfo}
+        />
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Playlists}>
-        <List dense={true}>{playlistList}</List>
+        <PlaylistSearchResults
+          pluginId={pluginId}
+          searchQuery={searchQuery}
+          initialPage={query.data?.playlists?.pageInfo}
+        />
       </TabPanel>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addMenuVideoToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            videos={menuVideo ? [menuVideo] : []}
-            closeMenu={closeMenu}
-          />
-        ))}
-      </Menu>
-      <AddPlaylistDialog
-        videos={menuVideo ? [menuVideo] : []}
-        open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
-      />
     </>
   );
 };

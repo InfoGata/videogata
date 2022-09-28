@@ -10,7 +10,7 @@ export interface SearchRequest {
 }
 
 export interface PageInfo {
-  totalResults: number;
+  totalResults?: number;
   resultsPerPage: number;
   offset: number;
   nextPage?: string;
