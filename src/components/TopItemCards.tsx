@@ -1,4 +1,4 @@
-import { MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Card,
   CardActionArea,
@@ -7,10 +7,6 @@ import {
   Fade,
   Grid,
   IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -20,19 +16,13 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
-import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
-  const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
+  const { openMenu } = useVideoMenu();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -95,12 +85,6 @@ const TopItemCards: React.FC = () => {
     );
   });
 
-  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
-  const addToNewPlaylist = () => {
-    openPlaylistDialog();
-    closeMenu();
-  };
-
   return (
     <>
       <Grid sx={{ display: pluginId ? "block" : "none" }}>
@@ -126,27 +110,6 @@ const TopItemCards: React.FC = () => {
           </Grid>
         </Grid>
       </Fade>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            videos={menuVideo ? [menuVideo] : []}
-            closeMenu={closeMenu}
-          />
-        ))}
-      </Menu>
-      <AddPlaylistDialog
-        videos={menuVideo ? [menuVideo] : []}
-        open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
-      />
     </>
   );
 };

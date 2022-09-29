@@ -1,22 +1,28 @@
 import React from "react";
-import { Video } from "../plugintypes";
+import { PlaylistInfo, Video } from "../plugintypes";
+import { useAppSelector } from "../store/hooks";
+import VideoMenuContext from "../VideoMenuContext";
 
-const useVideoMenu = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuVideo, setMenuVideo] = React.useState<Video>();
+interface VideoMenuArgs {
+  playlists?: PlaylistInfo[];
+  listItems?: JSX.Element[];
+}
+
+const useVideoMenu = (args?: VideoMenuArgs) => {
+  const { openVideoMenu, closeMenu, menuVideo, setPlaylists, setListElements } =
+    React.useContext(VideoMenuContext);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
     video: Video
   ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
-    setMenuVideo(video);
+    setPlaylists(args?.playlists ?? playlists);
+    setListElements(args?.listItems ?? []);
+    openVideoMenu(event, video);
   };
-  const closeMenu = () => setAnchorEl(null);
 
-  return { closeMenu, openMenu, anchorEl, menuVideo };
+  return { openMenu, closeMenu, menuVideo };
 };
 
 export default useVideoMenu;

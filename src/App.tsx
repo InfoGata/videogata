@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
+import { VideoMenuProvider } from "./VideoMenuContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,12 +42,14 @@ const App: React.FC = () => {
         <BrowserRouter>
           <MatomoRouterProvider>
             <PluginsProvider>
-              <Box sx={{ display: "flex" }}>
-                <CssBaseline />
-                <TopBar />
-                <SideBar />
-                <Routing />
-              </Box>
+              <VideoMenuProvider>
+                <Box sx={{ display: "flex" }}>
+                  <CssBaseline />
+                  <TopBar />
+                  <SideBar />
+                  <Routing />
+                </Box>
+              </VideoMenuProvider>
             </PluginsProvider>
           </MatomoRouterProvider>
         </BrowserRouter>

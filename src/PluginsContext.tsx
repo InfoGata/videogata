@@ -25,6 +25,7 @@ import { useSnackbar } from "notistack";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { addPlaylists } from "./store/reducers/playlistReducer";
+import { nanoid } from "@reduxjs/toolkit";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -185,12 +186,14 @@ export const PluginsProvider: React.FC = (props) => {
         onGetPlaylistVideos: (result: PlaylistVideosResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },
         onGetChannelVideos: (result: ChannelVideosResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },

@@ -4,7 +4,6 @@ import {
   Grid,
   ListItemIcon,
   ListItemText,
-  Menu,
   MenuItem,
   Typography,
 } from "@mui/material";
@@ -14,28 +13,47 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { db } from "../database";
-import { Delete, PlaylistAdd } from "@mui/icons-material";
-import PlaylistMenuItem from "./PlaylistMenuItem";
+import { Delete } from "@mui/icons-material";
 import { setPlaylistVideos } from "../store/reducers/playlistReducer";
 import VideoList from "./VideoList";
-import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
   const [videos, setVideos] = React.useState<Video[]>([]);
-  const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
-
   const playlists = useAppSelector((state) =>
     state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
+
   const [loaded, setLoaded] = React.useState(false);
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const dispatch = useAppDispatch();
+
+  const deleteClick = async () => {
+    if (playlist && menuVideo) {
+      const newVideolist = videos.filter((t) => t.id !== menuVideo.id);
+      dispatch(setPlaylistVideos(playlist, newVideolist));
+      setVideos(newVideolist);
+    }
+
+    closeMenu();
+  };
+
+  const listItems = [
+    <MenuItem onClick={deleteClick}>
+      <ListItemIcon>
+        <Delete />
+      </ListItemIcon>
+      <ListItemText primary="Delete" />
+    </MenuItem>,
+  ];
+
+  const { openMenu, closeMenu, menuVideo } = useVideoMenu({
+    playlists,
+    listItems,
+  });
 
   React.useEffect(() => {
     const getPlaylist = async () => {
@@ -49,26 +67,11 @@ const PlaylistVideos: React.FC = () => {
     getPlaylist();
   }, [playlistId]);
 
-  const deleteClick = async () => {
-    if (playlist && menuVideo) {
-      const newVideolist = videos.filter((t) => t.id !== menuVideo.id);
-      dispatch(setPlaylistVideos(playlist, newVideolist));
-      setVideos(newVideolist);
-    }
-
-    closeMenu();
-  };
-
   const onDragOver = (newVideoList: Video[]) => {
     if (playlist) {
       dispatch(setPlaylistVideos(playlist, newVideoList));
       setVideos(newVideoList);
     }
-  };
-
-  const addMenuVideoToNewPlaylist = () => {
-    setPlaylistDialogOpen(true);
-    closeMenu();
   };
 
   return (
@@ -86,38 +89,6 @@ const PlaylistVideos: React.FC = () => {
             openMenu={openMenu}
             playlistId={playlistId}
             onDragOver={onDragOver}
-          />
-          <Menu
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}
-            anchorEl={anchorEl}
-          >
-            <MenuItem onClick={deleteClick}>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
-            <MenuItem onClick={addMenuVideoToNewPlaylist}>
-              <ListItemIcon>
-                <PlaylistAdd />
-              </ListItemIcon>
-              <ListItemText primary="Add To New Playlist" />
-            </MenuItem>
-            {playlists.map((p) => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                videos={menuVideo ? [menuVideo] : []}
-                closeMenu={closeMenu}
-                namePrefix="Add video to "
-              />
-            ))}
-          </Menu>
-          <AddPlaylistDialog
-            videos={menuVideo ? [menuVideo] : []}
-            open={playlistDialogOpen}
-            handleClose={closePlaylistDialog}
           />
         </>
       ) : (
