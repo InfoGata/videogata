@@ -60,6 +60,7 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
 
   const addMenuVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
+    closeMenu();
   };
 
   return (

@@ -1,4 +1,14 @@
-import { Backdrop, Button, CircularProgress, Grid, Menu } from "@mui/material";
+import { PlaylistAdd } from "@mui/icons-material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
@@ -8,6 +18,7 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { Channel, PageInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import VideoCards from "./VideoCards";
@@ -16,6 +27,8 @@ const ChannelPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
   const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const plugin = plugins.find((p) => p.id === pluginId);
   const location = useLocation();
   const state = location.state as Channel | null;
@@ -25,6 +38,11 @@ const ChannelPage: React.FC = () => {
   const [channel, setChannel] = React.useState<Channel | null>(state);
   const { closeMenu, openMenu, anchorEl, menuVideo } = useVideoMenu();
   const playlists = useAppSelector((state) => state.playlist.playlists);
+
+  const addMenuVideoToNewPlaylist = () => {
+    setPlaylistDialogOpen(true);
+    closeMenu();
+  };
 
   const getChannelVideos = async () => {
     if (plugin && (await plugin.hasDefined.onGetChannelVideos())) {
@@ -67,6 +85,12 @@ const ChannelPage: React.FC = () => {
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
       </Grid>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={addMenuVideoToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
@@ -76,6 +100,11 @@ const ChannelPage: React.FC = () => {
           />
         ))}
       </Menu>
+      <AddPlaylistDialog
+        videos={menuVideo ? [menuVideo] : []}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
     </>
   );
 };

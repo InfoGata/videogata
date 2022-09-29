@@ -14,13 +14,16 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { db } from "../database";
-import { Delete } from "@mui/icons-material";
+import { Delete, PlaylistAdd } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { setPlaylistVideos } from "../store/reducers/playlistReducer";
 import VideoList from "./VideoList";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
@@ -63,6 +66,11 @@ const PlaylistVideos: React.FC = () => {
     }
   };
 
+  const addMenuVideoToNewPlaylist = () => {
+    setPlaylistDialogOpen(true);
+    closeMenu();
+  };
+
   return (
     <>
       <Backdrop open={!loaded}>
@@ -90,6 +98,12 @@ const PlaylistVideos: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary="Delete" />
             </MenuItem>
+            <MenuItem onClick={addMenuVideoToNewPlaylist}>
+              <ListItemIcon>
+                <PlaylistAdd />
+              </ListItemIcon>
+              <ListItemText primary="Add To New Playlist" />
+            </MenuItem>
             {playlists.map((p) => (
               <PlaylistMenuItem
                 key={p.id}
@@ -100,6 +114,11 @@ const PlaylistVideos: React.FC = () => {
               />
             ))}
           </Menu>
+          <AddPlaylistDialog
+            videos={menuVideo ? [menuVideo] : []}
+            open={playlistDialogOpen}
+            handleClose={closePlaylistDialog}
+          />
         </>
       ) : (
         <>{loaded && <Typography>Not Found</Typography>}</>
