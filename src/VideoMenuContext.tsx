@@ -66,6 +66,7 @@ export const VideoMenuProvider: React.FC = (props) => {
             playlist={p}
             videos={menuVideo ? [menuVideo] : []}
             closeMenu={closeMenu}
+            namePrefix="Add to "
           />
         ))}
       </Menu>
