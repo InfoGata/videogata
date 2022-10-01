@@ -98,16 +98,13 @@ const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 
 export const PluginsProvider: React.FC = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
-  const [pendingPlugins, setPendingPlugins] = React.useState<
-    PluginInfo[] | null
-  >(null);
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
+  const loadingPlugin = React.useRef(false);
 
-  const { enqueueSnackbar } = useSnackbar();
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
@@ -116,6 +113,11 @@ export const PluginsProvider: React.FC = (props) => {
   const currentVideo = useAppSelector((state) => state.queue.currentVideo);
   const currentVideoRef = React.useRef(currentVideo);
   currentVideoRef.current = currentVideo;
+
+  const { enqueueSnackbar } = useSnackbar();
+  const [pendingPlugins, setPendingPlugins] = React.useState<
+    PluginInfo[] | null
+  >(null);
 
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
@@ -232,6 +234,9 @@ export const PluginsProvider: React.FC = (props) => {
         setPluginsLoaded(true);
       }
     };
+    if (loadingPlugin.current) return;
+    loadingPlugin.current = true;
+    getPlugins();
     getPlugins();
   }, [loadPlugin]);
 
