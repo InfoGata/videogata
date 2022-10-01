@@ -3,7 +3,6 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Fade,
   Grid,
   IconButton,
@@ -18,6 +17,7 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
+import { Image } from "mui-image";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
@@ -62,7 +62,7 @@ const TopItemCards: React.FC = () => {
           component={Link}
           to={`/plugins/${pluginId}/videos/${v.apiId}`}
         >
-          <CardMedia component="img" src={image} sx={{ height: 200 }} />
+          <Image src={image} height={200} />
         </CardActionArea>
         <CardActions>
           <Stack direction="row" alignItems="center" gap={1}>
