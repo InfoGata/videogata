@@ -172,12 +172,18 @@ export const PluginsProvider: React.FC = (props) => {
         onSearchAll: (result: SearchAllResult) => {
           result.videos?.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },
         onSearchVideos: (result: SearchVideoResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },

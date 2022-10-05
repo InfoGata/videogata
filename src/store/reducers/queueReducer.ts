@@ -5,7 +5,9 @@ interface QueueState {
   currentVideo?: Video;
 }
 
-const initialState: QueueState = {};
+const initialState: QueueState = {
+  currentVideo: undefined,
+};
 
 const settingsSlice = createSlice({
   name: "queue",
