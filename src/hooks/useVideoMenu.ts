@@ -17,9 +17,9 @@ const useVideoMenu = (args?: VideoMenuArgs) => {
     event: React.MouseEvent<HTMLButtonElement>,
     video: Video
   ) => {
+    openVideoMenu(event, video);
     setPlaylists(args?.playlists ?? playlists);
     setListElements(args?.listItems ?? []);
-    openVideoMenu(event, video);
   };
 
   return { openMenu, closeMenu, menuVideo };
