@@ -6,7 +6,7 @@ export interface SearchAllResult {
 
 export interface SearchRequest {
   query: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface PageInfo {
@@ -104,13 +104,13 @@ export interface GetVideoRequest {
 }
 
 export interface UserPlaylistRequest {
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface PlaylistVideoRequest {
   apiId?: string;
   isUserPlaylist: boolean;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface PlaylistVideosResult extends SearchVideoResult {
@@ -119,23 +119,23 @@ export interface PlaylistVideosResult extends SearchVideoResult {
 
 export interface ChannelVideosRequest {
   apiId?: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface VideoCommentsRequest {
   apiId?: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface VideoCommentsResult {
   comments: VideoComment[];
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface CommentReplyRequest {
   commentApiId: string;
   videoApiId?: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface VideoComment {

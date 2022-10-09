@@ -26,7 +26,7 @@ const ChannelPage: React.FC = () => {
     if (plugin && (await plugin.hasDefined.onGetChannelVideos())) {
       const channelInfo = await plugin.remote.onGetChannelVideos({
         apiId: apiId,
-        page,
+        pageInfo: page,
       });
 
       if (channelInfo.channel) {

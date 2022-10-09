@@ -29,7 +29,7 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchVideos())) {
       const searchTracks = await plugin.remote.onSearchVideos({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchTracks.pageInfo);
       return searchTracks.items;

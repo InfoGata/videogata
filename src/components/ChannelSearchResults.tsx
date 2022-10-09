@@ -28,7 +28,7 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchChannels())) {
       const searchChannels = await plugin.remote.onSearchChannels({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchChannels.pageInfo);
       return searchChannels.items;

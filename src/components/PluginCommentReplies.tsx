@@ -31,7 +31,7 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
       }
       const comments = await plugin.remote.onGetCommentReplies({
         commentApiId: comment.apiId,
-        page: newPage,
+        pageInfo: newPage,
         videoApiId: comment.videoCommentId,
       });
       return comments;
@@ -43,7 +43,8 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
     ["pluginvideocomments", plugin?.id, comment.apiId],
     ({ pageParam }) => onGetCommentReplies(pageParam),
     {
-      getNextPageParam: (lastPage) => lastPage?.page?.nextPage && lastPage.page,
+      getNextPageParam: (lastPage) =>
+        lastPage?.pageInfo?.nextPage && lastPage.pageInfo,
     }
   );
 

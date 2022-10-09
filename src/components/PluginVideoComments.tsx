@@ -28,7 +28,7 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
       }
       const comments = await plugin.remote.onGetVideoComments({
         apiId: apiId,
-        page: newPage,
+        pageInfo: newPage,
       });
       return comments;
     }
@@ -39,7 +39,8 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
     ["pluginvideocomments", pluginId, apiId],
     ({ pageParam }) => onGetPluginVideoComments(pageParam),
     {
-      getNextPageParam: (lastPage) => lastPage?.page?.nextPage && lastPage.page,
+      getNextPageParam: (lastPage) =>
+        lastPage?.pageInfo?.nextPage && lastPage.pageInfo,
     }
   );
   const comments = query?.data?.pages?.map((p) =>
