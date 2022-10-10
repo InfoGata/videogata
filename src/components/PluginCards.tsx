@@ -15,40 +15,7 @@ import { usePlugins } from "../PluginsContext";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
-
-interface PluginDescription {
-  name: string;
-  url: string;
-  description: string;
-}
-
-const pluginDescriptions: PluginDescription[] = [
-  {
-    name: "Plugin for Youtube",
-    description: "Plugin for playing videos from youtube.com",
-    url: "https://gitlab.com/api/v4/projects/37878305/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Vimeo",
-    description: "Plugins for playing videos from Vimeo.",
-    url: "https://gitlab.com/api/v4/projects/38552874/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Rumble",
-    description: "Plugin for playing videos from rumble.com",
-    url: "https://gitlab.com/api/v4/projects/38710555/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Google Drive",
-    description: "Store and retrieve playlists from Google Drive",
-    url: "https://gitlab.com/api/v4/projects/39354817/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Dropbox",
-    description: "Store and retreive playlists from Dropbox",
-    url: "https://gitlab.com/api/v4/projects/39316768/repository/files/manifest.json/raw?ref=master",
-  },
-];
+import { defaultPlugins, PluginDescription } from "../default-plugins";
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -74,8 +41,8 @@ const PluginCards: React.FC = () => {
     setBackdropOpen(false);
   };
 
-  const pluginCards = pluginDescriptions
-    .filter((pd) => !plugins.some((p) => pd.name === p.name))
+  const pluginCards = defaultPlugins
+    .filter((dp) => !plugins.some((p) => dp.name === p.name))
     .map((p, i) => (
       <Grid item xs={4} key={i}>
         <Card>
