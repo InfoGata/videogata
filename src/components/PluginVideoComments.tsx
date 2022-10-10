@@ -41,6 +41,7 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
     {
       getNextPageParam: (lastPage) =>
         lastPage?.pageInfo?.nextPage && lastPage.pageInfo,
+      enabled: !!plugin,
     }
   );
   const comments = query?.data?.pages?.map((p) =>

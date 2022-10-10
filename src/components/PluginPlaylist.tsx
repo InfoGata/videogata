@@ -2,10 +2,12 @@ import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { PageInfo, PlaylistInfo } from "../plugintypes";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import VideoList from "./VideoList";
 
@@ -24,6 +26,11 @@ const PluginPlaylist: React.FC = () => {
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const { openMenu } = useVideoMenu();
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   const getPlaylistVideos = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistVideos())) {
@@ -46,13 +53,13 @@ const PluginPlaylist: React.FC = () => {
     ["pluginplaylist", pluginId, apiId, page],
     getPlaylistVideos,
     {
-      enabled: pluginsLoaded,
+      enabled: pluginsLoaded && !!plugin,
     }
   );
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
+      <Backdrop open={query.isLoading || isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {playlistInfo && (
@@ -70,6 +77,11 @@ const PluginPlaylist: React.FC = () => {
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
       </Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
+      />
     </>
   );
 };

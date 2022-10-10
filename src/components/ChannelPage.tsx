@@ -2,10 +2,12 @@ import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { Channel, PageInfo } from "../plugintypes";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import VideoCards from "./VideoCards";
 
@@ -21,6 +23,11 @@ const ChannelPage: React.FC = () => {
     usePagination(currentPage);
   const [channel, setChannel] = React.useState<Channel | null>(state);
   const { openMenu } = useVideoMenu();
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   const getChannelVideos = async () => {
     if (plugin && (await plugin.hasDefined.onGetChannelVideos())) {
@@ -42,13 +49,13 @@ const ChannelPage: React.FC = () => {
     ["pluginplaylist", pluginId, apiId, page],
     getChannelVideos,
     {
-      enabled: pluginsLoaded,
+      enabled: pluginsLoaded && !!plugin,
     }
   );
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
+      <Backdrop open={query.isLoading || isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {channel && (
@@ -59,6 +66,11 @@ const ChannelPage: React.FC = () => {
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
       </Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
+      />
     </>
   );
 };

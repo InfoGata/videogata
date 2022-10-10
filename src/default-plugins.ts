@@ -43,3 +43,5 @@ export const defaultPlugins: PluginDescription[] = [
     url: "https://gitlab.com/api/v4/projects/39316768/repository/files/manifest.json/raw?ref=master",
   },
 ];
+
+export const defaultPluginMap = new Map(defaultPlugins.map((p) => [p.id, p]));

@@ -7,9 +7,11 @@ import PluginPlayer from "./PluginPlayer";
 import { db } from "../database";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import PluginVideoInfo from "./PluginVideoInfo";
-import { Grid } from "@mui/material";
+import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import PluginVideoComments from "./PluginVideoComments";
 import RecommendedVideos from "./RecommendVideos";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import useFindPlugin from "../hooks/useFindPlugin";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -18,15 +20,20 @@ const PluginVideo: React.FC = () => {
   const params = new URLSearchParams(location.search);
   const playlistId = params.get("playlistId") || "";
   const videoId = params.get("videoId") || "";
-  const { plugins } = usePlugins();
+  const { plugins, pluginsLoaded } = usePlugins();
   const [video, setVideo] = React.useState<Video>();
   const [usePlayer, setUsePlayer] = React.useState(false);
   const plugin = plugins.find((p) => p.id === pluginId);
   const [playlistVideos, setPlaylistVideos] = React.useState<Video[]>();
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   React.useEffect(() => {
     const getVideo = async () => {
-      if (plugin && apiId) {
+      if (pluginsLoaded && plugin && apiId) {
         if (plugin.hasPlayer) {
           setUsePlayer(true);
           if (await plugin.hasDefined.onUsePlayer()) {
@@ -41,7 +48,7 @@ const PluginVideo: React.FC = () => {
     };
 
     getVideo();
-  }, [plugin, apiId]);
+  }, [pluginsLoaded, plugin, apiId]);
 
   React.useEffect(() => {
     const getPlaylistVideos = async () => {
@@ -57,6 +64,9 @@ const PluginVideo: React.FC = () => {
 
   return (
     <>
+      <Backdrop open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {video && !usePlayer ? <VideoPlayer video={video} /> : null}
       {usePlayer && <PluginPlayer apiId={apiId} plugin={plugin} />}
       {video && <PluginVideoInfo video={video} />}
@@ -79,6 +89,11 @@ const PluginVideo: React.FC = () => {
           videos={video?.recommendedVideos || []}
         />
       </Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
+      />
     </>
   );
 };
