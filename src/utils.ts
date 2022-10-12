@@ -66,14 +66,9 @@ export const getThumbnailImage = (
 };
 
 export function getFileTypeFromPluginUrl(url: string) {
-  const headers = new Headers();
-  if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
-    headers.append("PRIVATE-TOKEN", process.env.REACT_APP_GITLAB_ACCESS_TOKEN);
-  }
   const fileType: FileType = {
     url: {
       url: url,
-      headers: headers,
     },
   };
 

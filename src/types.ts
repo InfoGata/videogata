@@ -1,6 +1,6 @@
 export interface UrlInfo {
   url: string;
-  headers: Headers;
+  headers?: Headers;
 }
 
 export interface FileType {
