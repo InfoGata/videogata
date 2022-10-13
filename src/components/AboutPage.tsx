@@ -84,7 +84,7 @@ const AboutPage: React.FC = () => {
               <FontAwesomeIcon icon={faBitcoin} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Donate BTC" secondary={btcDonation} />
+          <ListItemText primary="Donate - BTC" secondary={btcDonation} />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
@@ -93,7 +93,7 @@ const AboutPage: React.FC = () => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary="Donate XMR"
+            primary="Donate - XMR"
             secondary={xmrDonation}
             secondaryTypographyProps={{ style: { wordWrap: "break-word" } }}
           />
