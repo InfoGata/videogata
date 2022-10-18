@@ -20,6 +20,7 @@ export interface Manifest {
   description?: string;
   options?: string | ManifestOptions;
   player?: string;
+  updateUrl?: string;
 }
 
 export interface ManifestOptions {
