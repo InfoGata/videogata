@@ -168,7 +168,13 @@ export const PluginsProvider: React.FC = (props) => {
         srcUrl = `https://${plugin.id}.videogata.com/pluginframe.html`;
       }
 
-      const completeMethods: { [key in keyof PluginMethodInterface]?: any } = {
+      const completeMethods: {
+        [key in keyof PluginMethodInterface]?: (
+          arg: any
+        ) =>
+          | ReturnType<PluginMethodInterface[key]>
+          | Awaited<ReturnType<PluginMethodInterface[key]>>;
+      } = {
         onSearchAll: (result: SearchAllResult) => {
           result.videos?.items.forEach((i) => {
             i.pluginId = plugin.id;
