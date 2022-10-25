@@ -69,10 +69,6 @@ const ChannelPage: React.FC = () => {
         onPreviousPage={onPreviousPage}
         onNextPage={onNextPage}
       />
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}
