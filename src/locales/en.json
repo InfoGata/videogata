@@ -1,5 +1,14 @@
 {
   "common": {
-    "greeting": "Hello"
-  }
+    "greeting": "Hello",
+    "home": "Home",
+    "plugins": "Plugins",
+    "settings": "Settings",
+    "nextPage": "Next",
+    "previousPage": "Previous",
+    "about": "About",
+    "addPlaylist": "Add Playlist",
+    "playlists": "Playlists"
+  },
+  "plugins": {}
 }

@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { PageInfo, PlaylistInfo } from "../plugintypes";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import VideoList from "./VideoList";
 
@@ -73,10 +74,12 @@ const PluginPlaylist: React.FC = () => {
         openMenu={openMenu}
         dragDisabled={true}
       />
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}

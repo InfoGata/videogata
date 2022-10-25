@@ -1,10 +1,11 @@
-import { Backdrop, CircularProgress, Button, Grid } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { PageInfo } from "../plugintypes";
+import Pager from "./Pager";
 import VideoCards from "./VideoCards";
 
 interface VideoSearchResultsProps {
@@ -48,10 +49,12 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <VideoCards videos={query.data || []} openMenu={openMenu} />
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
     </>
   );
 };

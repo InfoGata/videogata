@@ -8,6 +8,7 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { usePlugins } from "../PluginsContext";
 import { Channel, PageInfo } from "../plugintypes";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import VideoCards from "./VideoCards";
 
@@ -62,6 +63,12 @@ const ChannelPage: React.FC = () => {
         <PlaylistInfoCard name={channel.name || ""} images={channel.images} />
       )}
       <VideoCards videos={query?.data || []} openMenu={openMenu} />
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
       <Grid>
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}

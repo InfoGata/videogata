@@ -1,9 +1,10 @@
-import { List, Grid, Button, Backdrop, CircularProgress } from "@mui/material";
+import { List, Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
 import { PageInfo } from "../plugintypes";
+import Pager from "./Pager";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 
 interface PlaylistSearchResultsProps {
@@ -55,10 +56,12 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <List>{playlistList}</List>
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
     </>
   );
 };
