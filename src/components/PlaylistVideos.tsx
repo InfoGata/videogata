@@ -16,6 +16,7 @@ import { db } from "../database";
 import { Delete } from "@mui/icons-material";
 import { setPlaylistVideos } from "../store/reducers/playlistReducer";
 import VideoList from "./VideoList";
+import { useTranslation } from "react-i18next";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -29,6 +30,7 @@ const PlaylistVideos: React.FC = () => {
 
   const [loaded, setLoaded] = React.useState(false);
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const deleteClick = async () => {
@@ -46,7 +48,7 @@ const PlaylistVideos: React.FC = () => {
       <ListItemIcon>
         <Delete />
       </ListItemIcon>
-      <ListItemText primary="Delete" />
+      <ListItemText primary={t("delete")} />
     </MenuItem>,
   ];
 
@@ -92,7 +94,7 @@ const PlaylistVideos: React.FC = () => {
           />
         </>
       ) : (
-        <>{loaded && <Typography>Not Found</Typography>}</>
+        <>{loaded && <Typography>{t("notFound")}</Typography>}</>
       )}
     </>
   );

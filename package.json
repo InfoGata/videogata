@@ -62,10 +62,23 @@
   },
   "eslintConfig": {
     "plugins": [
-      "jam3"
+      "jam3",
+      "i18next"
     ],
     "rules": {
-      "jam3/no-sanitizer-with-danger": 2
+      "jam3/no-sanitizer-with-danger": 2,
+      "i18next/no-literal-string": [
+        2,
+        {
+          "words": {
+            "exclude": [
+              "[0-9!-/:-@[-`{-~]+",
+              "[A-Z_-]+",
+              "\\s+VideoGata\\s+"
+            ]
+          }
+        }
+      ]
     },
     "extends": [
       "react-app",
@@ -85,10 +98,11 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^6.0.0",
+    "eslint-plugin-i18next": "^6.0.0-2",
+    "eslint-plugin-jam3": "^0.2.3",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
-    "concurrently": "^6.0.0",
-    "eslint-plugin-jam3": "^0.2.3",
     "source-map-explorer": "^2.5.2"
   }
 }

@@ -1,5 +1,6 @@
 import { Box, Button, Grid } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
 import { usePlugins } from "../PluginsContext";
 import { PageInfo } from "../plugintypes";
@@ -13,6 +14,7 @@ interface PluginVideoCommentsProps {
 const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
   const { apiId, pluginId } = props;
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
   const plugin = plugins.find((p) => p.id === pluginId);
 
   const onGetPluginVideoComments = async (lastPage?: PageInfo) => {
@@ -55,7 +57,9 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
   return (
     <Grid>
       <Box>{comments}</Box>
-      {query.hasNextPage && <Button onClick={onLoadMore}>Load More</Button>}
+      {query.hasNextPage && (
+        <Button onClick={onLoadMore}>{t("loadMore")}</Button>
+      )}
     </Grid>
   );
 };

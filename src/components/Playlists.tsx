@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { PlaylistInfo } from "../plugintypes";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
+import { useTranslation } from "react-i18next";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -58,6 +59,7 @@ const Playlists: React.FC = () => {
     PlaylistInfo | undefined
   >();
   const closeMenu = () => setAnchorEl(null);
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const pluginPlaylists = playlistPlugins.map((p) => (
@@ -101,7 +103,7 @@ const Playlists: React.FC = () => {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        Playlists
+        {t("playlists")}
       </Typography>
       <Grid>{pluginPlaylists}</Grid>
       <List>
@@ -114,7 +116,7 @@ const Playlists: React.FC = () => {
           <ListItemIcon>
             <Delete />
           </ListItemIcon>
-          <ListItemText primary="Delete" />
+          <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
     </>

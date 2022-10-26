@@ -1,6 +1,7 @@
 import { ThumbUp } from "@mui/icons-material";
 import { Avatar, Button, Grid, Typography } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
 import { VideoComment } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
@@ -16,6 +17,7 @@ const Comment: React.FC<CommentProps> = (props) => {
   const image = getThumbnailImage(comment.images, searchThumbnailSize);
   const [loadReplies, setLoadReplies] = React.useState(false);
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
+  const { t } = useTranslation();
 
   const onLoadReplies = () => {
     setLoadReplies(true);
@@ -25,7 +27,7 @@ const Comment: React.FC<CommentProps> = (props) => {
     <PluginCommentReplies comment={comment} plugin={plugin} />
   ) : (
     <Button onClick={onLoadReplies} size="small">
-      View Replies
+      {t("viewReplies")}
     </Button>
   );
   const createdDate =

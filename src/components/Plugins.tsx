@@ -2,6 +2,7 @@ import { Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { usePlugins } from "../PluginsContext";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
@@ -21,6 +22,7 @@ const Plugins: React.FC = () => {
   );
   const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
   const [openUrlDialog, setOpenUrlDialog] = React.useState(false);
+  const { t } = useTranslation("plugins");
 
   const onCloseUrlDialog = () => setOpenUrlDialog(false);
   const onOpenUrlDialog = () => setOpenUrlDialog(true);
@@ -75,19 +77,19 @@ const Plugins: React.FC = () => {
             onChange={onFileChange}
           />
           <Button variant="contained" component="span">
-            Load plugin From Folder
+            {t("loadPluginFromFolder")}
           </Button>
         </label>
       </Grid>
       <Grid>
         <Button variant="contained" onClick={onOpenUrlDialog}>
-          Load plugin From Url
+          {t("loadPluginFromUrl")}
         </Button>
       </Grid>
       {plugins.length > 0 && (
         <Grid>
           <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
-            Check For Updates
+            {t("checkForUpdates")}
           </Button>
         </Grid>
       )}

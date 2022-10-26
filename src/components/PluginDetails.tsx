@@ -12,6 +12,7 @@ import { db } from "../database";
 import { PluginInfo } from "../plugintypes";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { usePlugins } from "../PluginsContext";
+import { useTranslation } from "react-i18next";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -20,6 +21,7 @@ const PluginDetails: React.FC = () => {
   const [optionSize, setOptionsSize] = React.useState(0);
   const [playerSize, setPlayerSize] = React.useState(0);
   const { updatePlugin } = usePlugins();
+  const { t } = useTranslation(["plugins", "common"]);
 
   const loadPluginFromDb = React.useCallback(async () => {
     const p = await db.plugins.get(pluginId || "");
@@ -57,36 +59,41 @@ const PluginDetails: React.FC = () => {
     <>
       {plugin ? (
         <div>
-          <Typography variant="h3">Plugin Details</Typography>
+          <Typography variant="h3">
+            {t("plugins:pluginDetailsTitle")}
+          </Typography>
           <Typography variant="h6">{plugin.name}</Typography>
           <List>
             <ListItem>
               <ListItemText
-                primary="Description"
+                primary={t("plugins:pluginDescription")}
                 secondary={plugin.description}
               />
             </ListItem>
             <ListItem>
-              <ListItemText primary="Version" secondary={plugin.version} />
+              <ListItemText
+                primary={t("plugins:version")}
+                secondary={plugin.version}
+              />
             </ListItem>
             <ListItem>
               <ListItemText primary="Id" secondary={plugin.id} />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary="Script Size"
+                primary={t("plugins:scriptSize")}
                 secondary={`${scriptSize / 1000} kb`}
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary="Options Page Size"
+                primary={t("plugins:optionsPageSize")}
                 secondary={`${optionSize / 1000} kb`}
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary="Player Page Size"
+                primary={t("plugins:playerPageSize ")}
                 secondary={`${playerSize / 1000} kb`}
               />
             </ListItem>
@@ -98,17 +105,19 @@ const PluginDetails: React.FC = () => {
                   target="_blank"
                 >
                   <ListItemText
-                    primary="Update Url"
+                    primary={t("plugins:updateUrl")}
                     secondary={plugin.manifestUrl}
                   />
                 </ListItemButton>
               </ListItem>
             )}
           </List>
-          {plugin.manifestUrl && <Button onClick={onUpdate}>Update</Button>}
+          {plugin.manifestUrl && (
+            <Button onClick={onUpdate}>{t("plugins:updatePlugin")}</Button>
+          )}
         </div>
       ) : (
-        <>Not Found</>
+        <>{t("common:notFound")}</>
       )}
     </>
   );

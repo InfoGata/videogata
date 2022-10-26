@@ -1,6 +1,7 @@
 import { PlaylistAdd } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Video } from "./plugintypes";
@@ -26,6 +27,7 @@ export const VideoMenuProvider: React.FC = (props) => {
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const { t } = useTranslation();
 
   const openVideoMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -58,7 +60,7 @@ export const VideoMenuProvider: React.FC = (props) => {
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
+          <ListItemText primary={t("addToNewPlaylist")} />
         </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
@@ -66,7 +68,7 @@ export const VideoMenuProvider: React.FC = (props) => {
             playlist={p}
             videos={menuVideo ? [menuVideo] : []}
             closeMenu={closeMenu}
-            namePrefix="Add to "
+            title={t("addToPlaylist", { playlistName: p.name })}
           />
         ))}
       </Menu>

@@ -16,12 +16,14 @@ import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 import { defaultPlugins, PluginDescription } from "../default-plugins";
+import { useTranslation } from "react-i18next";
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { plugins, addPlugin, pluginsLoaded } = usePlugins();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const onAddPlugin = async (description: PluginDescription) => {
     setBackdropOpen(true);
@@ -34,7 +36,7 @@ const PluginCards: React.FC = () => {
         plugin.id = nanoid();
       }
       await addPlugin(plugin);
-      enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
+      enqueueSnackbar(`${t("addPluginSuccess")}: ${plugin.name}`);
       navigate("/plugins");
     }
     setBackdropOpen(false);
@@ -51,7 +53,7 @@ const PluginCards: React.FC = () => {
           </CardContent>
           <CardActions>
             <Button size="small" onClick={() => onAddPlugin(p)}>
-              Add
+              {t("addPlugin")}
             </Button>
           </CardActions>
         </Card>
@@ -65,7 +67,7 @@ const PluginCards: React.FC = () => {
           <Backdrop open={backdropOpen}>
             <CircularProgress color="inherit" />
           </Backdrop>
-          <Typography variant="h6">Plugins</Typography>
+          <Typography variant="h6">{t("plugins")}</Typography>
           <Fade in={pluginsLoaded}>
             <Grid container spacing={2}>
               {pluginCards}

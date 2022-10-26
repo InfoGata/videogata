@@ -4,6 +4,7 @@ import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
 import { Link } from "react-router-dom";
 import { ThumbDown, ThumbUp } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -11,6 +12,7 @@ interface PluginVideoInfoProps {
 
 const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
+  const { t } = useTranslation();
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const uploadDate =
@@ -37,7 +39,9 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           {video.views && (
             <Grid container>
               <Typography variant="body1">
-                {numberFormatter.format(video.views)} views
+                {t("numberOfViews", {
+                  viewCount: numberFormatter.format(video.views),
+                })}
               </Typography>
             </Grid>
           )}
@@ -67,7 +71,7 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
           {video.originalUrl ? (
             <Grid container>
               <Button component="a" href={video.originalUrl} target="_blank">
-                Link To Original
+                {t("linkToOriginal")}
               </Button>
             </Grid>
           ) : null}

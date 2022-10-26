@@ -11,6 +11,7 @@ import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import { VideoMenuProvider } from "./VideoMenuContext";
+import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +23,7 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const notistackRef = React.createRef<SnackbarProvider>();
   const onClickDismiss = (key: SnackbarKey) => () => {
@@ -36,7 +38,9 @@ const App: React.FC = () => {
     <SnackbarProvider
       maxSnack={3}
       ref={notistackRef}
-      action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
+      action={(key) => (
+        <Button onClick={onClickDismiss(key)}>{t("dismiss")}</Button>
+      )}
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>

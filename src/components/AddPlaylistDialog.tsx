@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Playlist, Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
@@ -24,6 +25,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const [name, setName] = React.useState("");
   const formId = nanoid();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +49,9 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Add Playlist</DialogTitle>
+      <DialogTitle id="form-dialog-title">{t("addPlaylist")}</DialogTitle>
       <DialogContent>
-        <DialogContentText>Give it a name</DialogContentText>
+        <DialogContentText>{t("givePlaylistName")}</DialogContentText>
         <form id={formId} onSubmit={onSubmit}>
           <TextField
             autoFocus={true}
@@ -64,9 +66,9 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>{t("cancel")}</Button>
         <Button type="submit" form={formId}>
-          Add Playlist
+          {t("addPlaylist")}
         </Button>
       </DialogActions>
     </Dialog>

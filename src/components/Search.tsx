@@ -17,6 +17,7 @@ import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
 import VideoSearchResults from "./VideoSearchResults";
 import ChannelSearchResults from "./ChannelSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
+import { useTranslation } from "react-i18next";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -45,6 +46,7 @@ const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
@@ -109,13 +111,13 @@ const Search: React.FC = () => {
           variant="fullWidth"
         >
           {videoList.length > 0 ? (
-            <Tab label="Videos" value={SearchResultType.Videos} />
+            <Tab label={t("videos")} value={SearchResultType.Videos} />
           ) : null}
           {channelList.length > 0 ? (
-            <Tab label="Channels" value={SearchResultType.Channels} />
+            <Tab label={t("channels")} value={SearchResultType.Channels} />
           ) : null}
           {playlistList.length > 0 ? (
-            <Tab label="Playlists" value={SearchResultType.Playlists} />
+            <Tab label={t("playlists")} value={SearchResultType.Playlists} />
           ) : null}
         </Tabs>
       </AppBar>

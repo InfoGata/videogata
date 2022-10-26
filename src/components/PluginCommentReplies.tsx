@@ -1,5 +1,6 @@
 import { Box, Button } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
 import { PluginFrameContainer } from "../PluginsContext";
 import { PageInfo, VideoComment } from "../plugintypes";
@@ -12,6 +13,7 @@ interface PluginCommentRepliesProps {
 
 const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
   const { plugin, comment } = props;
+  const { t } = useTranslation();
 
   const onGetCommentReplies = async (lastPage?: PageInfo) => {
     if (plugin && (await plugin.hasDefined.onGetCommentReplies())) {
@@ -62,7 +64,7 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
       <Box sx={{ pl: 5 }}>{comments}</Box>
       {query.hasNextPage && (
         <Button onClick={onLoadMore} sx={{ pl: 7 }} size="small">
-          Load More Replies
+          {t("loadMoreReplies")}
         </Button>
       )}
     </>

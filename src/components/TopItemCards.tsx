@@ -18,11 +18,13 @@ import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 import { Image } from "mui-image";
+import { useTranslation } from "react-i18next";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const { openMenu } = useVideoMenu();
+  const { t } = useTranslation();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -97,7 +99,7 @@ const TopItemCards: React.FC = () => {
       <Fade in={!!topVideoComponents}>
         <Grid>
           <Typography variant="h5" style={{ marginLeft: "15px" }}>
-            Top Videos
+            {t("topVideos")}
           </Typography>
           <Grid
             sx={{
