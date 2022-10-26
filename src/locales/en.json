@@ -33,7 +33,10 @@
     "addToQueue": "Add to Queue",
     "addToNewPlaylist": "Add to New Playlist",
     "addToPlaylist": "Add to {{playlistName}}",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "fileNotFound": "Error: Couldn't find {{name}}",
+    "cantGetFile": "Error: Couldn't get {{name}}",
+    "manifestNoScript": "Error: Manifest does not contain script"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
