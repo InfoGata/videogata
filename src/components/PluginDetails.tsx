@@ -98,7 +98,7 @@ const PluginDetails: React.FC = () => {
               />
             </ListItem>
             {plugin.manifestUrl && (
-              <ListItem>
+              <ListItem disablePadding>
                 <ListItemButton
                   component="a"
                   href={plugin.manifestUrl}
