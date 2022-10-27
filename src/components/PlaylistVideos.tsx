@@ -1,9 +1,12 @@
 import {
   Backdrop,
   CircularProgress,
+  Divider,
   Grid,
+  IconButton,
   ListItemIcon,
   ListItemText,
+  Menu,
   MenuItem,
   Typography,
 } from "@mui/material";
@@ -13,13 +16,19 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { db } from "../database";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import { setPlaylistVideos } from "../store/reducers/playlistReducer";
 import VideoList from "./VideoList";
 import { useTranslation } from "react-i18next";
+import useSelected from "../hooks/useSelected";
+import SelectVideoListPlugin from "./SelectVideoListPlugin";
+import EditPlaylistDialog from "./EditPlaylistDialog";
+import PlaylistMenuItem from "./PlaylistMenuItem";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
+
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
@@ -27,11 +36,27 @@ const PlaylistVideos: React.FC = () => {
   const playlists = useAppSelector((state) =>
     state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
+  const [openEditMenu, setOpenEditMenu] = React.useState(false);
+  const { onSelect, onSelectAll, isSelected, selected, setSelected } =
+    useSelected(videos || []);
 
   const [loaded, setLoaded] = React.useState(false);
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
+  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+
+  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setQueueMenuAnchorEl(event.currentTarget);
+  };
+  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
+
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+
+  const selectedVideos = videos.filter((v) => selected.has(v.id ?? ""));
 
   const deleteClick = async () => {
     if (playlist && menuVideo) {
@@ -44,7 +69,7 @@ const PlaylistVideos: React.FC = () => {
   };
 
   const listItems = [
-    <MenuItem onClick={deleteClick}>
+    <MenuItem onClick={deleteClick} key="delete">
       <ListItemIcon>
         <Delete />
       </ListItemIcon>
@@ -56,6 +81,10 @@ const PlaylistVideos: React.FC = () => {
     playlists,
     listItems,
   });
+
+  const onEditMenuClose = () => {
+    setOpenEditMenu(false);
+  };
 
   React.useEffect(() => {
     const getPlaylist = async () => {
@@ -76,6 +105,24 @@ const PlaylistVideos: React.FC = () => {
     }
   };
 
+  const onEditMenuOpen = () => {
+    setOpenEditMenu(true);
+  };
+
+  const clearSelectedItems = async () => {
+    if (playlist) {
+      const newVideoList = videos.filter((t) => !selected.has(t.id ?? ""));
+      dispatch(setPlaylistVideos(playlist, newVideoList));
+      setVideos(newVideoList);
+    }
+    closeQueueMenu();
+  };
+
+  const addSelectedToNewPlaylist = () => {
+    setPlaylistDialogOpen(true);
+    closeQueueMenu();
+  };
+
   return (
     <>
       <Backdrop open={!loaded}>
@@ -85,12 +132,72 @@ const PlaylistVideos: React.FC = () => {
         <>
           <Grid sx={{ display: "flex" }}>
             <Typography variant="h3">{playlistInfo?.name}</Typography>
+            <IconButton onClick={onEditMenuOpen}>
+              <Edit />
+            </IconButton>
           </Grid>
+          <IconButton onClick={openQueueMenu}>
+            <MoreHoriz fontSize="large" />
+          </IconButton>
+          <SelectVideoListPlugin videoList={videos} setSelected={setSelected} />
           <VideoList
             videos={videos}
             openMenu={openMenu}
             playlistId={playlistId}
             onDragOver={onDragOver}
+            onSelect={onSelect}
+            isSelected={isSelected}
+            onSelectAll={onSelectAll}
+            selected={selected}
+          />
+          <Menu
+            open={Boolean(queueMenuAnchorEl)}
+            onClose={closeQueueMenu}
+            anchorEl={queueMenuAnchorEl}
+          >
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                videos={videos}
+                closeMenu={closeQueueMenu}
+                title={t("addVideosToPlaylist", { playlistName: p.name })}
+              />
+            ))}
+            {selected.size > 0 && [
+              <Divider key="divider" />,
+              <MenuItem onClick={clearSelectedItems} key="clear">
+                <ListItemIcon>
+                  <Delete />
+                </ListItemIcon>
+                <ListItemText primary={t("deleteSelectedVideos")} />
+              </MenuItem>,
+              <MenuItem onClick={addSelectedToNewPlaylist} key="selected">
+                <ListItemIcon>
+                  <PlaylistAdd />
+                </ListItemIcon>
+                <ListItemText primary={t("addSelectedToNewPlaylist")} />
+              </MenuItem>,
+              playlists.map((p) => (
+                <PlaylistMenuItem
+                  key={p.id}
+                  playlist={p}
+                  videos={selectedVideos}
+                  closeMenu={closeQueueMenu}
+                  title={t("addSelectedToPlaylist", { playlistName: p.name })}
+                />
+              )),
+            ]}
+          </Menu>
+          <EditPlaylistDialog
+            open={openEditMenu}
+            playlist={playlist}
+            handleClose={onEditMenuClose}
+          />
+          <AddPlaylistDialog
+            videos={selectedVideos}
+            open={playlistDialogOpen}
+            handleClose={closePlaylistDialog}
           />
         </>
       ) : (

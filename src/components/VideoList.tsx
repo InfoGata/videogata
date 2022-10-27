@@ -5,12 +5,24 @@ import {
   UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { List, ListItem } from "@mui/material";
+import {
+  Checkbox,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Video } from "../plugintypes";
+import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
-import SortableVideo from "./SortableVideo";
-import VideoListItemButton from "./VideoListItemButton";
+import SortableRow from "./SortableRow";
 
 interface VideoListProps {
   videos: Video[];
@@ -18,11 +30,28 @@ interface VideoListProps {
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, video: Video) => void;
   onDragOver?: (newVideoList: Video[]) => void;
   playlistId?: string;
+  selected: Set<string>;
+  onSelect: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
+  onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isSelected: (id: string) => boolean;
 }
 
 const VideoList: React.FC<VideoListProps> = (props) => {
-  const { videos, onDragOver, dragDisabled, openMenu, playlistId } = props;
+  const {
+    videos,
+    onDragOver,
+    dragDisabled,
+    openMenu,
+    playlistId,
+    selected,
+    onSelectAll,
+    onSelect,
+    isSelected,
+  } = props;
   const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(null);
+  const theme = useTheme();
+  const showDuration = useMediaQuery(theme.breakpoints.up("sm"));
+  const { t } = useTranslation();
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
@@ -47,34 +76,59 @@ const VideoList: React.FC<VideoListProps> = (props) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <List>
-        {videos.map((v) => (
-          <SortableVideo
-            disabled={dragDisabled}
-            id={v.id || ""}
-            key={v.id || v.apiId}
-            video={v}
-            openMenu={openMenu}
-          >
-            <VideoListItemButton
-              video={v}
-              openMenu={openMenu}
-              playlistId={playlistId}
-            />
-          </SortableVideo>
-        ))}
-        <DragOverlay>
-          {activeId ? (
-            <ListItem>
-              <VideoListItemButton
-                video={videos.find((v) => v.id === activeId) || ({} as Video)}
-                openMenu={openMenu}
-                playlistId={playlistId}
-              />
-            </ListItem>
-          ) : null}
-        </DragOverlay>
-      </List>
+      <TableContainer component={Paper}>
+        <Table size="small" sx={{ tableLayout: "fixed" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="none" width="4%">
+                <Checkbox
+                  color="primary"
+                  indeterminate={
+                    selected.size > 0 && selected.size < videos.length
+                  }
+                  checked={videos.length > 0 && selected.size === videos.length}
+                  onChange={onSelectAll}
+                  size="small"
+                  inputProps={{
+                    "aria-label": "select all tracks",
+                  }}
+                />
+              </TableCell>
+              <TableCell width="80%">{t("title")}</TableCell>
+              {showDuration && <TableCell>{t("duration")}</TableCell>}
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {videos.map((video, i) => (
+              <SortableRow
+                id={video.id || ""}
+                key={video.id || video.apiId}
+                disabled={dragDisabled}
+              >
+                <PlaylistItem
+                  showDuration={showDuration}
+                  video={video}
+                  openMenu={openMenu}
+                  isSelected={isSelected}
+                  onSelectClick={onSelect}
+                  index={i}
+                  playlistId={playlistId}
+                />
+              </SortableRow>
+            ))}
+            <DragOverlay wrapperElement="tr">
+              {activeId ? (
+                <PlaylistItem
+                  showDuration={showDuration}
+                  key={activeId}
+                  video={videos.find((t) => t.id === activeId) || ({} as Video)}
+                />
+              ) : null}
+            </DragOverlay>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Sortable>
   );
 };

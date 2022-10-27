@@ -4,6 +4,8 @@
     "home": "Home",
     "plugin": "Plugins",
     "plugins": "Plugins",
+    "selectPlugin": "Select Plugin",
+    "none": "None",
     "settings": "Settings",
     "nextPage": "Next",
     "previousPage": "Previous",
@@ -36,7 +38,17 @@
     "dismiss": "Dismiss",
     "fileNotFound": "Error: Couldn't find {{name}}",
     "cantGetFile": "Error: Couldn't get {{name}}",
-    "manifestNoScript": "Error: Manifest does not contain script"
+    "manifestNoScript": "Error: Manifest does not contain script",
+    "duration": "Duration",
+    "title": "Title",
+    "updatePlaylist": "Update Playlist",
+    "editPlaylist": "Edit Playlist",
+    "playlistName": "Playlist Name",
+    "addVideosToPlaylist": "Add videos to {{playlistName}}",
+    "deleteSelectedVideos": "Delete Selected Videos",
+    "addSelectedToPlaylist": "Add Selected to {{playlistName}}",
+    "addVideosToNewPlaylist": "Add Videos to New Playlist",
+    "addSelectedToNewPlaylist": "Add Selected to New Playlist"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

@@ -32,7 +32,6 @@ const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
         transition,
         touchAction: "none",
         opacity: isDragging ? 0.3 : 1,
-        cursor: "pointer",
       }}
       ref={setNodeRef}
       {...listeners}
