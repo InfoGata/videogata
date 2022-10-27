@@ -28,12 +28,12 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
 
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchVideos())) {
-      const searchTracks = await plugin.remote.onSearchVideos({
+      const searchVideos = await plugin.remote.onSearchVideos({
         query: searchQuery,
         pageInfo: page,
       });
-      setCurrentPage(searchTracks.pageInfo);
-      return searchTracks.items;
+      setCurrentPage(searchVideos.pageInfo);
+      return searchVideos.items;
     }
   };
 

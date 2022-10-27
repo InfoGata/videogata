@@ -1,7 +1,7 @@
 import React from "react";
 import { Video } from "../plugintypes";
 
-const useSelected = (tracks: Video[]) => {
+const useSelected = (videos: Video[]) => {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const lastSelected = React.useRef<number | null>(null);
 
@@ -16,7 +16,7 @@ const useSelected = (tracks: Video[]) => {
         const next = new Set(prev);
         const start = Math.min(lastSelected.current || 0, index);
         const end = Math.max(lastSelected.current || 0, index) + 1;
-        const ids = tracks.slice(start, end).map((t) => t.id);
+        const ids = videos.slice(start, end).map((v) => v.id);
         ids?.forEach((id) => next.add(id || ""));
         return next;
       });
@@ -32,7 +32,7 @@ const useSelected = (tracks: Video[]) => {
 
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelected(new Set(tracks.map((t) => t.id || "")));
+      setSelected(new Set(videos.map((v) => v.id || "")));
       return;
     }
     setSelected(new Set());

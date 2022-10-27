@@ -45,7 +45,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
     ? `${videoUrl}?playlistId=${playlistId}&videoId=${video.id}`
     : videoUrl;
 
-  const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (openMenu) {
       openMenu(event, video);
     }
@@ -126,7 +126,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
       {showDuration && <TableCell>{formatSeconds(video.duration)}</TableCell>}
       <TableCell align="right" padding="checkbox">
         {openMenu && (
-          <IconButton aria-label="options" size="small" onClick={openTrackMenu}>
+          <IconButton aria-label="options" size="small" onClick={openVideoMenu}>
             <MoreHoriz />
           </IconButton>
         )}

@@ -90,7 +90,7 @@ const VideoList: React.FC<VideoListProps> = (props) => {
                   onChange={onSelectAll}
                   size="small"
                   inputProps={{
-                    "aria-label": "select all tracks",
+                    "aria-label": "select all videos",
                   }}
                 />
               </TableCell>
