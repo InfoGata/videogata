@@ -25,8 +25,14 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
   );
-  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
-    usePagination(currentPage);
+  const {
+    page,
+    hasNextPage,
+    hasPreviousPage,
+    onPreviousPage,
+    onNextPage,
+    resetPage,
+  } = usePagination(currentPage);
 
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchPlaylists())) {
@@ -58,13 +64,18 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     />
   ));
 
+  const applyFilters = (filters: FilterInfo) => {
+    setFilters(filters);
+    resetPage();
+  };
+
   return (
     <>
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {!!initialFilter && (
-        <Filtering filters={initialFilter} setFilters={setFilters} />
+        <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <List>{playlistList}</List>
       <Pager

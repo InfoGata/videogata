@@ -26,8 +26,14 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
   );
   const [filters, setFilters] = React.useState<FilterInfo | undefined>();
 
-  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
-    usePagination(currentPage);
+  const {
+    page,
+    hasNextPage,
+    hasPreviousPage,
+    onPreviousPage,
+    onNextPage,
+    resetPage,
+  } = usePagination(currentPage);
 
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchVideos())) {
@@ -51,13 +57,18 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
     { staleTime: 60 * 1000 }
   );
 
+  const applyFilters = (filters: FilterInfo) => {
+    setFilters(filters);
+    resetPage();
+  };
+
   return (
     <>
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {!!initialFilter && (
-        <Filtering filters={initialFilter} setFilters={setFilters} />
+        <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <VideoCards videos={query.data || []} openMenu={openMenu} />
       <Pager
