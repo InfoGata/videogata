@@ -148,6 +148,7 @@ const Search: React.FC = () => {
             pluginId={pluginId}
             searchQuery={searchQuery}
             initialPage={query.data?.playlists?.pageInfo}
+            initialFilter={query.data?.playlists?.filterInfo}
           />
         )}
       </TabPanel>
