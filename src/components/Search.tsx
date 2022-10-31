@@ -57,6 +57,7 @@ const Search: React.FC = () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
       searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
+      console.log(searchAll);
     }
 
     if (searchAll?.videos) {
@@ -68,15 +69,15 @@ const Search: React.FC = () => {
     }
 
     queryClient.setQueryData<Video[] | undefined>(
-      ["searchVideos", pluginId, searchQuery, undefined],
+      ["searchVideos", pluginId, searchQuery, undefined, undefined],
       searchAll?.videos?.items
     );
     queryClient.setQueryData<Channel[] | undefined>(
-      ["searchChannels", pluginId, searchQuery, undefined],
+      ["searchChannels", pluginId, searchQuery, undefined, undefined],
       searchAll?.channels?.items
     );
     queryClient.setQueryData<PlaylistInfo[] | undefined>(
-      ["searchPlaylists", pluginId, searchQuery, undefined],
+      ["searchPlaylists", pluginId, searchQuery, undefined, undefined],
       searchAll?.playlists?.items
     );
 
@@ -94,15 +95,15 @@ const Search: React.FC = () => {
 
   return (
     <>
+      <Backdrop open={query.isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <SelectPlugin
         pluginId={pluginId}
         setPluginId={setPluginId}
         methodName="onSearchAll"
       />
       <AppBar position="static">
-        <Backdrop open={query.isLoading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
         <Tabs
           value={tabValue}
           onChange={handleChange}
@@ -122,25 +123,33 @@ const Search: React.FC = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={tabValue} index={SearchResultType.Videos}>
-        <VideoSearchResults
-          pluginId={pluginId}
-          searchQuery={searchQuery}
-          initialPage={query.data?.videos?.pageInfo}
-        />
+        {!!query.data?.videos && (
+          <VideoSearchResults
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.videos?.pageInfo}
+            initialFilter={query.data?.videos?.filterInfo}
+          />
+        )}
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Channels}>
-        <ChannelSearchResults
-          pluginId={pluginId}
-          searchQuery={searchQuery}
-          initialPage={query.data?.channels?.pageInfo}
-        />
+        {!!query.data?.channels && (
+          <ChannelSearchResults
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.channels?.pageInfo}
+            initialFilter={query.data?.channels?.filterInfo}
+          />
+        )}
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Playlists}>
-        <PlaylistSearchResults
-          pluginId={pluginId}
-          searchQuery={searchQuery}
-          initialPage={query.data?.playlists?.pageInfo}
-        />
+        {!!query.data?.playlists && (
+          <PlaylistSearchResults
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.playlists?.pageInfo}
+          />
+        )}
       </TabPanel>
     </>
   );

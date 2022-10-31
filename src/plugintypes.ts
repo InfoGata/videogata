@@ -7,6 +7,12 @@ export interface SearchAllResult {
 export interface SearchRequest {
   query: string;
   pageInfo?: PageInfo;
+  filterInfo?: FilterInfo;
+}
+
+export interface SearchResult {
+  filterInfo?: FilterInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface PageInfo {
@@ -15,6 +21,10 @@ export interface PageInfo {
   offset: number;
   nextPage?: string;
   prevPage?: string;
+}
+
+export interface FilterInfo {
+  filters: Filter[];
 }
 
 export interface Video {
@@ -84,19 +94,16 @@ export interface PluginInfo {
   manifestUrl?: string;
 }
 
-export interface SearchVideoResult {
+export interface SearchVideoResult extends SearchResult {
   items: Video[];
-  pageInfo?: PageInfo;
 }
 
-export interface SearchPlaylistResult {
+export interface SearchPlaylistResult extends SearchResult {
   items: PlaylistInfo[];
-  pageInfo?: PageInfo;
 }
 
-export interface SearchChannelResult {
+export interface SearchChannelResult extends SearchResult {
   items: Channel[];
-  pageInfo?: PageInfo;
 }
 
 export interface GetVideoRequest {
@@ -153,4 +160,19 @@ export interface VideoComment {
 
 export interface ChannelVideosResult extends SearchVideoResult {
   channel?: Channel;
+}
+
+export type FilterType = "radio" | "select" | "text";
+
+export interface Filter {
+  id: string;
+  displayName: string;
+  type: FilterType;
+  value?: string;
+  options?: FilterOption[];
+}
+
+export interface FilterOption {
+  displayName: string;
+  value: string;
 }

@@ -57,6 +57,7 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
           {video.duration ? (
             <Chip
               label={formatSeconds(video.duration)}
+              color="primary"
               sx={{ position: "absolute", top: "10px", right: "10px" }}
             />
           ) : null}

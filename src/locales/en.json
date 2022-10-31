@@ -48,7 +48,9 @@
     "deleteSelectedVideos": "Delete Selected Videos",
     "addSelectedToPlaylist": "Add Selected to {{playlistName}}",
     "addVideosToNewPlaylist": "Add Videos to New Playlist",
-    "addSelectedToNewPlaylist": "Add Selected to New Playlist"
+    "addSelectedToNewPlaylist": "Add Selected to New Playlist",
+    "filters": "Filters",
+    "applyFilters": "Apply Filters"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

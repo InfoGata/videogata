@@ -3,7 +3,8 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
-import { PageInfo } from "../plugintypes";
+import { FilterInfo, PageInfo } from "../plugintypes";
+import Filtering from "./Filtering";
 import Pager from "./Pager";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 
@@ -11,13 +12,15 @@ interface PlaylistSearchResultsProps {
   pluginId: string;
   searchQuery: string;
   initialPage?: PageInfo;
+  initialFilter?: FilterInfo;
 }
 
 const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
-  const { pluginId, searchQuery, initialPage } = props;
+  const { pluginId, searchQuery, initialPage, initialFilter } = props;
 
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
+  const [filters, setFilters] = React.useState<FilterInfo | undefined>();
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
@@ -30,14 +33,19 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       const searchPlaylists = await plugin.remote.onSearchPlaylists({
         query: searchQuery,
         pageInfo: page,
+        filterInfo: filters,
       });
       setCurrentPage(searchPlaylists.pageInfo);
       return searchPlaylists.items;
     }
   };
 
+  const filteredKey = filters?.filters.map((f) => ({
+    id: f.id,
+    value: f.value,
+  }));
   const query = useQuery(
-    ["searchPlaylists", pluginId, searchQuery, page],
+    ["searchPlaylists", pluginId, searchQuery, page, filteredKey],
     search,
     { staleTime: 60 * 1000 }
   );
@@ -55,6 +63,9 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      {!!initialFilter && (
+        <Filtering filters={initialFilter} setFilters={setFilters} />
+      )}
       <List>{playlistList}</List>
       <Pager
         hasNextPage={hasNextPage}
