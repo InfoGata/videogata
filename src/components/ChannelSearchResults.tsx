@@ -33,6 +33,17 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     resetPage,
   } = usePagination(currentPage);
 
+  const [hasSearch, setHasSearch] = React.useState(false);
+  React.useEffect(() => {
+    const getHasSearch = async () => {
+      if (plugin) {
+        const hasSearch = await plugin.hasDefined.onSearchChannels();
+        setHasSearch(hasSearch);
+      }
+    };
+    getHasSearch();
+  }, [plugin]);
+
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchChannels())) {
       const searchChannels = await plugin.remote.onSearchChannels({
@@ -77,12 +88,14 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <List>{channelList}</List>
-      <Pager
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        onPreviousPage={onPreviousPage}
-        onNextPage={onNextPage}
-      />
+      {hasSearch && (
+        <Pager
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPreviousPage={onPreviousPage}
+          onNextPage={onNextPage}
+        />
+      )}
     </>
   );
 };

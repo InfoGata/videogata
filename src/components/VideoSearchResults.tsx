@@ -35,6 +35,17 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
     resetPage,
   } = usePagination(currentPage);
 
+  const [hasSearch, setHasSearch] = React.useState(false);
+  React.useEffect(() => {
+    const getHasSearch = async () => {
+      if (plugin) {
+        const hasSearch = await plugin.hasDefined.onSearchVideos();
+        setHasSearch(hasSearch);
+      }
+    };
+    getHasSearch();
+  }, [plugin]);
+
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchVideos())) {
       const searchVideos = await plugin.remote.onSearchVideos({
@@ -71,12 +82,14 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <VideoCards videos={query.data || []} openMenu={openMenu} />
-      <Pager
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        onPreviousPage={onPreviousPage}
-        onNextPage={onNextPage}
-      />
+      {hasSearch && (
+        <Pager
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPreviousPage={onPreviousPage}
+          onNextPage={onNextPage}
+        />
+      )}
     </>
   );
 };
