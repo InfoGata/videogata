@@ -26,6 +26,7 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
+import i18n from "./i18n";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -160,6 +161,9 @@ export const PluginsProvider: React.FC = (props) => {
         },
         addPlaylists: async (playlists: Playlist[]) => {
           dispatch(addPlaylists(playlists));
+        },
+        getLocale: async () => {
+          return i18n.language;
         },
       };
 
