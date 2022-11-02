@@ -165,7 +165,9 @@ export const PluginsProvider: React.FC = (props) => {
 
       let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
       if (process.env.NODE_ENV === "production") {
-        srcUrl = `https://${plugin.id}.videogata.com/pluginframe.html`;
+        srcUrl = `https://${plugin.id}.${
+          process.env.DOMAIN || "videogata.com"
+        }/pluginframe.html`;
       }
 
       const completeMethods: {

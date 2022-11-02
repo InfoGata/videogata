@@ -52,7 +52,9 @@ const PluginOptions: React.FC = () => {
 
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
   if (process.env.NODE_ENV === "production") {
-    srcUrl = `https://${plugin.id}.videogata.com/ui.html`;
+    srcUrl = `https://${plugin.id}.${
+      process.env.DOMAIN || "videogata.com"
+    }/ui.html`;
   }
   let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
   if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");

@@ -58,7 +58,9 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
 
   let srcUrl = `${window.location.protocol}//${plugin?.id}.${window.location.host}/ui.html?apiId=${apiId}`;
   if (process.env.NODE_ENV === "production") {
-    srcUrl = `https://${plugin?.id}.videogata.com/ui.html?apiId=${apiId}`;
+    srcUrl = `https://${plugin?.id}.${
+      process.env.DOMAIN || "videogata.com"
+    }/ui.html?apiId=${apiId}`;
   }
 
   return (

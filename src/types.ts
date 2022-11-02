@@ -1,3 +1,11 @@
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      DOMAIN: string;
+    }
+  }
+}
+
 export interface UrlInfo {
   url: string;
   headers?: Headers;
