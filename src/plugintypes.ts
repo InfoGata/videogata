@@ -92,6 +92,7 @@ export interface PluginInfo {
   playerHtml?: string;
   optionsSameOrigin?: boolean;
   manifestUrl?: string;
+  homepage?: string;
 }
 
 export interface SearchVideoResult extends SearchResult {

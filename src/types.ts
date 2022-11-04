@@ -29,6 +29,7 @@ export interface Manifest {
   options?: string | ManifestOptions;
   player?: string;
   updateUrl?: string;
+  homepage?: string;
 }
 
 export interface ManifestOptions {

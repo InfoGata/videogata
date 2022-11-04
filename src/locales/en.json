@@ -82,6 +82,7 @@
     "failedToInstall": "Failed to Install plugin from {{manifestUrl}}",
     "manifestMissingFromUrl": "The filename 'manifest.json' must be in the url",
     "loadPluginFromFolder": "Load Plugin From Folder",
-    "loadPluginFromUrl": "Load Plugin From Url"
+    "loadPluginFromUrl": "Load Plugin From Url",
+    "homepage": "Home Page"
   }
 }
