@@ -192,6 +192,13 @@ export const PluginsProvider: React.FC = (props) => {
           });
           return result;
         },
+        onGetTopItems: (result: SearchAllResult) => {
+          result.videos?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          return result;
+        },
         onSearchVideos: (result: SearchVideoResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;

@@ -9,7 +9,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
@@ -30,9 +29,6 @@ const TopItemCards: React.FC = () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin) {
       const results = await plugin.remote.onGetTopItems();
-      results.videos?.items.forEach((i) => {
-        i.id = nanoid();
-      });
       return results;
     }
   };
