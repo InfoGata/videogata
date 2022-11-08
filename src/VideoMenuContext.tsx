@@ -1,7 +1,8 @@
-import { PlaylistAdd } from "@mui/icons-material";
+import { PlaylistAdd, Subscriptions } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Video } from "./plugintypes";
@@ -57,6 +58,17 @@ export const VideoMenuProvider: React.FC = (props) => {
         anchorEl={anchorEl}
         onClick={closeMenu}
       >
+        {menuVideo?.channelApiId && (
+          <MenuItem
+            component={Link}
+            to={`/plugins/${menuVideo?.pluginId}/channels/${menuVideo?.channelApiId}`}
+          >
+            <ListItemIcon>
+              <Subscriptions />
+            </ListItemIcon>
+            <ListItemText primary={t("goToChannel")} />
+          </MenuItem>
+        )}
         {listElements}
         <MenuItem onClick={addMenuVideoToNewPlaylist}>
           <ListItemIcon>

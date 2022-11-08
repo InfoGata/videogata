@@ -50,7 +50,8 @@
     "addVideosToNewPlaylist": "Add Videos to New Playlist",
     "addSelectedToNewPlaylist": "Add Selected to New Playlist",
     "filters": "Filters",
-    "applyFilters": "Apply Filters"
+    "applyFilters": "Apply Filters",
+    "goToChannel": "Go to Channel"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
