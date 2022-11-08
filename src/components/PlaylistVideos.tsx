@@ -56,8 +56,6 @@ const PlaylistVideos: React.FC = () => {
       dispatch(setPlaylistVideos(playlist, newVideolist));
       setVideos(newVideolist);
     }
-
-    closeMenu();
   };
 
   const listItems = [
@@ -87,7 +85,7 @@ const PlaylistVideos: React.FC = () => {
     </MenuItem>,
   ];
 
-  const { openMenu, closeMenu, menuVideo } = useVideoMenu({
+  const { openMenu, menuVideo } = useVideoMenu({
     playlists,
     listItems,
   });

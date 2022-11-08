@@ -14,7 +14,6 @@ export interface VideoMenuInterface {
   setPlaylists: React.Dispatch<React.SetStateAction<PlaylistInfo[]>>;
   setListElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
   menuVideo: Video | undefined;
-  closeMenu: () => void;
 }
 
 const VideoMenuContext = React.createContext<VideoMenuInterface>(undefined!);
@@ -41,20 +40,23 @@ export const VideoMenuProvider: React.FC = (props) => {
 
   const addMenuVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
-    closeMenu();
   };
 
   const defaultContext: VideoMenuInterface = {
     menuVideo,
     openVideoMenu,
-    closeMenu,
     setPlaylists,
     setListElements,
   };
   return (
     <VideoMenuContext.Provider value={defaultContext}>
       {props.children}
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+      <Menu
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        anchorEl={anchorEl}
+        onClick={closeMenu}
+      >
         {listElements}
         <MenuItem onClick={addMenuVideoToNewPlaylist}>
           <ListItemIcon>

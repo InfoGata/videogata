@@ -9,7 +9,7 @@ interface VideoMenuArgs {
 }
 
 const useVideoMenu = (args?: VideoMenuArgs) => {
-  const { openVideoMenu, closeMenu, menuVideo, setPlaylists, setListElements } =
+  const { openVideoMenu, menuVideo, setPlaylists, setListElements } =
     React.useContext(VideoMenuContext);
   const playlists = useAppSelector((state) => state.playlist.playlists);
 
@@ -22,7 +22,7 @@ const useVideoMenu = (args?: VideoMenuArgs) => {
     setListElements(args?.listItems ?? []);
   };
 
-  return { openMenu, closeMenu, menuVideo };
+  return { openMenu, menuVideo };
 };
 
 export default useVideoMenu;
