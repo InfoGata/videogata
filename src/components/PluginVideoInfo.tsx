@@ -1,10 +1,11 @@
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import { Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
 import DOMPurify from "dompurify";
 import { Link } from "react-router-dom";
-import { ThumbDown, ThumbUp } from "@mui/icons-material";
+import { MoreHoriz, ThumbDown, ThumbUp } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import useVideoMenu from "../hooks/useVideoMenu";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -15,6 +16,7 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { t } = useTranslation();
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
+  const { openMenu } = useVideoMenu();
   const uploadDate =
     video.uploadDate &&
     new Date(video.uploadDate).toLocaleDateString("en-US", {
@@ -24,6 +26,10 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
     });
 
   const sanitizer = DOMPurify.sanitize;
+
+  const onMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    openMenu(event, video);
+  };
 
   return (
     <Grid>
@@ -76,6 +82,11 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
             </Grid>
           ) : null}
         </Grid>
+      </Grid>
+      <Grid container>
+        <IconButton onClick={onMenuClick}>
+          <MoreHoriz />
+        </IconButton>
       </Grid>
       {video.channelName ? (
         <Button component={Link} to={channelUrl} disabled={!video.channelApiId}>
