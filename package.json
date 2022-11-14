@@ -74,7 +74,7 @@
             "exclude": [
               "[0-9!-/:-@[-`{-~]+",
               "[A-Z_-]+",
-              "\\s+VideoGata\\s+"
+              "\\s*VideoGata\\s*"
             ]
           }
         }
