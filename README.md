@@ -13,6 +13,8 @@ npm run dev
 
 ## Plugins
 
+The plugin scripts are run in sandboxed iframes using [plugin-frame](https://github.com/elijahgreen/plugin-frame). Every iframe is ran on it's own subdomain with it's subdomain being the id of the plugin ([pluginId].videogata.com).
+
 [youtube-videogata](https://github.com/InfoGata/youtube-videogata)
 
 [peertube-videogata](https://github.com/InfoGata/peertube-videogata)
