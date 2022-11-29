@@ -5,7 +5,7 @@ import VideoMenuContext from "../VideoMenuContext";
 
 interface VideoMenuArgs {
   playlists?: PlaylistInfo[];
-  listItems?: JSX.Element[];
+  getListItems?: (video?: Video) => JSX.Element[];
 }
 
 const useVideoMenu = (args?: VideoMenuArgs) => {
@@ -19,7 +19,12 @@ const useVideoMenu = (args?: VideoMenuArgs) => {
   ) => {
     openVideoMenu(event, video);
     setPlaylists(args?.playlists ?? playlists);
-    setListElements(args?.listItems ?? []);
+    if (args?.getListItems) {
+      const listItems = args.getListItems(video);
+      setListElements(listItems);
+    } else {
+      setListElements([]);
+    }
   };
 
   return { openMenu, menuVideo };

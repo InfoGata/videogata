@@ -50,22 +50,24 @@ const PlaylistVideos: React.FC = () => {
   };
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
 
-  const deleteClick = async () => {
-    if (playlist && menuVideo) {
-      const newVideolist = videos.filter((t) => t.id !== menuVideo.id);
-      dispatch(setPlaylistVideos(playlist, newVideolist));
-      setVideos(newVideolist);
-    }
-  };
+  const getListItems = (video?: Video) => {
+    const deleteClick = async () => {
+      if (playlist && video) {
+        const newVideolist = videos.filter((t) => t.id !== video.id);
+        dispatch(setPlaylistVideos(playlist, newVideolist));
+        setVideos(newVideolist);
+      }
+    };
 
-  const listItems = [
-    <MenuItem onClick={deleteClick} key="delete">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary={t("delete")} />
-    </MenuItem>,
-  ];
+    return [
+      <MenuItem onClick={deleteClick} key="delete">
+        <ListItemIcon>
+          <Delete />
+        </ListItemIcon>
+        <ListItemText primary={t("delete")} />
+      </MenuItem>,
+    ];
+  };
 
   const clearSelectedItems = async () => {
     if (playlist) {
@@ -85,9 +87,9 @@ const PlaylistVideos: React.FC = () => {
     </MenuItem>,
   ];
 
-  const { openMenu, menuVideo } = useVideoMenu({
+  const { openMenu } = useVideoMenu({
     playlists,
-    listItems,
+    getListItems,
   });
 
   const onEditMenuClose = () => {
