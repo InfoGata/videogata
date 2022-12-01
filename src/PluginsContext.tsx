@@ -6,6 +6,7 @@ import {
   GetVideoRequest,
   NotificationMessage,
   Playlist,
+  PlaylistInfo,
   PlaylistVideoRequest,
   PlaylistVideosResult,
   PluginInfo,
@@ -24,7 +25,10 @@ import { db } from "./database";
 import { useSnackbar } from "notistack";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
-import { addPlaylists } from "./store/reducers/playlistReducer";
+import {
+  addPlaylists,
+  addPlaylistVideos,
+} from "./store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import i18n from "./i18n";
 
@@ -63,7 +67,9 @@ interface ApplicationPluginInterface extends PluginInterface {
   installPlugins(plugins: PluginInfo[]): Promise<void>;
   getPlugins(): Promise<PluginInfo[]>;
   getPlaylists(): Promise<Playlist[]>;
+  getPlaylistsInfo(): Promise<PlaylistInfo[]>;
   addPlaylists(playlists: Playlist[]): Promise<void>;
+  addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
 }
 
 interface PluginMessage {
@@ -114,6 +120,9 @@ export const PluginsProvider: React.FC = (props) => {
   const currentVideo = useAppSelector((state) => state.queue.currentVideo);
   const currentVideoRef = React.useRef(currentVideo);
   currentVideoRef.current = currentVideo;
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlistsRef = React.useRef(playlists);
+  playlistsRef.current = playlists;
 
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
@@ -159,8 +168,24 @@ export const PluginsProvider: React.FC = (props) => {
         getPlaylists: async () => {
           return await db.playlists.toArray();
         },
+        getPlaylistsInfo: async () => {
+          return playlistsRef.current;
+        },
         addPlaylists: async (playlists: Playlist[]) => {
           dispatch(addPlaylists(playlists));
+        },
+        addVideosToPlaylist: async (playlistId: string, videos: Video[]) => {
+          videos.forEach((t) => {
+            if (!t.pluginId) {
+              t.pluginId = plugin.id;
+            }
+          });
+          const playlist = playlistsRef.current.find(
+            (p) => p.id === playlistId
+          );
+          if (playlist) {
+            dispatch(addPlaylistVideos(playlist, videos));
+          }
         },
         getLocale: async () => {
           return i18n.language;
