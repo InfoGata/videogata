@@ -20,6 +20,7 @@ import { PlaylistInfo } from "../plugintypes";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 import { useTranslation } from "react-i18next";
+import ImportPlaylistUrlDialog from "./ImportPlaylistUrlDialog";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -61,6 +62,9 @@ const Playlists: React.FC = () => {
   const closeMenu = () => setAnchorEl(null);
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [openImportDialog, setOpenImportDialog] = React.useState(false);
+  const onOpenImportDialog = () => setOpenImportDialog(true);
+  const onCloseImportDialog = () => setOpenImportDialog(false);
 
   const pluginPlaylists = playlistPlugins.map((p) => (
     <Button
@@ -105,6 +109,9 @@ const Playlists: React.FC = () => {
       <Typography variant="h5" gutterBottom>
         {t("playlists")}
       </Typography>
+      <Button variant="contained" onClick={onOpenImportDialog}>
+        {t("importPlaylistByUrl")}
+      </Button>
       <Grid>{pluginPlaylists}</Grid>
       <List>
         {playlists.map((p) => (
@@ -119,6 +126,10 @@ const Playlists: React.FC = () => {
           <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
+      <ImportPlaylistUrlDialog
+        open={openImportDialog}
+        handleClose={onCloseImportDialog}
+      />
     </>
   );
 };

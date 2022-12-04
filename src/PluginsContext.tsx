@@ -5,6 +5,7 @@ import {
   CommentReplyRequest,
   GetVideoRequest,
   NotificationMessage,
+  ParseUrlType,
   Playlist,
   PlaylistInfo,
   PlaylistVideoRequest,
@@ -56,6 +57,8 @@ export interface PluginMethodInterface {
     request: CommentReplyRequest
   ): Promise<VideoCommentsResult>;
   onGetTopItems(): Promise<SearchAllResult>;
+  onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
+  onLookupPlaylistUrl(url: string): Promise<Playlist>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
@@ -246,6 +249,15 @@ export const PluginsProvider: React.FC = (props) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
+          });
+          return result;
+        },
+        onLookupPlaylistUrl: (result: Playlist) => {
+          result.id = nanoid();
+          result.pluginId = plugin.id;
+          result.videos.forEach((t) => {
+            t.id = nanoid();
+            t.pluginId = plugin.id;
           });
           return result;
         },
