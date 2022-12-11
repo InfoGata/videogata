@@ -295,7 +295,6 @@ export const PluginsProvider: React.FC = (props) => {
     if (loadingPlugin.current) return;
     loadingPlugin.current = true;
     getPlugins();
-    getPlugins();
   }, [loadPlugin]);
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
