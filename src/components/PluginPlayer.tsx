@@ -1,6 +1,7 @@
 import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { db } from "../database";
+import { getPluginSubdomain } from "../utils";
 
 interface PluginPlayerProps {
   apiId?: string;
@@ -56,12 +57,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     }
   };
 
-  let srcUrl = `${window.location.protocol}//${plugin?.id}.${window.location.host}/ui.html?apiId=${apiId}`;
-  if (process.env.NODE_ENV === "production") {
-    srcUrl = `https://${plugin?.id}.${
-      process.env.DOMAIN || "videogata.com"
-    }/ui.html?apiId=${apiId}`;
-  }
+  const srcUrl = `${getPluginSubdomain(plugin?.id)}/ui.html?apiId=${apiId}`;
 
   return (
     <>

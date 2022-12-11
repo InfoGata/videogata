@@ -32,6 +32,7 @@ import {
 } from "./store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import i18n from "./i18n";
+import { getPluginSubdomain } from "./utils";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -195,12 +196,7 @@ export const PluginsProvider: React.FC = (props) => {
         },
       };
 
-      let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
-      if (process.env.NODE_ENV === "production") {
-        srcUrl = `https://${plugin.id}.${
-          process.env.DOMAIN || "videogata.com"
-        }/pluginframe.html`;
-      }
+      const srcUrl = `${getPluginSubdomain(plugin.id)}/pluginframe.html`;
 
       const completeMethods: {
         [key in keyof PluginMethodInterface]?: (

@@ -169,6 +169,17 @@ export async function filterAsync<T>(
   return array.filter((_value, index) => filterMap[index]);
 }
 
+export const getPluginSubdomain = (id?: string): string => {
+  if (process.env.NODE_ENV === "production") {
+    const domain = process.env.REACT_APP_DOMAIN || "audiogata.com";
+    const protocol = domain.startsWith("localhost")
+      ? window.location.protocol
+      : "https:";
+    return `${protocol}//${id}.${domain}`;
+  }
+  return `${window.location.protocol}//${id}.${window.location.host}`;
+};
+
 export const searchThumbnailSize = 40;
 
 export const playlistThumbnailSize = 200;

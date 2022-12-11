@@ -4,6 +4,7 @@ import { usePlugins } from "../PluginsContext";
 import { db } from "../database";
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { getPluginSubdomain } from "../utils";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -50,12 +51,7 @@ const PluginOptions: React.FC = () => {
 
   if (!plugin) return <>{t("common:notFound")}</>;
 
-  let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
-  if (process.env.NODE_ENV === "production") {
-    srcUrl = `https://${plugin.id}.${
-      process.env.DOMAIN || "videogata.com"
-    }/ui.html`;
-  }
+  const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
   let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
   if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
 
