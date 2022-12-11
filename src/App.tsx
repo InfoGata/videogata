@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const notistackRef = React.createRef<SnackbarProvider>();
+  const notistackRef = React.useRef<SnackbarProvider>(null);
   const onClickDismiss = (key: SnackbarKey) => () => {
     notistackRef?.current?.closeSnackbar(key);
   };
