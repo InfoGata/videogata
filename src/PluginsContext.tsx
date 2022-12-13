@@ -306,21 +306,10 @@ export const PluginsProvider: React.FC = (props) => {
   }, [loadPlugin, enqueueSnackbar, t]);
 
   React.useEffect(() => {
-    const getPlugins = async () => {
-      try {
-        const plugs = await db.plugins.toArray();
-
-        const framePromises = plugs.map((p) => loadPlugin(p));
-        const frames = await Promise.all(framePromises);
-        setPluginFrames(frames);
-      } finally {
-        setPluginsLoaded(true);
-      }
-    };
     if (loadingPlugin.current) return;
     loadingPlugin.current = true;
-    getPlugins();
-  }, [loadPlugin]);
+    loadPlugins();
+  }, [loadPlugins]);
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
