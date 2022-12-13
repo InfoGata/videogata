@@ -33,6 +33,7 @@ import {
 import { nanoid } from "@reduxjs/toolkit";
 import i18n from "./i18n";
 import { getPluginSubdomain } from "./utils";
+import { useTranslation } from "react-i18next";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -103,6 +104,8 @@ export interface PluginContextInterface {
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
   pluginsLoaded: boolean;
+  pluginsFailed: boolean;
+  reloadPlugins: () => Promise<void>;
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
@@ -113,8 +116,10 @@ export const PluginsProvider: React.FC = (props) => {
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
   const loadingPlugin = React.useRef(false);
+  const { t } = useTranslation("plugins");
 
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
@@ -273,12 +278,32 @@ export const PluginsProvider: React.FC = (props) => {
       host.hasPlayer = !!plugin.playerHtml;
       host.fileList = pluginFiles;
       host.manifestUrl = plugin.manifestUrl;
-      await host.ready();
+      const timeoutMs = 3000;
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(), timeoutMs);
+      });
+      await Promise.race([host.ready(), timeoutPromise]);
       await host.executeCode(plugin.script);
       return host;
     },
     [dispatch, enqueueSnackbar]
   );
+
+  const loadPlugins = React.useCallback(async () => {
+    setPluginsFailed(false);
+    try {
+      const plugs = await db.plugins.toArray();
+
+      const framePromises = plugs.map((p) => loadPlugin(p));
+      const frames = await Promise.all(framePromises);
+      setPluginFrames(frames);
+    } catch {
+      enqueueSnackbar(t("failedPlugins"), { variant: "error" });
+      setPluginsFailed(true);
+    } finally {
+      setPluginsLoaded(true);
+    }
+  }, [loadPlugin, enqueueSnackbar, t]);
 
   React.useEffect(() => {
     const getPlugins = async () => {
@@ -332,6 +357,8 @@ export const PluginsProvider: React.FC = (props) => {
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
     pluginsLoaded,
+    pluginsFailed,
+    reloadPlugins: loadPlugins,
   };
 
   const handleClose = () => {

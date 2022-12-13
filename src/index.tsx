@@ -12,6 +12,8 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./store/store";
 import "./i18n";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { updateReady } from "./store/reducers/uiReducer";
 
 const theme = createTheme({
   palette: {
@@ -32,7 +34,13 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+serviceWorkerRegistration.register({
+  onUpdate: (registration) => {
+    const waitingServiceWorker = registration.waiting;
+    if (waitingServiceWorker) {
+      store.dispatch(updateReady(waitingServiceWorker));
+    }
+  },
+});
+
 reportWebVitals();

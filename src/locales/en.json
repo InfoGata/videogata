@@ -55,7 +55,9 @@
     "addSelectedToNewPlaylist": "Add Selected to New Playlist",
     "filters": "Filters",
     "applyFilters": "Apply Filters",
-    "goToChannel": "Go to Channel"
+    "goToChannel": "Go to Channel",
+    "newVersion": "A new version of this site is available",
+    "reload": "Reload"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -88,6 +90,8 @@
     "manifestMissingFromUrl": "The filename 'manifest.json' must be in the url",
     "loadPluginFromFolder": "Load Plugin From Folder",
     "loadPluginFromUrl": "Load Plugin From Url",
-    "homepage": "Home Page"
+    "homepage": "Home Page",
+    "failedPlugins": "Failed to load plugins",
+    "clickReload": "Click to reload plugins"
   }
 }

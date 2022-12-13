@@ -12,6 +12,7 @@ import { initializePlaylists } from "./store/reducers/playlistReducer";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import { VideoMenuProvider } from "./VideoMenuContext";
 import { useTranslation } from "react-i18next";
+import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,7 @@ const App: React.FC = () => {
   const onClickDismiss = (key: SnackbarKey) => () => {
     notistackRef?.current?.closeSnackbar(key);
   };
+  useUpdateServiceWorker(notistackRef.current?.enqueueSnackbar, onClickDismiss);
 
   React.useEffect(() => {
     dispatch(initializePlaylists());
