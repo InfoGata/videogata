@@ -278,7 +278,7 @@ export const PluginsProvider: React.FC = (props) => {
       host.hasPlayer = !!plugin.playerHtml;
       host.fileList = pluginFiles;
       host.manifestUrl = plugin.manifestUrl;
-      const timeoutMs = 3000;
+      const timeoutMs = 10000;
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(), timeoutMs);
       });
