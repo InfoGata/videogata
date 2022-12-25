@@ -57,7 +57,8 @@
     "applyFilters": "Apply Filters",
     "goToChannel": "Go to Channel",
     "newVersion": "A new version of this site is available",
-    "reload": "Reload"
+    "reload": "Reload",
+    "offline": "You are offline"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
