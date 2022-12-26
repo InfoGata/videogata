@@ -4,6 +4,7 @@ import {
   Avatar,
   ListItemText,
   Typography,
+  ListItemButton,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
@@ -22,24 +23,25 @@ const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
 
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   return (
-    <ListItem
-      button={true}
-      component={Link}
-      to={`/plugins/${pluginId}/playlists/${playlist.apiId}`}
-      state={playlist}
-    >
-      <ListItemAvatar>
-        <Avatar alt={playlist.name} src={image} style={{ borderRadius: 0 }} />
-      </ListItemAvatar>
-      <ListItemText
-        primary={
-          <Typography
-            dangerouslySetInnerHTML={{
-              __html: sanitizer(playlist?.name || ""),
-            }}
-          />
-        }
-      />
+    <ListItem disablePadding>
+      <ListItemButton
+        component={Link}
+        to={`/plugins/${pluginId}/playlists/${playlist.apiId}`}
+        state={playlist}
+      >
+        <ListItemAvatar>
+          <Avatar alt={playlist.name} src={image} style={{ borderRadius: 0 }} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <Typography
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(playlist?.name || ""),
+              }}
+            />
+          }
+        />
+      </ListItemButton>
     </ListItem>
   );
 };

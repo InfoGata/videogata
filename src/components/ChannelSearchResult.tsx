@@ -4,6 +4,7 @@ import {
   Avatar,
   ListItemText,
   Typography,
+  ListItemButton,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
@@ -22,24 +23,25 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
 
   const image = getThumbnailImage(channel.images, searchThumbnailSize);
   return (
-    <ListItem
-      button={true}
-      component={Link}
-      to={`/plugins/${pluginId}/channels/${channel.apiId}`}
-      state={channel}
-    >
-      <ListItemAvatar>
-        <Avatar alt={channel.name} src={image} style={{ borderRadius: 0 }} />
-      </ListItemAvatar>
-      <ListItemText
-        primary={
-          <Typography
-            dangerouslySetInnerHTML={{
-              __html: sanitizer(channel?.name || ""),
-            }}
-          />
-        }
-      />
+    <ListItem disablePadding>
+      <ListItemButton
+        component={Link}
+        to={`/plugins/${pluginId}/channels/${channel.apiId}`}
+        state={channel}
+      >
+        <ListItemAvatar>
+          <Avatar alt={channel.name} src={image} style={{ borderRadius: 0 }} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <Typography
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(channel?.name || ""),
+              }}
+            />
+          }
+        />
+      </ListItemButton>
     </ListItem>
   );
 };

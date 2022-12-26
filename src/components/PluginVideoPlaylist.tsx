@@ -7,6 +7,7 @@ import {
   ListItemText,
   Typography,
   IconButton,
+  ListItemButton,
 } from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
@@ -60,23 +61,23 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
     const image = getThumbnailImage(v.images, searchThumbnailSize);
     const videoUrl = getVideoUrl(v, playlistId);
     return (
-      <ListItem
-        button={true}
-        component={Link}
-        to={videoUrl}
-        selected={videoId === v.id}
-        key={v.id}
-      >
-        <ListItemAvatar>
-          <Avatar alt={v.title} src={image} style={{ borderRadius: 0 }} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <Typography
-              dangerouslySetInnerHTML={{ __html: sanitizer(v.title) }}
-            />
-          }
-        />
+      <ListItem key={v.id} disablePadding>
+        <ListItemButton
+          component={Link}
+          to={videoUrl}
+          selected={videoId === v.id}
+        >
+          <ListItemAvatar>
+            <Avatar alt={v.title} src={image} style={{ borderRadius: 0 }} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={
+              <Typography
+                dangerouslySetInnerHTML={{ __html: sanitizer(v.title) }}
+              />
+            }
+          />
+        </ListItemButton>
       </ListItem>
     );
   });

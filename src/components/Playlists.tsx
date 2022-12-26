@@ -4,6 +4,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
@@ -38,13 +39,15 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
   };
 
   return (
-    <ListItem button={true} component={Link} to={playlistPath}>
-      <ListItemText>{playlist.name}</ListItemText>
-      <ListItemSecondaryAction>
-        <IconButton onClick={openPlaylistMenu} size="large">
-          <MoreHoriz />
-        </IconButton>
-      </ListItemSecondaryAction>
+    <ListItem disablePadding>
+      <ListItemButton component={Link} to={playlistPath}>
+        <ListItemText>{playlist.name}</ListItemText>
+        <ListItemSecondaryAction>
+          <IconButton onClick={openPlaylistMenu} size="large">
+            <MoreHoriz />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItemButton>
     </ListItem>
   );
 };
