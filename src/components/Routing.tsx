@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 import AboutPage from "./AboutPage";
 import ChannelPage from "./ChannelPage";
@@ -27,8 +27,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Routing: React.FC = () => {
+  const theme = useTheme();
   return (
-    <Box component="main" sx={{ flexGrow: 1, p: 1, overflow: "auto" }}>
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 1,
+        overflow: "auto",
+        minHeight: `calc(100vh - ${theme.spacing(3)})`,
+      }}
+    >
       <DrawerHeader />
       <Routes>
         <Route path="/" element={<Home />} />
