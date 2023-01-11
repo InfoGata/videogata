@@ -14,7 +14,7 @@ import {
   Info,
   Menu,
   PlaylistAdd,
-  SettingsApplications,
+  Settings,
 } from "@mui/icons-material";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 import { useAppSelector } from "../store/hooks";
@@ -64,7 +64,7 @@ const Navigation: React.FC = () => {
         <ListItemButton component={Link} to="/settings">
           <ListItemIcon>
             <Tooltip title={t("settings")} placement="right">
-              <SettingsApplications />
+              <Settings />
             </Tooltip>
           </ListItemIcon>
           <ListItemText>{t("settings")}</ListItemText>
