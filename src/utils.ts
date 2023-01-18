@@ -180,6 +180,10 @@ export const getPluginSubdomain = (id?: string): string => {
   return `${window.location.protocol}//${id}.${window.location.host}`;
 };
 
+export const hasExtension = () => {
+  return typeof window.InfoGata !== "undefined";
+};
+
 export const searchThumbnailSize = 40;
 
 export const playlistThumbnailSize = 200;

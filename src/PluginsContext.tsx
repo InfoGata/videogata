@@ -32,8 +32,9 @@ import {
 } from "./store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import i18n from "./i18n";
-import { getPluginSubdomain } from "./utils";
+import { getPluginSubdomain, hasExtension } from "./utils";
 import { useTranslation } from "react-i18next";
+import { NetworkRequest } from "./types";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -64,6 +65,10 @@ export interface PluginMethodInterface {
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
+  networkRequest(
+    input: RequestInfo,
+    init?: RequestInit
+  ): Promise<NetworkRequest>;
   postUiMessage(message: any): Promise<void>;
   getPluginId(): Promise<string>;
   createNotification(notification: NotificationMessage): Promise<void>;
@@ -141,6 +146,37 @@ export const PluginsProvider: React.FC = (props) => {
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
+        networkRequest: async (input: RequestInfo, init?: RequestInit) => {
+          if (hasExtension()) {
+            return await window.InfoGata.networkRequest(input, init);
+          }
+
+          const response = await fetch(input, init);
+
+          const body = await response.blob();
+
+          const responseHeaders = Object.fromEntries(
+            response.headers.entries()
+          );
+
+          // Remove forbidden header
+          if (responseHeaders["set-cookie"]) {
+            delete responseHeaders["set-cookie"];
+          }
+
+          const result = {
+            body: body,
+            headers: responseHeaders,
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+          };
+          return result;
+        },
+        isNetworkRequestCorsDisabled: async () => {
+          const isDisabled = hasExtension();
+          return isDisabled;
+        },
         postUiMessage: async (message: any) => {
           setPluginMessage({ pluginId: plugin.id, message });
         },
