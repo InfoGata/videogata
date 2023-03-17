@@ -1,3 +1,5 @@
+import { Channel, PlaylistInfo, Video } from "./plugintypes";
+
 export interface NetworkRequest {
   body: Blob | ArrayBuffer;
   headers: { [k: string]: string };
@@ -60,3 +62,18 @@ export const enum SearchResultType {
   Playlists = "playlists",
   Channels = "channels",
 }
+
+export type TrackItemType = {
+  type: "video";
+  item: Video;
+};
+export type PlaylistItemType = {
+  type: "playlist";
+  item: PlaylistInfo;
+};
+export type ChannelItemType = {
+  type: "channel";
+  item: Channel;
+};
+
+export type ItemMenuType = TrackItemType | PlaylistItemType | ChannelItemType;

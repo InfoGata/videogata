@@ -1,4 +1,9 @@
-import { PlaylistAdd, Subscriptions } from "@mui/icons-material";
+import {
+  PlaylistAdd,
+  Star,
+  StarBorder,
+  Subscriptions,
+} from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,15 +11,16 @@ import { Link } from "react-router-dom";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Video } from "./plugintypes";
+import { db } from "./database";
+import { useSnackbar } from "notistack";
 
 export interface VideoMenuInterface {
   openVideoMenu: (
     event: React.MouseEvent<HTMLButtonElement>,
     video: Video
-  ) => void;
+  ) => Promise<void>;
   setPlaylists: React.Dispatch<React.SetStateAction<PlaylistInfo[]>>;
   setListElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
-  menuVideo: Video | undefined;
 }
 
 const VideoMenuContext = React.createContext<VideoMenuInterface>(undefined!);
@@ -27,9 +33,11 @@ export const VideoMenuProvider: React.FC = (props) => {
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const [isFavorited, setIsFavorited] = React.useState(false);
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const openVideoMenu = (
+  const openVideoMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     video: Video
   ) => {
@@ -37,6 +45,32 @@ export const VideoMenuProvider: React.FC = (props) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
     setMenuVideo(video);
+    if (video.pluginId && video.apiId) {
+      const hasFavorite = await db.favoriteVideos.get({
+        pluginId: video.pluginId,
+        apiId: video.apiId,
+      });
+      setIsFavorited(!!hasFavorite);
+    } else if (video.id) {
+      const hasFavorite = await db.favoriteVideos.get(video.id);
+      setIsFavorited(!!hasFavorite);
+    } else {
+      setIsFavorited(false);
+    }
+  };
+
+  const favoriteTrack = async () => {
+    if (menuVideo) {
+      await db.favoriteVideos.add(menuVideo);
+      enqueueSnackbar(t("addedToFavorites"));
+    }
+  };
+
+  const removeFavorite = async () => {
+    if (menuVideo?.id) {
+      await db.favoriteVideos.delete(menuVideo.id);
+      enqueueSnackbar(t("removedFromFavorites"));
+    }
   };
 
   const addMenuVideoToNewPlaylist = () => {
@@ -44,7 +78,6 @@ export const VideoMenuProvider: React.FC = (props) => {
   };
 
   const defaultContext: VideoMenuInterface = {
-    menuVideo,
     openVideoMenu,
     setPlaylists,
     setListElements,
@@ -58,6 +91,14 @@ export const VideoMenuProvider: React.FC = (props) => {
         anchorEl={anchorEl}
         onClick={closeMenu}
       >
+        <MenuItem onClick={isFavorited ? removeFavorite : favoriteTrack}>
+          <ListItemIcon>{isFavorited ? <StarBorder /> : <Star />}</ListItemIcon>
+          <ListItemText
+            primary={
+              isFavorited ? t("removeFromFavorites") : t("addToFavorites")
+            }
+          />
+        </MenuItem>
         {menuVideo?.channelApiId && (
           <MenuItem
             component={Link}

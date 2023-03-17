@@ -14,6 +14,7 @@ import { VideoMenuProvider } from "./VideoMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
+import { ItemMenuProvider } from "./ItemMenuContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,12 +52,14 @@ const App: React.FC = () => {
           <MatomoRouterProvider>
             <PluginsProvider>
               <VideoMenuProvider>
-                <Box sx={{ display: "flex" }}>
-                  <CssBaseline />
-                  <TopBar />
-                  <SideBar />
-                  <Routing />
-                </Box>
+                <ItemMenuProvider>
+                  <Box sx={{ display: "flex" }}>
+                    <CssBaseline />
+                    <TopBar />
+                    <SideBar />
+                    <Routing />
+                  </Box>
+                </ItemMenuProvider>
               </VideoMenuProvider>
             </PluginsProvider>
           </MatomoRouterProvider>

@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   ListItem,
   ListItemAvatar,
@@ -5,10 +6,13 @@ import {
   ListItemText,
   Typography,
   ListItemButton,
+  ListItemSecondaryAction,
+  IconButton,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
+import useItemMenu from "../hooks/useItemMenu";
 import { Channel } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
@@ -20,6 +24,13 @@ interface ChannelSearchResultProps {
 const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
   const { channel, pluginId } = props;
   const sanitizer = DOMPurify.sanitize;
+
+  const { openMenu } = useItemMenu();
+  const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (openMenu) {
+      openMenu(event, { type: "channel", item: channel });
+    }
+  };
 
   const image = getThumbnailImage(channel.images, searchThumbnailSize);
   return (
@@ -42,6 +53,11 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
           }
         />
       </ListItemButton>
+      <ListItemSecondaryAction>
+        <IconButton onClick={openChannelMenu} size="large">
+          <MoreHoriz />
+        </IconButton>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };

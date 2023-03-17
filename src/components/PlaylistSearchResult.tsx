@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   ListItem,
   ListItemAvatar,
@@ -5,10 +6,13 @@ import {
   ListItemText,
   Typography,
   ListItemButton,
+  ListItemSecondaryAction,
+  IconButton,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
+import useItemMenu from "../hooks/useItemMenu";
 import { PlaylistInfo } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
@@ -20,6 +24,13 @@ interface PlaylistSearchResultProps {
 const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
   const { playlist, pluginId } = props;
   const sanitizer = DOMPurify.sanitize;
+
+  const { openMenu } = useItemMenu();
+  const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (openMenu) {
+      openMenu(event, { type: "playlist", item: playlist });
+    }
+  };
 
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   return (
@@ -42,6 +53,11 @@ const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
           }
         />
       </ListItemButton>
+      <ListItemSecondaryAction>
+        <IconButton onClick={openPlaylistMenu} size="large">
+          <MoreHoriz />
+        </IconButton>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };

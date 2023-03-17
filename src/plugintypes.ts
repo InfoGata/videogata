@@ -61,6 +61,7 @@ export interface PlaylistInfo {
 }
 
 export interface Channel {
+  id?: string;
   name: string;
   apiId?: string;
   images?: ImageInfo[];

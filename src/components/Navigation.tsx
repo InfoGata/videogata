@@ -15,6 +15,7 @@ import {
   Menu,
   PlaylistAdd,
   Settings,
+  Star,
 } from "@mui/icons-material";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 import { useAppSelector } from "../store/hooks";
@@ -78,6 +79,16 @@ const Navigation: React.FC = () => {
             </Tooltip>
           </ListItemIcon>
           <ListItemText>{t("about")}</ListItemText>
+        </ListItemButton>
+      </ListItem>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/favorites/videos">
+          <ListItemIcon>
+            <Tooltip title={t("favorites")} placement="right">
+              <Star />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("favorites")}</ListItemText>
         </ListItemButton>
       </ListItem>
       <ListItem disablePadding>

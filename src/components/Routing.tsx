@@ -4,6 +4,10 @@ import { Route, Routes } from "react-router-dom";
 import AboutPage from "./AboutPage";
 import ChannelPage from "./ChannelPage";
 import Donate from "./Donate";
+import FavoriteChannels from "./FavoriteChannels";
+import FavoritePlaylists from "./FavoritePlaylists";
+import Favorites from "./Favorites";
+import FavoriteVideos from "./FavoriteVideos";
 import Home from "./Home";
 import Playlists from "./Playlists";
 import PlaylistVideos from "./PlaylistVideos";
@@ -47,6 +51,12 @@ const Routing: React.FC = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/donate" element={<Donate />} />
+        <Route path="/favorites" element={<Favorites />}>
+          <Route index element={<FavoriteVideos />} />
+          <Route path="videos" element={<FavoriteVideos />} />
+          <Route path="channels" element={<FavoriteChannels />} />
+          <Route path="playlists" element={<FavoritePlaylists />} />
+        </Route>
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistVideos />} />
         <Route

@@ -251,6 +251,10 @@ export const PluginsProvider: React.FC = (props) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });
+          result.channels?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
           result.playlists?.items.forEach((i) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
@@ -262,9 +266,31 @@ export const PluginsProvider: React.FC = (props) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });
+          result.channels?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
           return result;
         },
         onSearchVideos: (result: SearchVideoResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          return result;
+        },
+        onSearchPlaylists: (result: SearchPlaylistResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          return result;
+        },
+        onSearchChannels: (result: SearchChannelResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
