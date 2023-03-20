@@ -18,6 +18,7 @@ import PluginPlaylist from "./PluginPlaylist";
 import PluginPlaylists from "./PluginPlaylists";
 import Plugins from "./Plugins";
 import PluginVideo from "./PluginVideo";
+import Privacy from "./Privacy";
 import Search from "./Search";
 import Settings from "./Settings";
 
@@ -50,6 +51,7 @@ const Routing: React.FC = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/favorites" element={<Favorites />}>
           <Route index element={<FavoriteVideos />} />
