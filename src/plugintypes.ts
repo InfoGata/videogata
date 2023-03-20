@@ -58,6 +58,7 @@ export interface PlaylistInfo {
   isUserPlaylist?: boolean;
   apiId?: string;
   pluginId?: string;
+  originalUrl?: string;
 }
 
 export interface Channel {
@@ -66,6 +67,7 @@ export interface Channel {
   apiId?: string;
   images?: ImageInfo[];
   pluginId?: string;
+  originalUrl?: string;
 }
 
 export interface Playlist extends PlaylistInfo {

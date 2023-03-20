@@ -3,6 +3,7 @@ import {
   Star,
   StarBorder,
   Subscriptions,
+  Link as LinkIcon,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
@@ -108,6 +109,14 @@ export const VideoMenuProvider: React.FC = (props) => {
               <Subscriptions />
             </ListItemIcon>
             <ListItemText primary={t("goToChannel")} />
+          </MenuItem>
+        )}
+        {menuVideo?.originalUrl && (
+          <MenuItem component="a" href={menuVideo.originalUrl} target="_blank">
+            <ListItemIcon>
+              <LinkIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("originalUrl")} />
           </MenuItem>
         )}
         {listElements}

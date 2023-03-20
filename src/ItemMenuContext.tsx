@@ -3,7 +3,7 @@ import { db } from "./database";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
-import { Star, StarBorder } from "@mui/icons-material";
+import { Star, StarBorder, Link as LinkIcon } from "@mui/icons-material";
 import { ItemMenuType } from "./types";
 import Dexie from "dexie";
 
@@ -95,6 +95,18 @@ export const ItemMenuProvider: React.FC = (props) => {
             }
           />
         </MenuItem>
+        {menuItem?.item.originalUrl && (
+          <MenuItem
+            component="a"
+            href={menuItem.item.originalUrl}
+            target="_blank"
+          >
+            <ListItemIcon>
+              <LinkIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("originalUrl")} />
+          </MenuItem>
+        )}
       </Menu>
     </ItemMenuContext.Provider>
   );
