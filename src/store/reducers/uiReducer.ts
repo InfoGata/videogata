@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UiState {
   navbarOpen: boolean;
-  waitingServiceWorker?: ServiceWorker;
 }
 
 const initialState: UiState = {
@@ -19,11 +18,8 @@ const uiSlice = createSlice({
         navbarOpen: !state.navbarOpen,
       };
     },
-    updateReady(state, action: PayloadAction<ServiceWorker>) {
-      state.waitingServiceWorker = action.payload;
-    },
   },
 });
 
-export const { toggleNavbar, updateReady } = uiSlice.actions;
+export const { toggleNavbar } = uiSlice.actions;
 export default uiSlice.reducer;

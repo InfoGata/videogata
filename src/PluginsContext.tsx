@@ -187,10 +187,7 @@ export const PluginsProvider: React.FC = (props) => {
           enqueueSnackbar(notification.message, { variant: notification.type });
         },
         getCorsProxy: async () => {
-          if (
-            process.env.NODE_ENV === "production" ||
-            corsProxyUrlRef.current
-          ) {
+          if (import.meta.env.PROD || corsProxyUrlRef.current) {
             return corsProxyUrlRef.current;
           } else {
             return "http://localhost:8085/";

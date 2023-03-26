@@ -9,9 +9,12 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
-import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
-import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import {
+  getThumbnailImage,
+  searchThumbnailSize,
+  formatSeconds,
+} from "../utils";
 import DOMPurify from "dompurify";
 import { Link as RouterLink } from "react-router-dom";
 

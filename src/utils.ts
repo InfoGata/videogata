@@ -170,8 +170,8 @@ export async function filterAsync<T>(
 }
 
 export const getPluginSubdomain = (id?: string): string => {
-  if (process.env.NODE_ENV === "production") {
-    const domain = process.env.REACT_APP_DOMAIN || "videogata.com";
+  if (import.meta.env.PROD) {
+    const domain = import.meta.env.VITE_DOMAIN || "videogata.com";
     const protocol = domain.startsWith("localhost")
       ? window.location.protocol
       : "https:";
