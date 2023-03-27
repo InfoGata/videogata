@@ -25,7 +25,6 @@
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.11",
     "@types/video.js": "^7.3.42",
-    "@types/webpack-env": "^1.17.0",
     "axios": "^0.21.1",
     "babel-plugin-import": "^1.13.5",
     "dexie": "^3.2.2",
