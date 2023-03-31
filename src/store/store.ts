@@ -15,7 +15,7 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-export const setupStore = (preloadState?: PreloadedState<AppState>) => {
+export const setupStore = (preloadedState?: PreloadedState<AppState>) => {
   return configureStore({
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -23,6 +23,7 @@ export const setupStore = (preloadState?: PreloadedState<AppState>) => {
         serializableCheck: false,
       }),
     reducer: persistedReducer,
+    preloadedState,
   });
 };
 const store = setupStore();
