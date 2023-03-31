@@ -1,12 +1,11 @@
 import { Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { usePlugins } from "../PluginsContext";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
-import { directoryProps, getPlugin } from "../utils";
+import { directoryProps, generatePluginId, getPlugin } from "../utils";
 import AddPluginUrlDialog from "./AddPluginUrlDialog";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PluginContainer from "./PluginContainer";
@@ -43,7 +42,7 @@ const Plugins: React.FC = () => {
 
     if (plugin) {
       if (!plugin.id) {
-        plugin.id = nanoid();
+        plugin.id = generatePluginId();
       }
       setPendingPlugin(plugin);
     }

@@ -34,6 +34,7 @@
     "i18next-browser-languagedetector": "^6.1.8",
     "lodash": "^4.17.21",
     "mui-image": "^1.0.7",
+    "nanoid": "^4.0.2",
     "notistack": "^2.0.5",
     "plugin-frame": "^0.4.1",
     "react": "^17.0.2",
@@ -80,7 +81,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "vite": "^4.2.1",
-    "vite-plugin-svgr": "^2.4.0",
-    "vite-plugin-pwa": "^0.14.6"
+    "vite-plugin-pwa": "^0.14.6",
+    "vite-plugin-svgr": "^2.4.0"
   }
 }

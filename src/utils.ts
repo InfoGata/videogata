@@ -2,6 +2,7 @@ import { ImageInfo, PluginInfo } from "./plugintypes";
 import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
 import i18next from "./i18n";
+import { customAlphabet } from "nanoid";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -182,6 +183,15 @@ export const getPluginSubdomain = (id?: string): string => {
 
 export const hasExtension = () => {
   return typeof window.InfoGata !== "undefined";
+};
+
+export const generatePluginId = () => {
+  // Cannot use '-' or '_' if they show up and beginning or end of id.
+  const nanoid = customAlphabet(
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    21
+  );
+  return nanoid();
 };
 
 export const searchThumbnailSize = 40;
