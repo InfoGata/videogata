@@ -13,12 +13,12 @@ import React from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import useVideoMenu from "../hooks/useVideoMenu";
-import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 import { Image } from "mui-image";
 import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+import usePlugins from "../hooks/usePlugins";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");

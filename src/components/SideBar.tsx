@@ -6,7 +6,7 @@ import { toggleNavbar } from "../store/reducers/uiReducer";
 import { styled, CSSObject, Theme } from "@mui/material/styles";
 import DrawerHeader from "./DrawerHeader";
 
-export const navbarWidth = 200;
+const navbarWidth = 200;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: navbarWidth,

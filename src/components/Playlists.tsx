@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { PluginFrameContainer, usePlugins } from "../PluginsContext";
+import { PluginFrameContainer } from "../PluginsContext";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { filterAsync } from "../utils";
 import { Link } from "react-router-dom";
@@ -22,6 +22,7 @@ import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 import { useTranslation } from "react-i18next";
 import ImportPlaylistUrlDialog from "./ImportPlaylistUrlDialog";
+import usePlugins from "../hooks/usePlugins";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;

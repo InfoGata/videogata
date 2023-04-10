@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 import Routing from "./components/Routing";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
-import { PluginsProvider } from "./PluginsContext";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
@@ -14,7 +13,8 @@ import { VideoMenuProvider } from "./VideoMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
-import { ItemMenuProvider } from "./ItemMenuContext";
+import PluginsProvider from "./providers/PluginsProvider";
+import ItemMenuProvider from "./providers/ItemMenuProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {

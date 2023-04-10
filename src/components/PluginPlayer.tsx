@@ -1,7 +1,8 @@
 import React from "react";
-import { PluginFrameContainer, usePlugins } from "../PluginsContext";
+import { PluginFrameContainer } from "../PluginsContext";
 import { db } from "../database";
 import { getPluginSubdomain } from "../utils";
+import usePlugins from "../hooks/usePlugins";
 
 interface PluginPlayerProps {
   apiId?: string;

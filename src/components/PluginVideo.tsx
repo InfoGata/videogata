@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { usePlugins } from "../PluginsContext";
 import VideoPlayer from "./VideoPlayer";
 import { Video } from "../plugintypes";
 import PluginPlayer from "./PluginPlayer";
@@ -12,6 +11,7 @@ import PluginVideoComments from "./PluginVideoComments";
 import RecommendedVideos from "./RecommendVideos";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import useFindPlugin from "../hooks/useFindPlugin";
+import usePlugins from "../hooks/usePlugins";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

@@ -2,7 +2,7 @@ import { Box, Button, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { PageInfo } from "../plugintypes";
 import Comment from "./Comment";
 

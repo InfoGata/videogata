@@ -1,5 +1,4 @@
 import React from "react";
-import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import thumbnail from "../thumbnail.png";
@@ -16,6 +15,7 @@ import {
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();

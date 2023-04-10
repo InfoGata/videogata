@@ -10,7 +10,6 @@ import {
 import React from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router-dom";
-import { usePlugins } from "../PluginsContext";
 import { SearchResultType } from "../types";
 import SelectPlugin from "./SelectPlugin";
 import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
@@ -18,6 +17,7 @@ import VideoSearchResults from "./VideoSearchResults";
 import ChannelSearchResults from "./ChannelSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
 import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
 
 interface TabPanelProps {
   children?: React.ReactNode;
