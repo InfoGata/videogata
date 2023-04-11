@@ -1,4 +1,4 @@
-import { ImageInfo, PluginInfo } from "./plugintypes";
+import { ImageInfo, PluginInfo, Video } from "./plugintypes";
 import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
 import i18next from "./i18n";
@@ -192,6 +192,22 @@ export const generatePluginId = () => {
     21
   );
   return nanoid();
+};
+
+// Merge videos, arr1 and arr2 have videos with the same id, take arr2's video
+export const mergeVideos = (arr1: Video[], arr2: Video[]): Video[] => {
+  const map = new Map<string, Video>();
+  arr1.forEach((t) => {
+    if (t.id) {
+      map.set(t.id, t);
+    }
+  });
+  arr2.forEach((t) => {
+    if (t.id) {
+      map.set(t.id, t);
+    }
+  });
+  return Array.from(map.values());
 };
 
 export const searchThumbnailSize = 40;
