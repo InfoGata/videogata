@@ -9,12 +9,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import { VideoMenuProvider } from "./VideoMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
 import PluginsProvider from "./providers/PluginsProvider";
 import ItemMenuProvider from "./providers/ItemMenuProvider";
+import VideoMenuProvider from "./providers/VideoMenuProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
