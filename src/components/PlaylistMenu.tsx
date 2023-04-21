@@ -16,6 +16,7 @@ interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
   selected: Set<string>;
   videoList: Video[];
+  menuItems?: JSX.Element[];
   selectedMenuItems?: JSX.Element[];
   anchorElement: HTMLElement | null;
   onClose: () => void;
@@ -29,6 +30,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     selectedMenuItems,
     anchorElement,
     onClose,
+    menuItems,
   } = props;
   const { t } = useTranslation();
 
@@ -58,7 +60,9 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
         open={Boolean(anchorElement)}
         onClose={onClose}
         anchorEl={anchorElement}
+        onClick={onClose}
       >
+        {menuItems}
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />

@@ -9,30 +9,54 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
 import { useSnackbar } from "notistack";
 import React from "react";
+import { ParseUrlType, Playlist, Video } from "../plugintypes";
 import { useTranslation } from "react-i18next";
-import usePlugins from "../hooks/usePlugins";
 import { PluginFrameContainer } from "../PluginsContext";
-import { useAppDispatch } from "../store/hooks";
-import { addPlaylist } from "../store/reducers/playlistReducer";
+import usePlugins from "../hooks/usePlugins";
 import { filterAsync } from "../utils";
+import { nanoid } from "nanoid";
 
-interface ImportPlaylistUrlDialogProps {
+interface ImportDialogProps {
   open: boolean;
   handleClose: () => void;
+  parseType: ParseUrlType;
+  onSuccess: (item: Video[] | Playlist) => void;
 }
 
-const ImportPlaylistUrlDialog: React.FC<ImportPlaylistUrlDialogProps> = (
-  props
+const parseTypeToMethod = async (
+  plugin: PluginFrameContainer,
+  parseType: ParseUrlType
+): Promise<boolean> => {
+  switch (parseType) {
+    case "playlist":
+      return await plugin.hasDefined.onLookupPlaylistUrl();
+    case "video":
+      return await plugin.hasDefined.onLookupVideoUrls();
+  }
+};
+
+const lookupUrl = async (
+  plugin: PluginFrameContainer,
+  parseType: ParseUrlType,
+  url: string
 ) => {
+  switch (parseType) {
+    case "playlist":
+      return await plugin.remote.onLookupPlaylistUrl(url);
+    case "video":
+      return await plugin.remote.onLookupVideoUrls([url]);
+  }
+};
+
+const ImportDialog: React.FC<ImportDialogProps> = (props) => {
+  const { open, handleClose, parseType, onSuccess } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { plugins } = usePlugins();
-  const dispatch = useAppDispatch();
-  const { open, handleClose } = props;
   const [url, setUrl] = React.useState("");
   const formId = nanoid();
+
   const [parserPlugins, setParserPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -43,24 +67,24 @@ const ImportPlaylistUrlDialog: React.FC<ImportPlaylistUrlDialogProps> = (
       const parserPlugins = await filterAsync(plugins, (p) =>
         p.hasDefined.onCanParseUrl()
       );
-      const playlistPlugins = await filterAsync(parserPlugins, (p) =>
-        p.hasDefined.onLookupPlaylistUrl()
+      const validPlugins = await filterAsync(parserPlugins, (p) =>
+        parseTypeToMethod(p, parseType)
       );
-      setParserPlugins(playlistPlugins);
+      setParserPlugins(validPlugins);
     };
     getParsers();
-  }, [plugins]);
+  }, [plugins, parseType]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsers = await filterAsync(parserPlugins, (p) =>
-      p.remote.onCanParseUrl(url, "playlist")
+      p.remote.onCanParseUrl(url, parseType)
     );
     const parser = parsers[0];
     if (parser) {
-      const playlist = await parser.remote.onLookupPlaylistUrl(url);
-      dispatch(addPlaylist(playlist));
-      enqueueSnackbar(t("playlistImported", { playlistName: playlist.name }));
+      const item = await lookupUrl(parser, parseType, url);
+      console.log(item);
+      onSuccess(item);
     } else {
       enqueueSnackbar(t("noImporters"), { variant: "error" });
     }
@@ -78,7 +102,7 @@ const ImportPlaylistUrlDialog: React.FC<ImportPlaylistUrlDialogProps> = (
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">{t("importPlaylist")}</DialogTitle>
+      <DialogTitle id="form-dialog-title">{t("import")}</DialogTitle>
       <DialogContent>
         <form id={formId} onSubmit={onSubmit}>
           <TextField
@@ -110,11 +134,11 @@ const ImportPlaylistUrlDialog: React.FC<ImportPlaylistUrlDialogProps> = (
           type="submit"
           form={formId}
         >
-          {t("importPlaylist")}
+          {t("import")}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default ImportPlaylistUrlDialog;
+export default ImportDialog;

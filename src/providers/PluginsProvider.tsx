@@ -257,6 +257,13 @@ const PluginsProvider: React.FC = (props) => {
           });
           return result;
         },
+        onLookupVideoUrls: (result: Video[]) => {
+          result.forEach((t) => {
+            t.id = nanoid();
+            t.pluginId = plugin.id;
+          });
+          return result;
+        },
       };
 
       const host = new PluginFrameContainer(api, {

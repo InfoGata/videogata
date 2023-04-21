@@ -47,6 +47,7 @@ export interface PluginMethodInterface {
   onGetTopItems(): Promise<SearchAllResult>;
   onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
+  onLookupVideoUrls(urls: string[]): Promise<Video[]>;
 }
 
 export interface PluginMessage {

@@ -17,12 +17,13 @@ import { PluginFrameContainer } from "../PluginsContext";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { filterAsync } from "../utils";
 import { Link } from "react-router-dom";
-import { PlaylistInfo } from "../plugintypes";
+import { Playlist, PlaylistInfo, Video } from "../plugintypes";
 import { Delete, MoreHoriz } from "@mui/icons-material";
-import { deletePlaylist } from "../store/reducers/playlistReducer";
+import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { useTranslation } from "react-i18next";
-import ImportPlaylistUrlDialog from "./ImportPlaylistUrlDialog";
 import usePlugins from "../hooks/usePlugins";
+import ImportDialog from "./ImportDialog";
+import { useSnackbar } from "notistack";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -56,6 +57,7 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
 const Playlists: React.FC = () => {
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -108,6 +110,13 @@ const Playlists: React.FC = () => {
     closeMenu();
   };
 
+  const onImport = (item: Playlist | Video[]) => {
+    if ("videos" in item) {
+      dispatch(addPlaylist(item));
+      enqueueSnackbar(t("playlistImported", { playlistName: item.name }));
+    }
+  };
+
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -130,9 +139,11 @@ const Playlists: React.FC = () => {
           <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
-      <ImportPlaylistUrlDialog
+      <ImportDialog
         open={openImportDialog}
         handleClose={onCloseImportDialog}
+        parseType="playlist"
+        onSuccess={onImport}
       />
     </>
   );
