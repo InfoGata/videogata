@@ -1,20 +1,40 @@
-import { Card, CardMedia, Box, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardMedia,
+  Box,
+  CardContent,
+  Typography,
+  Chip,
+} from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import thumbnail from "../thumbnail.png";
+import { useTranslation } from "react-i18next";
 
 interface PlaylistInfoCardProps {
   name: string;
   subtitle?: string;
   subtitleLink?: string;
   images?: ImageInfo[];
+  isLive?: boolean;
+  pluginId?: string;
+  channelApiId?: string;
 }
 
 const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
-  const { name, subtitle, images, subtitleLink } = props;
+  const {
+    name,
+    subtitle,
+    images,
+    subtitleLink,
+    pluginId,
+    channelApiId,
+    isLive,
+  } = props;
+  const { t } = useTranslation();
   const sanitizer = DOMPurify.sanitize;
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -39,6 +59,15 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
               __html: sanitizer(name),
             }}
           />
+          {isLive && (
+            <Chip
+              label={t("live")}
+              color="error"
+              component={Link}
+              to={`/plugins/${pluginId}/channels/${channelApiId}/live`}
+              clickable
+            />
+          )}
           {subtitle && (
             <Typography
               component={subtitleLink ? Link : "div"}

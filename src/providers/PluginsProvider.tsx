@@ -234,6 +234,10 @@ const PluginsProvider: React.FC = (props) => {
           video.pluginId = plugin.id;
           return video;
         },
+        onGetLiveVideo: (video: Video) => {
+          video.pluginId = plugin.id;
+          return video;
+        },
         onGetPlaylistVideos: (result: PlaylistVideosResult) => {
           result.items.forEach((i) => {
             i.pluginId = plugin.id;

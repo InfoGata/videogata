@@ -3,6 +3,7 @@ import {
   ChannelVideosRequest,
   ChannelVideosResult,
   CommentReplyRequest,
+  GetLiveVideoRequest,
   GetVideoRequest,
   ParseUrlType,
   Playlist,
@@ -26,6 +27,7 @@ export interface PluginMethodInterface {
   onSearchVideos(request: SearchRequest): Promise<SearchVideoResult>;
   onSearchPlaylists(request: SearchRequest): Promise<SearchPlaylistResult>;
   onGetVideo(request: GetVideoRequest): Promise<Video>;
+  onGetLiveVideo(request: GetLiveVideoRequest): Promise<Video | undefined>;
   onGetUserPlaylists(
     request: UserPlaylistRequest
   ): Promise<SearchPlaylistResult>;

@@ -19,6 +19,7 @@ const ChannelPage: React.FC = () => {
   const plugin = plugins.find((p) => p.id === pluginId);
   const location = useLocation();
   const state = location.state as Channel | null;
+  const [isLive, setIsLive] = React.useState<boolean>();
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
@@ -41,6 +42,7 @@ const ChannelPage: React.FC = () => {
         setChannel(channelInfo.channel);
       }
       setCurrentPage(channelInfo.pageInfo);
+      setIsLive(channelInfo.isLive);
       return channelInfo.items;
     }
     return [];
@@ -60,7 +62,13 @@ const ChannelPage: React.FC = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       {channel && (
-        <PlaylistInfoCard name={channel.name || ""} images={channel.images} />
+        <PlaylistInfoCard
+          name={channel.name || ""}
+          images={channel.images}
+          isLive={isLive}
+          pluginId={channel.pluginId}
+          channelApiId={channel.apiId}
+        />
       )}
       <VideoCards videos={query?.data || []} openMenu={openMenu} />
       <Pager

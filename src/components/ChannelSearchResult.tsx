@@ -8,6 +8,7 @@ import {
   ListItemButton,
   ListItemSecondaryAction,
   IconButton,
+  Chip,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
@@ -15,6 +16,7 @@ import { Link } from "react-router-dom";
 import useItemMenu from "../hooks/useItemMenu";
 import { Channel } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import { useTranslation } from "react-i18next";
 
 interface ChannelSearchResultProps {
   channel: Channel;
@@ -24,6 +26,7 @@ interface ChannelSearchResultProps {
 const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
   const { channel, pluginId } = props;
   const sanitizer = DOMPurify.sanitize;
+  const { t } = useTranslation();
 
   const { openMenu } = useItemMenu();
   const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -52,6 +55,7 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
             />
           }
         />
+        {channel.isLive && <Chip label={t("live")} color="error" clickable />}
       </ListItemButton>
       <ListItemSecondaryAction>
         <IconButton onClick={openChannelMenu} size="large">

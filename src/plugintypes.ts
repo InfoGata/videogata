@@ -31,7 +31,7 @@ export interface Video {
   id?: string;
   title: string;
   apiId?: string;
-  duration: number;
+  duration?: number;
   pluginId?: string;
   images?: ImageInfo[];
   sources?: VideoSource[];
@@ -68,6 +68,7 @@ export interface Channel {
   images?: ImageInfo[];
   pluginId?: string;
   originalUrl?: string;
+  isLive?: boolean;
 }
 
 export interface Playlist extends PlaylistInfo {
@@ -112,6 +113,10 @@ export interface SearchChannelResult extends SearchResult {
 
 export interface GetVideoRequest {
   apiId: string;
+}
+
+export interface GetLiveVideoRequest {
+  channelApiId: string;
 }
 
 export interface UserPlaylistRequest {
@@ -164,6 +169,7 @@ export interface VideoComment {
 
 export interface ChannelVideosResult extends SearchVideoResult {
   channel?: Channel;
+  isLive?: boolean;
 }
 
 export type FilterType = "radio" | "select" | "text";

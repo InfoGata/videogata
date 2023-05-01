@@ -6,11 +6,13 @@ import usePlugins from "../hooks/usePlugins";
 
 interface PluginPlayerProps {
   apiId?: string;
+  channelApiId?: string;
+  isLive?: boolean;
   plugin?: PluginFrameContainer;
 }
 
 const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
-  const { apiId, plugin } = props;
+  const { apiId, plugin, isLive, channelApiId } = props;
   const [playerHtml, setPlayerHtml] = React.useState<string>();
   const ref = React.useRef<HTMLIFrameElement>(null);
   const { pluginMessage } = usePlugins();
@@ -58,7 +60,11 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     }
   };
 
-  const srcUrl = `${getPluginSubdomain(plugin?.id)}/ui.html?apiId=${apiId}`;
+  const srcUrl = `${getPluginSubdomain(
+    plugin?.id
+  )}/ui.html?apiId=${apiId}&isLive=${
+    isLive === true
+  }&channelApiId=${channelApiId}`;
 
   return (
     <>

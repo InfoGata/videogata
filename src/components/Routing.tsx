@@ -22,6 +22,7 @@ import PluginVideo from "./PluginVideo";
 import Privacy from "./Privacy";
 import Search from "./Search";
 import Settings from "./Settings";
+import PluginLive from "./PluginLive";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -65,6 +66,10 @@ const Routing: React.FC = () => {
         <Route
           path="/plugins/:pluginId/videos/:apiId"
           element={<PluginVideo />}
+        />
+        <Route
+          path="/plugins/:pluginId/channels/:apiId/live"
+          element={<PluginLive />}
         />
         <Route
           path="/plugins/:pluginId/playlists"

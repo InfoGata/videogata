@@ -20,6 +20,7 @@ import {
   getThumbnailImage,
   playlistThumbnailSize,
 } from "../utils";
+import thumbnail from "../thumbnail.png";
 
 interface VideoCardProps {
   pluginId: string;
@@ -43,10 +44,19 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
     }
   };
 
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = thumbnail;
+  };
+
   return (
     <Card sx={{ maxWidth: "250px" }}>
       <CardActionArea component={Link} to={url}>
-        <CardMedia component="img" alt={video.title} image={image} />
+        <CardMedia
+          component="img"
+          alt={video.title}
+          image={image}
+          onError={onImageError}
+        />
         <CardContent>
           <Typography
             variant="body2"
@@ -59,6 +69,7 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
               label={formatSeconds(video.duration)}
               color="primary"
               sx={{ position: "absolute", top: "10px", right: "10px" }}
+              clickable
             />
           ) : null}
         </CardContent>
