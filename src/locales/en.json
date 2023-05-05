@@ -93,7 +93,7 @@
     "version": "Version",
     "scriptSize": "Script Size",
     "optionsPageSize": "Options Page Size",
-    "playerPageSize ": "Player Page Size",
+    "playerPageSize": "Player Page Size",
     "updateUrl": "Update Url",
     "installingPlugin": "Installing Plugin from {{manifestUrl}}",
     "failedToInstall": "Failed to Install plugin from {{manifestUrl}}",
