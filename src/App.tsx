@@ -15,6 +15,7 @@ import useOffline from "./hooks/useOffline";
 import PluginsProvider from "./providers/PluginsProvider";
 import ItemMenuProvider from "./providers/ItemMenuProvider";
 import VideoMenuProvider from "./providers/VideoMenuProvider";
+import { hasExtension } from "./utils";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,31 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const messageChannel = new MessageChannel();
+navigator.serviceWorker.controller?.postMessage(
+  {
+    type: "PORT_INITIALIZATION",
+  },
+  [messageChannel.port2]
+);
+
+messageChannel.port1.onmessage = async (event) => {
+  if (event.data && event.data.type === "NETWORK_REQUEST") {
+    const port = event.ports[0];
+    if (hasExtension()) {
+      try {
+        const input = event.data.input;
+        const response = await window.InfoGata.networkRequest(input);
+        port.postMessage({ result: response });
+      } catch {
+        port.postMessage({ error: "Error sending request" });
+      }
+    } else {
+      port.postMessage({ error: "Extension not installed" });
+    }
+  }
+};
 
 const App: React.FC = () => {
   const { t } = useTranslation();

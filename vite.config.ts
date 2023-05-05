@@ -14,6 +14,9 @@ export default defineConfig({
     react(),
     svgrPlugin(),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       registerType: "prompt",
       manifest: {
         short_name: "VideoGata",

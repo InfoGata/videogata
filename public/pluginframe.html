@@ -31,7 +31,6 @@
 
     const complete = {
       networkRequest: (result) => {
-        console.log("test");
         return new Response(result.body, {
           headers: new Headers(result.headers),
           status: result.status,
