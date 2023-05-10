@@ -243,6 +243,9 @@ const PluginsProvider: React.FC = (props) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });
+          if (result.playlist) {
+            result.playlist.pluginId = plugin.id;
+          }
           return result;
         },
         onGetChannelVideos: (result: ChannelVideosResult) => {
@@ -250,6 +253,9 @@ const PluginsProvider: React.FC = (props) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });
+          if (result.channel) {
+            result.channel.pluginId = plugin.id;
+          }
           return result;
         },
         onLookupPlaylistUrl: (result: Playlist) => {
