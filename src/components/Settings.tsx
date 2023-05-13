@@ -19,7 +19,7 @@ const Settings: React.FC = () => {
     dispatch(toggleDisableAutoUpdatePlugins());
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const [corsProxy, setCorsProxy] = React.useState(corsProxyUrl);
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "settings"]);
 
   const onCorsProxyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCorsProxy(e.target.value);
@@ -46,7 +46,9 @@ const Settings: React.FC = () => {
         value={corsProxy || ""}
         onChange={onCorsProxyChange}
         InputProps={{
-          endAdornment: <Button onClick={onCorsProxySave}>{t("save")}</Button>,
+          endAdornment: (
+            <Button onClick={onCorsProxySave}>{t("common:save")}</Button>
+          ),
         }}
       />
     </FormGroup>
