@@ -10,9 +10,16 @@ import {
 } from "../store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import i18n from "../i18n";
-import { getPluginSubdomain, hasExtension } from "../utils";
+import {
+  getFileText,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+  getPluginSubdomain,
+  hasExtension,
+  mapAsync,
+} from "../utils";
 import { useTranslation } from "react-i18next";
-import { NetworkRequest } from "../types";
+import { Manifest, NetworkRequest } from "../types";
 import {
   ChannelVideosResult,
   NotificationMessage,
@@ -32,6 +39,8 @@ import PluginsContext, {
   PluginMessage,
   PluginMethodInterface,
 } from "../PluginsContext";
+import semverValid from "semver/functions/parse";
+import semverGt from "semver/functions/gt";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -53,6 +62,8 @@ interface ApplicationPluginInterface extends PluginInterface {
 
 const PluginsProvider: React.FC = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
+  const hasUpdated = React.useRef(false);
+
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -73,6 +84,9 @@ const PluginsProvider: React.FC = (props) => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const playlistsRef = React.useRef(playlists);
   playlistsRef.current = playlists;
+  const disableAutoUpdatePlugins = useAppSelector(
+    (state) => state.settings.disableAutoUpdatePlugins
+  );
 
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
@@ -339,17 +353,49 @@ const PluginsProvider: React.FC = (props) => {
     await db.plugins.add(plugin);
   };
 
-  const updatePlugin = async (
-    plugin: PluginInfo,
-    id: string,
-    pluginFiles?: FileList
-  ) => {
-    const oldPlugin = pluginFrames.find((p) => p.id === id);
-    oldPlugin?.destroy();
-    const pluginFrame = await loadPlugin(plugin, pluginFiles);
-    setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
-    await db.plugins.put(plugin);
-  };
+  const updatePlugin = React.useCallback(
+    async (plugin: PluginInfo, id: string, pluginFiles?: FileList) => {
+      const oldPlugin = pluginFrames.find((p) => p.id === id);
+      oldPlugin?.destroy();
+      const pluginFrame = await loadPlugin(plugin, pluginFiles);
+      setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
+      await db.plugins.put(plugin);
+    },
+    [loadPlugin, pluginFrames]
+  );
+
+  React.useEffect(() => {
+    const checkUpdate = async () => {
+      if (pluginsLoaded && !disableAutoUpdatePlugins && !hasUpdated.current) {
+        hasUpdated.current = true;
+        await mapAsync(pluginFrames, async (p) => {
+          if (p.manifestUrl) {
+            const fileType = getFileTypeFromPluginUrl(p.manifestUrl);
+            const manifestText = await getFileText(fileType, "manifest.json");
+            if (manifestText) {
+              const manifest = JSON.parse(manifestText) as Manifest;
+              if (
+                manifest.version &&
+                p.version &&
+                semverValid(manifest.version) &&
+                semverValid(p.version) &&
+                semverGt(manifest.version, p.version)
+              ) {
+                const newPlugin = await getPlugin(fileType);
+
+                if (newPlugin && p.id) {
+                  newPlugin.id = p.id;
+                  newPlugin.manifestUrl = p.manifestUrl;
+                  await updatePlugin(newPlugin, p.id);
+                }
+              }
+            }
+          }
+        });
+      }
+    };
+    checkUpdate();
+  }, [pluginsLoaded, pluginFrames, disableAutoUpdatePlugins, updatePlugin]);
 
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,
