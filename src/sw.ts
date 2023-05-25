@@ -38,17 +38,32 @@ const extensionNetworkRequest = async (
   });
 };
 
-const handleNetworkRequest = async (request: RequestInfo) => {
+const sendExtensionRequest = async (request: string) => {
+  const result = await extensionNetworkRequest(request);
+  const response = new Response(result.body, {
+    headers: new Headers(result.headers),
+    status: result.status,
+    statusText: result.statusText,
+  });
+  return response;
+};
+
+const hostSet = new Set<string>();
+const handleNetworkRequest = async (request: string) => {
+  const url = new URL(request);
+  if (hostSet.has(url.host)) {
+    try {
+      return await sendExtensionRequest(request);
+    } catch {}
+  }
   try {
     const response = await fetch(request);
     return response;
   } catch {
-    const result = await extensionNetworkRequest(request);
-    const response = new Response(result.body, {
-      headers: new Headers(result.headers),
-      status: result.status,
-      statusText: result.statusText,
-    });
+    const response = await sendExtensionRequest(request);
+    // Save host to send subsequent requests
+    hostSet.add(url.host);
+
     return response;
   }
 };
