@@ -27,12 +27,14 @@ const queryClient = new QueryClient({
 });
 
 const messageChannel = new MessageChannel();
-navigator.serviceWorker.controller?.postMessage(
-  {
-    type: "PORT_INITIALIZATION",
-  },
-  [messageChannel.port2]
-);
+navigator.serviceWorker.ready.then((registration) => {
+  registration.active?.postMessage(
+    {
+      type: "PORT_INITIALIZATION",
+    },
+    [messageChannel.port2]
+  );
+});
 
 messageChannel.port1.onmessage = async (event) => {
   if (event.data && event.data.type === "NETWORK_REQUEST") {
