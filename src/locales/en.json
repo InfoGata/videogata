@@ -46,6 +46,8 @@
     "addToQueue": "Add to Queue",
     "addToNewPlaylist": "Add to New Playlist",
     "addToPlaylist": "Add to {{playlistName}}",
+    "addedVideosToPlaylist_one": "Added video to {{playlistName}}",
+    "addedVideosToPlaylist_other": "Added videos to {{playlistName}}",
     "dismiss": "Dismiss",
     "fileNotFound": "Error: Couldn't find {{name}}",
     "cantGetFile": "Error: Couldn't get {{name}}",
