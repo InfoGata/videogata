@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useItemMenu from "../hooks/useItemMenu";
 import { Channel } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
@@ -27,6 +27,7 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
   const { channel, pluginId } = props;
   const sanitizer = DOMPurify.sanitize;
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { openMenu } = useItemMenu();
   const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,6 +37,14 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
   };
 
   const image = getThumbnailImage(channel.images, searchThumbnailSize);
+
+  const onLiveClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const url = `/plugins/${pluginId}/channels/${channel.apiId}/live`;
+    navigate(url);
+  };
+
   return (
     <ListItem disablePadding>
       <ListItemButton
@@ -55,7 +64,14 @@ const ChannelSearchResult: React.FC<ChannelSearchResultProps> = (props) => {
             />
           }
         />
-        {channel.isLive && <Chip label={t("live")} color="error" clickable />}
+        {channel.isLive && (
+          <Chip
+            label={t("live")}
+            color="error"
+            clickable
+            onClick={onLiveClick}
+          />
+        )}
       </ListItemButton>
       <ListItemSecondaryAction>
         <IconButton onClick={openChannelMenu} size="large">
