@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "",
+  "main": "./out/main/index.js",
   "dependencies": {
     "@datapunt/matomo-tracker-react": "^0.5.1",
     "@dnd-kit/core": "^6.0.5",
@@ -32,6 +33,7 @@
     "dompurify": "^2.3.8",
     "i18next": "^22.0.2",
     "i18next-browser-languagedetector": "^6.1.8",
+    "is-electron": "^2.2.2",
     "lodash": "^4.17.21",
     "mui-image": "^1.0.7",
     "nanoid": "^4.0.2",
@@ -56,7 +58,10 @@
     "cors-server": "node servers/cors/server.js",
     "postinstall": "cd servers/cors && npm install",
     "dev": "concurrently --kill-others \"npm run cors-server\" \"npm start\"",
-    "test": "vitest"
+    "test": "vitest",
+    "electron:start": "electron-vite preview",
+    "electron:dev": "electron-vite dev",
+    "electron:build": "electron-vite build"
   },
   "browserslist": {
     "production": [
@@ -71,10 +76,14 @@
     ]
   },
   "devDependencies": {
+    "@electron-toolkit/preload": "^2.0.0",
+    "@electron-toolkit/utils": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "@vitejs/plugin-react": "^3.1.0",
     "concurrently": "^6.0.0",
+    "electron": "^25.3.1",
+    "electron-vite": "^1.0.25",
     "eslint": "^8.36.0",
     "eslint-plugin-i18next": "^6.0.0-2",
     "eslint-plugin-import": "^2.27.5",

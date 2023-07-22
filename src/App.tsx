@@ -1,7 +1,7 @@
 import { Box, Button, CssBaseline } from "@mui/material";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import Routing from "./components/Routing";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
@@ -16,6 +16,9 @@ import PluginsProvider from "./providers/PluginsProvider";
 import ItemMenuProvider from "./providers/ItemMenuProvider";
 import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { hasExtension } from "./utils";
+import isElectron from "is-electron";
+
+const Router = isElectron() ? HashRouter : BrowserRouter;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,7 +79,7 @@ const App: React.FC = () => {
       )}
     >
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <Router>
           <MatomoRouterProvider>
             <PluginsProvider>
               <VideoMenuProvider>
@@ -91,7 +94,7 @@ const App: React.FC = () => {
               </VideoMenuProvider>
             </PluginsProvider>
           </MatomoRouterProvider>
-        </BrowserRouter>
+        </Router>
       </QueryClientProvider>
     </SnackbarProvider>
   );

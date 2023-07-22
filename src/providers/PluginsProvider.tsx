@@ -41,6 +41,7 @@ import PluginsContext, {
 } from "../PluginsContext";
 import semverValid from "semver/functions/parse";
 import semverGt from "semver/functions/gt";
+import isElectron from "is-electron";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -124,7 +125,7 @@ const PluginsProvider: React.FC = (props) => {
           return result;
         },
         isNetworkRequestCorsDisabled: async () => {
-          const isDisabled = hasExtension();
+          const isDisabled = hasExtension() || isElectron();
           return isDisabled;
         },
         postUiMessage: async (message: any) => {
