@@ -31,6 +31,12 @@ export const defaultPlugins: PluginDescription[] = [
     url: "https://cdn.jsdelivr.net/gh/InfoGata/peertube-videogata@latest/manifest.json",
   },
   {
+    id: "b87fe67b-1b62-4c44-a5a4-e7cc6cd30c84",
+    name: "Plugin for Twitch",
+    description: "Plugin for playing videos from twitch.tv",
+    url: "https://cdn.jsdelivr.net/gh/InfoGata/twitch-videogata@latest/manifest.json",
+  },
+  {
     id: "7bCIGEj1VK40kHZkBe416",
     name: "Plugin for Google Drive",
     description: "Store and retrieve playlists from Google Drive",
@@ -39,7 +45,7 @@ export const defaultPlugins: PluginDescription[] = [
   {
     id: "G0y4w_PEjvc3cGEJA1Qfq",
     name: "Plugin for Dropbox",
-    description: "Store and retreive playlists from Dropbox",
+    description: "Store and retrieve playlists from Dropbox",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/dropbox-videogata@latest/manifest.json",
   },
 ];
