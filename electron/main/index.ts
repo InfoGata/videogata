@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, session } from "electron";
 import { join } from "path";
 import { optimizer, is } from "@electron-toolkit/utils";
 
@@ -48,7 +48,6 @@ function createWindow() {
         // So only set it if that header isn't there
         const credentialsHeader =
           responseHeaders["access-control-allow-credentials"];
-        console.log(credentialsHeader);
         if (!credentialsHeader) {
           UpsertKeyValue(responseHeaders, "Access-Control-Allow-Origin", ["*"]);
           UpsertKeyValue(responseHeaders, "Access-Control-Allow-Headers", [
@@ -57,6 +56,29 @@ function createWindow() {
         }
       }
       callback({
+        responseHeaders,
+      });
+    }
+  );
+
+  // Twitch Plugin CSP fails unless it is removed due to a frame-ancestors violation
+  session.defaultSession.webRequest.onHeadersReceived(
+    {
+      urls: [
+        "https://www.twitch.tv/*",
+        "https://player.twitch.tv/*",
+        "https://embed.twitch.tv/*",
+      ],
+    },
+    (details, callback) => {
+      const { responseHeaders } = details;
+
+      if (responseHeaders) {
+        delete responseHeaders["Content-Security-Policy"];
+      }
+
+      callback({
+        cancel: false,
         responseHeaders,
       });
     }
