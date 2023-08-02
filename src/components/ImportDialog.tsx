@@ -9,14 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { nanoid } from "nanoid";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { ParseUrlType, Playlist, Video } from "../plugintypes";
 import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
+import { ParseUrlType, Playlist, Video } from "../plugintypes";
 import { filterAsync } from "../utils";
-import { nanoid } from "nanoid";
 
 interface ImportDialogProps {
   open: boolean;

@@ -1,18 +1,18 @@
 import {
-  Card,
-  CardMedia,
   Box,
+  Card,
   CardContent,
-  Typography,
+  CardMedia,
   Chip,
+  Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import thumbnail from "../thumbnail.png";
-import { useTranslation } from "react-i18next";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 interface PlaylistInfoCardProps {
   name: string;

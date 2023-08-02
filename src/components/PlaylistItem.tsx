@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -7,16 +8,15 @@ import {
   TableCell,
   Typography,
 } from "@mui/material";
+import DOMPurify from "dompurify";
 import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { Video } from "../plugintypes";
-import { MoreHoriz } from "@mui/icons-material";
 import {
+  formatSeconds,
   getThumbnailImage,
   searchThumbnailSize,
-  formatSeconds,
 } from "../utils";
-import DOMPurify from "dompurify";
-import { Link as RouterLink } from "react-router-dom";
 
 interface PlaylistItemsProps {
   video: Video;

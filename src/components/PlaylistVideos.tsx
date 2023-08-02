@@ -1,3 +1,4 @@
+import { Delete, Edit, MoreHoriz, UploadFile } from "@mui/icons-material";
 import {
   Backdrop,
   CircularProgress,
@@ -8,25 +9,24 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { db } from "../database";
+import useSelected from "../hooks/useSelected";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { Playlist, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { db } from "../database";
-import { Delete, Edit, MoreHoriz, UploadFile } from "@mui/icons-material";
 import {
   addPlaylistVideos,
   setPlaylistVideos,
 } from "../store/reducers/playlistReducer";
-import VideoList from "./VideoList";
-import { useTranslation } from "react-i18next";
-import useSelected from "../hooks/useSelected";
-import SelectVideoListPlugin from "./SelectVideoListPlugin";
 import EditPlaylistDialog from "./EditPlaylistDialog";
-import PlaylistMenu from "./PlaylistMenu";
 import ImportDialog from "./ImportDialog";
-import { useLiveQuery } from "dexie-react-hooks";
+import PlaylistMenu from "./PlaylistMenu";
+import SelectVideoListPlugin from "./SelectVideoListPlugin";
+import VideoList from "./VideoList";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();

@@ -1,22 +1,22 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
+  Avatar,
+  Chip,
+  IconButton,
   ListItem,
   ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Typography,
   ListItemButton,
   ListItemSecondaryAction,
-  IconButton,
-  Chip,
+  ListItemText,
+  Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import useItemMenu from "../hooks/useItemMenu";
 import { Channel } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
-import { useTranslation } from "react-i18next";
 
 interface ChannelSearchResultProps {
   channel: Channel;

@@ -1,9 +1,9 @@
-import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { IconButton, ListItem, ListItemSecondaryAction } from "@mui/material";
-import { Video } from "../plugintypes";
 import { MoreHoriz } from "@mui/icons-material";
+import { IconButton, ListItem, ListItemSecondaryAction } from "@mui/material";
+import React from "react";
+import { Video } from "../plugintypes";
 
 interface SortableVideoProps {
   id: string;

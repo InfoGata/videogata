@@ -1,7 +1,7 @@
 import React from "react";
+import VideoMenuContext from "../VideoMenuContext";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import VideoMenuContext from "../VideoMenuContext";
 
 interface VideoMenuArgs {
   playlists?: PlaylistInfo[];

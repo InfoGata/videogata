@@ -1,3 +1,4 @@
+import { PluginFrame } from "plugin-frame";
 import React from "react";
 import {
   ChannelVideosRequest,
@@ -20,7 +21,6 @@ import {
   VideoCommentsRequest,
   VideoCommentsResult,
 } from "./plugintypes";
-import { PluginFrame } from "plugin-frame";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;

@@ -1,28 +1,28 @@
-import React from "react";
 import { Box } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import AboutPage from "./AboutPage";
 import ChannelPage from "./ChannelPage";
 import Donate from "./Donate";
 import FavoriteChannels from "./FavoriteChannels";
 import FavoritePlaylists from "./FavoritePlaylists";
-import Favorites from "./Favorites";
 import FavoriteVideos from "./FavoriteVideos";
+import Favorites from "./Favorites";
 import Home from "./Home";
-import Playlists from "./Playlists";
 import PlaylistVideos from "./PlaylistVideos";
+import Playlists from "./Playlists";
 import PluginDetails from "./PluginDetails";
 import PluginInstall from "./PluginInstall";
+import PluginLive from "./PluginLive";
 import PluginOptions from "./PluginOptions";
 import PluginPlaylist from "./PluginPlaylist";
 import PluginPlaylists from "./PluginPlaylists";
-import Plugins from "./Plugins";
 import PluginVideo from "./PluginVideo";
+import Plugins from "./Plugins";
 import Privacy from "./Privacy";
 import Search from "./Search";
 import Settings from "./Settings";
-import PluginLive from "./PluginLive";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",

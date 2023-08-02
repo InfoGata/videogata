@@ -9,16 +9,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import DOMPurify from "dompurify";
+import { Image } from "mui-image";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import usePlugins from "../hooks/usePlugins";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
-import { Image } from "mui-image";
-import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
-import usePlugins from "../hooks/usePlugins";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");

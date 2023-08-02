@@ -1,11 +1,11 @@
-import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { PlaylistAdd } from "@mui/icons-material";
+import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
+import { useSnackbar } from "notistack";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PlaylistInfo, Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistVideos } from "../store/reducers/playlistReducer";
-import { useTranslation } from "react-i18next";
-import { useSnackbar } from "notistack";
 
 interface PlaylistMenuItemProps {
   playlist: PlaylistInfo;

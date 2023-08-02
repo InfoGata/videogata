@@ -1,22 +1,22 @@
+import { SkipNext, SkipPrevious } from "@mui/icons-material";
 import {
-  List,
-  Box,
-  ListItem,
   Avatar,
+  Box,
+  IconButton,
+  List,
+  ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Typography,
-  IconButton,
-  ListItemButton,
 } from "@mui/material";
-import React from "react";
-import { Video } from "../plugintypes";
-import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import DOMPurify from "dompurify";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { SkipNext, SkipPrevious } from "@mui/icons-material";
+import { Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setCurrentVideo } from "../store/reducers/queueReducer";
+import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface PluginVideoPlaylistProps {
   videos: Video[];

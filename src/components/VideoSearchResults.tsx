@@ -2,12 +2,12 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { FilterInfo, PageInfo } from "../plugintypes";
+import Filtering from "./Filtering";
 import Pager from "./Pager";
 import VideoCards from "./VideoCards";
-import Filtering from "./Filtering";
-import usePlugins from "../hooks/usePlugins";
 
 interface VideoSearchResultsProps {
   pluginId: string;

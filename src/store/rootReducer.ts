@@ -1,8 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import playlistReducer from "./reducers/playlistReducer";
+import queueReducer from "./reducers/queueReducer";
 import settingsReducer from "./reducers/settingsReducer";
 import uiReducer from "./reducers/uiReducer";
-import queueReducer from "./reducers/queueReducer";
 
 const rootReducer = combineReducers({
   ui: uiReducer,

@@ -1,8 +1,8 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { Playlist, Video, PlaylistInfo } from "../../plugintypes";
-import { AppThunk } from "../store";
 import { db } from "../../database";
+import { Playlist, PlaylistInfo, Video } from "../../plugintypes";
 import { mergeVideos } from "../../utils";
+import { AppThunk } from "../store";
 
 interface PlaylistState {
   playlists: PlaylistInfo[];

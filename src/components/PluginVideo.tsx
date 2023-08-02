@@ -1,17 +1,17 @@
+import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
-import VideoPlayer from "./VideoPlayer";
-import { Video } from "../plugintypes";
-import PluginPlayer from "./PluginPlayer";
 import { db } from "../database";
-import PluginVideoPlaylist from "./PluginVideoPlaylist";
-import PluginVideoInfo from "./PluginVideoInfo";
-import { Backdrop, CircularProgress, Grid } from "@mui/material";
-import PluginVideoComments from "./PluginVideoComments";
-import RecommendedVideos from "./RecommendVideos";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
+import { Video } from "../plugintypes";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import PluginPlayer from "./PluginPlayer";
+import PluginVideoComments from "./PluginVideoComments";
+import PluginVideoInfo from "./PluginVideoInfo";
+import PluginVideoPlaylist from "./PluginVideoPlaylist";
+import RecommendedVideos from "./RecommendVideos";
+import VideoPlayer from "./VideoPlayer";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

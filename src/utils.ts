@@ -1,8 +1,8 @@
-import { ImageInfo, PluginInfo, Video } from "./plugintypes";
-import { DirectoryFile, FileType, Manifest } from "./types";
-import thumbnail from "./thumbnail.png";
-import i18next from "./i18n";
 import { customAlphabet } from "nanoid";
+import i18next from "./i18n";
+import { ImageInfo, PluginInfo, Video } from "./plugintypes";
+import thumbnail from "./thumbnail.png";
+import { DirectoryFile, FileType, Manifest } from "./types";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {

@@ -1,25 +1,20 @@
-import React from "react";
-import { PluginInterface } from "plugin-frame";
-import { db } from "../database";
-import { useSnackbar } from "notistack";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
-import {
-  addPlaylists,
-  addPlaylistVideos,
-} from "../store/reducers/playlistReducer";
 import { nanoid } from "@reduxjs/toolkit";
-import i18n from "../i18n";
-import {
-  getFileText,
-  getFileTypeFromPluginUrl,
-  getPlugin,
-  getPluginSubdomain,
-  hasExtension,
-  mapAsync,
-} from "../utils";
+import isElectron from "is-electron";
+import { useSnackbar } from "notistack";
+import { PluginInterface } from "plugin-frame";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import { Manifest, NetworkRequest } from "../types";
+import semverGt from "semver/functions/gt";
+import semverValid from "semver/functions/parse";
+import PluginsContext, {
+  PluginContextInterface,
+  PluginFrameContainer,
+  PluginMessage,
+  PluginMethodInterface,
+} from "../PluginsContext";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import { db } from "../database";
+import i18n from "../i18n";
 import {
   ChannelVideosResult,
   NotificationMessage,
@@ -33,15 +28,20 @@ import {
   SearchVideoResult,
   Video,
 } from "../plugintypes";
-import PluginsContext, {
-  PluginContextInterface,
-  PluginFrameContainer,
-  PluginMessage,
-  PluginMethodInterface,
-} from "../PluginsContext";
-import semverValid from "semver/functions/parse";
-import semverGt from "semver/functions/gt";
-import isElectron from "is-electron";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  addPlaylistVideos,
+  addPlaylists,
+} from "../store/reducers/playlistReducer";
+import { Manifest, NetworkRequest } from "../types";
+import {
+  getFileText,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+  getPluginSubdomain,
+  hasExtension,
+  mapAsync,
+} from "../utils";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(

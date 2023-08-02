@@ -8,16 +8,16 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router-dom";
-import { SearchResultType } from "../types";
-import SelectPlugin from "./SelectPlugin";
+import usePlugins from "../hooks/usePlugins";
 import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
-import VideoSearchResults from "./VideoSearchResults";
+import { SearchResultType } from "../types";
 import ChannelSearchResults from "./ChannelSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
-import { useTranslation } from "react-i18next";
-import usePlugins from "../hooks/usePlugins";
+import SelectPlugin from "./SelectPlugin";
+import VideoSearchResults from "./VideoSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;

@@ -1,14 +1,4 @@
 import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-} from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
-import {
   Extension,
   Home,
   Info,
@@ -17,10 +7,20 @@ import {
   Settings,
   Star,
 } from "@mui/icons-material";
-import NavigationPlaylistItem from "./NavigationPlaylistItem";
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+} from "@mui/material";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
-import { useTranslation } from "react-i18next";
+import NavigationPlaylistItem from "./NavigationPlaylistItem";
 
 const Navigation: React.FC = () => {
   const [dialogOpen, setDialogOpen] = React.useState(false);

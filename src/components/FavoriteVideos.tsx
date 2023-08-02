@@ -1,8 +1,8 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
-import VideoCards from "./VideoCards";
 import { db } from "../database";
 import useVideoMenu from "../hooks/useVideoMenu";
+import VideoCards from "./VideoCards";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());

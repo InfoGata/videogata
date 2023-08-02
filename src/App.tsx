@@ -1,22 +1,22 @@
 import { Box, Button, CssBaseline } from "@mui/material";
+import isElectron from "is-electron";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, HashRouter } from "react-router-dom";
+import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import Routing from "./components/Routing";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
-import { QueryClient, QueryClientProvider } from "react-query";
+import useOffline from "./hooks/useOffline";
+import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
+import ItemMenuProvider from "./providers/ItemMenuProvider";
+import PluginsProvider from "./providers/PluginsProvider";
+import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
-import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import { useTranslation } from "react-i18next";
-import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
-import useOffline from "./hooks/useOffline";
-import PluginsProvider from "./providers/PluginsProvider";
-import ItemMenuProvider from "./providers/ItemMenuProvider";
-import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { hasExtension } from "./utils";
-import isElectron from "is-electron";
 
 const Router = isElectron() ? HashRouter : BrowserRouter;
 

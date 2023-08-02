@@ -1,20 +1,20 @@
-import React from "react";
 import {
+  Link as LinkIcon,
   PlaylistAdd,
   Star,
   StarBorder,
   Subscriptions,
-  Link as LinkIcon,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { db } from "../database";
 import { useSnackbar } from "notistack";
-import { PlaylistInfo, Video } from "../plugintypes";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import VideoMenuContext, { VideoMenuInterface } from "../VideoMenuContext";
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import PlaylistMenuItem from "../components/PlaylistMenuItem";
-import { Link } from "react-router-dom";
+import { db } from "../database";
+import { PlaylistInfo, Video } from "../plugintypes";
 
 const VideoMenuProvider: React.FC = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

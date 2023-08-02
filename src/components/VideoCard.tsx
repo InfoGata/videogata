@@ -15,12 +15,12 @@ import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
+import thumbnail from "../thumbnail.png";
 import {
   formatSeconds,
   getThumbnailImage,
   playlistThumbnailSize,
 } from "../utils";
-import thumbnail from "../thumbnail.png";
 
 interface VideoCardProps {
   pluginId: string;

@@ -1,13 +1,13 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
+  Avatar,
+  IconButton,
   ListItem,
   ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Typography,
   ListItemButton,
   ListItemSecondaryAction,
-  IconButton,
+  ListItemText,
+  Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";

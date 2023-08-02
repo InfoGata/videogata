@@ -1,8 +1,8 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import { Video } from "../plugintypes";
 import { VideoJsPlayerOptions } from "video.js";
 import VideoJS from "../VideoJS";
+import { Video } from "../plugintypes";
 
 interface VideoPlayerProps {
   video: Video;

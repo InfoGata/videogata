@@ -1,11 +1,11 @@
-import { Button, Divider, Grid, IconButton, Typography } from "@mui/material";
-import React from "react";
-import { Video } from "../plugintypes";
-import DOMPurify from "dompurify";
-import { Link } from "react-router-dom";
 import { MoreHoriz, ThumbDown, ThumbUp } from "@mui/icons-material";
+import { Button, Divider, Grid, IconButton, Typography } from "@mui/material";
+import DOMPurify from "dompurify";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import useVideoMenu from "../hooks/useVideoMenu";
+import { Video } from "../plugintypes";
 
 interface PluginVideoInfoProps {
   video: Video;

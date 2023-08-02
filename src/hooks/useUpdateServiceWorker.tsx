@@ -2,7 +2,6 @@ import { Button } from "@mui/material";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../store/hooks";
 // eslint-disable-next-line import/no-unresolved
 import { useRegisterSW } from "virtual:pwa-register/react";
 

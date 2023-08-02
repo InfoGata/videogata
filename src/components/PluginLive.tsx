@@ -1,12 +1,12 @@
+import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Video } from "../plugintypes";
-import PluginPlayer from "./PluginPlayer";
-import PluginVideoInfo from "./PluginVideoInfo";
-import { Backdrop, CircularProgress } from "@mui/material";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
+import { Video } from "../plugintypes";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import PluginPlayer from "./PluginPlayer";
+import PluginVideoInfo from "./PluginVideoInfo";
 import VideoPlayer from "./VideoPlayer";
 
 const PluginVideo: React.FC = () => {
