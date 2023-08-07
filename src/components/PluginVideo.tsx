@@ -1,17 +1,16 @@
 import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
+import Player from "../Player";
 import { db } from "../database";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import PluginPlayer from "./PluginPlayer";
 import PluginVideoComments from "./PluginVideoComments";
 import PluginVideoInfo from "./PluginVideoInfo";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import RecommendedVideos from "./RecommendVideos";
-import VideoPlayer from "./VideoPlayer";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -67,8 +66,12 @@ const PluginVideo: React.FC = () => {
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {video && !usePlayer ? <VideoPlayer video={video} /> : null}
-      {usePlayer && <PluginPlayer apiId={apiId} plugin={plugin} />}
+      <Player
+        video={video}
+        usePlayer={usePlayer}
+        plugin={plugin}
+        apiId={apiId}
+      />
       {video && <PluginVideoInfo video={video} />}
       {playlistVideos && (
         <PluginVideoPlaylist
