@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
 });
 
 const messageChannel = new MessageChannel();
-navigator.serviceWorker.ready.then((registration) => {
+navigator.serviceWorker?.ready.then((registration) => {
   registration.active?.postMessage(
     {
       type: "PORT_INITIALIZATION",

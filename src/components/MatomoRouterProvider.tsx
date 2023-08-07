@@ -1,6 +1,11 @@
 import { createInstance, MatomoProvider } from "@datapunt/matomo-tracker-react";
+import { MatomoProviderProps } from "@datapunt/matomo-tracker-react/lib/MatomoProvider";
 import React from "react";
 import { useLocation } from "react-router-dom";
+
+interface MatomoProviderWithChildrenProps extends MatomoProviderProps {
+  children: React.ReactNode;
+}
 
 const createClient = () => {
   return createInstance({
@@ -14,16 +19,22 @@ const createClient = () => {
   });
 };
 
-const MamotoRouterProvider: React.FC = (props) => {
+const MatomoRouterProvider: React.FC<React.PropsWithChildren> = (props) => {
   let location = useLocation();
   const matomoClient = createClient();
+  const MatomoProviderWithChildren: React.FC<MatomoProviderWithChildrenProps> =
+    MatomoProvider;
 
   React.useEffect(() => {
     // track page view on each location change
     matomoClient.trackPageView();
   }, [location, matomoClient]);
 
-  return <MatomoProvider value={matomoClient}>{props.children}</MatomoProvider>;
+  return (
+    <MatomoProviderWithChildren value={matomoClient}>
+      {props.children}
+    </MatomoProviderWithChildren>
+  );
 };
 
-export default MamotoRouterProvider;
+export default MatomoRouterProvider;

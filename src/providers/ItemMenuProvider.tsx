@@ -19,7 +19,7 @@ const getTable = (item: ItemMenuType): Dexie.Table => {
   }
 };
 
-const ItemMenuProvider: React.FC = (props) => {
+const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuItem, setMenuItem] = React.useState<ItemMenuType>();
   const [isFavorited, setIsFavorited] = React.useState(false);

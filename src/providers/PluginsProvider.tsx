@@ -61,7 +61,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
 }
 
-const PluginsProvider: React.FC = (props) => {
+const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
   const hasUpdated = React.useRef(false);
 

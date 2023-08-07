@@ -16,7 +16,7 @@ import PlaylistMenuItem from "../components/PlaylistMenuItem";
 import { db } from "../database";
 import { PlaylistInfo, Video } from "../plugintypes";
 
-const VideoMenuProvider: React.FC = (props) => {
+const VideoMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [playlists, setPlaylists] = React.useState<PlaylistInfo[]>([]);
   const [listElements, setListElements] = React.useState<JSX.Element[]>([]);
