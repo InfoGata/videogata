@@ -7,7 +7,9 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   saveCorsProxyUrl,
   toggleDisableAutoUpdatePlugins,
+  toggleUseMiniPlayer,
 } from "../store/reducers/settingsReducer";
+import { closePlayer } from "../store/reducers/playerReducer";
 
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +19,11 @@ const Settings: React.FC = () => {
   );
   const onChangeDisableAutoUpdatePlugins = () =>
     dispatch(toggleDisableAutoUpdatePlugins());
+  const useMiniPlayer = useAppSelector((state) => state.settings.useMiniPlayer);
+  const onToggleUseMiniPlayer = () => {
+    dispatch(closePlayer());
+    dispatch(toggleUseMiniPlayer());
+  };
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const [corsProxy, setCorsProxy] = React.useState(corsProxyUrl);
   const { t } = useTranslation(["common", "settings"]);
@@ -40,6 +47,12 @@ const Settings: React.FC = () => {
           />
         }
         label={t("settings:disableAutoUpdatePlugins")}
+      />
+      <FormControlLabel
+        control={
+          <Switch checked={useMiniPlayer} onChange={onToggleUseMiniPlayer} />
+        }
+        label={t("settings:useMiniPlayer")}
       />
       <TextField
         label="Cors proxy Url"

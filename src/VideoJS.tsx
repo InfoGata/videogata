@@ -6,6 +6,7 @@ import { VideoSource } from "./plugintypes";
 interface VideoJSProps {
   options: VideoJsPlayerOptions;
   videoSources: VideoSource[];
+  isMiniPlayer?: boolean;
 }
 
 class VideoJS extends React.Component<VideoJSProps> {
@@ -28,7 +29,13 @@ class VideoJS extends React.Component<VideoJSProps> {
 
   render() {
     return (
-      <div data-vjs-player style={{ width: "100%", height: "75vh" }}>
+      <div
+        data-vjs-player
+        style={{
+          width: "100%",
+          height: this.props.isMiniPlayer ? undefined : "75vh",
+        }}
+      >
         <video ref={(node) => (this.videoNode = node)} className="video-js">
           {this.props.videoSources.map((v, i) => (
             <source src={v.source} type={v.type} key={i} />

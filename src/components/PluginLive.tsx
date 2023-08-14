@@ -5,16 +5,16 @@ import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import PluginPlayer from "./PluginPlayer";
 import PluginVideoInfo from "./PluginVideoInfo";
-import VideoPlayer from "./VideoPlayer";
+import { useDispatch } from "react-redux";
+import { setPlayerInfo } from "../store/reducers/playerReducer";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
+  const dispatch = useDispatch();
   const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
   const [video, setVideo] = React.useState<Video>();
-  const [usePlayer, setUsePlayer] = React.useState(false);
   const plugin = plugins.find((p) => p.id === pluginId);
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
@@ -23,14 +23,12 @@ const PluginVideo: React.FC = () => {
   });
 
   React.useEffect(() => {
+    dispatch(setPlayerInfo({ pluginId, isLive: true, channelApiId: apiId }));
+  }, [dispatch, apiId, pluginId]);
+
+  React.useEffect(() => {
     const getVideo = async () => {
       if (pluginsLoaded && plugin && apiId) {
-        if (plugin.hasPlayer) {
-          setUsePlayer(true);
-          if (await plugin.hasDefined.onUsePlayer()) {
-            setUsePlayer(await plugin.remote.onUsePlayer());
-          }
-        }
         if (await plugin.hasDefined.onGetVideo()) {
           const video = await plugin.remote.onGetLiveVideo({
             channelApiId: apiId,
@@ -48,10 +46,6 @@ const PluginVideo: React.FC = () => {
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {usePlayer && (
-        <PluginPlayer plugin={plugin} isLive={true} channelApiId={apiId} />
-      )}
-      {video && !usePlayer ? <VideoPlayer video={video} /> : null}
       {video && <PluginVideoInfo video={video} />}
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}

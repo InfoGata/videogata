@@ -107,6 +107,7 @@
     "clickReload": "Click to reload plugins"
   },
   "settings": {
-    "disableAutoUpdatePlugins": "Disable plugins updating automatically"
+    "disableAutoUpdatePlugins": "Disable plugins updating automatically",
+    "useMiniPlayer": "Use Mini Player"
   }
 }

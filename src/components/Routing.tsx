@@ -23,6 +23,7 @@ import Plugins from "./Plugins";
 import Privacy from "./Privacy";
 import Search from "./Search";
 import Settings from "./Settings";
+import MiniPlayer from "./MiniPlayer";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -46,6 +47,7 @@ const Routing: React.FC = () => {
       }}
     >
       <DrawerHeader />
+      <MiniPlayer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/plugins" element={<Plugins />} />

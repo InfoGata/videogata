@@ -9,10 +9,11 @@ interface PluginPlayerProps {
   channelApiId?: string;
   isLive?: boolean;
   plugin?: PluginFrameContainer;
+  isMiniPlayer?: boolean;
 }
 
 const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
-  const { apiId, plugin, isLive, channelApiId } = props;
+  const { apiId, plugin, isLive, channelApiId, isMiniPlayer } = props;
   const [playerHtml, setPlayerHtml] = React.useState<string>();
   const ref = React.useRef<HTMLIFrameElement>(null);
   const { pluginMessage } = usePlugins();
@@ -79,7 +80,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
           allow="autoplay; fullscreen; picture-in-picture"
           frameBorder="0"
           allowFullScreen
-          style={{ width: "100%", height: "75vh" }}
+          style={{ width: "100%", height: isMiniPlayer ? undefined : "75vh" }}
         />
       )}
     </>

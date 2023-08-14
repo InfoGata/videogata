@@ -1,7 +1,6 @@
 import { Backdrop, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
-import Player from "../Player";
 import { db } from "../database";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
@@ -11,9 +10,12 @@ import PluginVideoComments from "./PluginVideoComments";
 import PluginVideoInfo from "./PluginVideoInfo";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import RecommendedVideos from "./RecommendVideos";
+import { useAppDispatch } from "../store/hooks";
+import { setPlayerInfo } from "../store/reducers/playerReducer";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
+  const dispatch = useAppDispatch();
   const { apiId } = useParams<"apiId">();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -21,7 +23,6 @@ const PluginVideo: React.FC = () => {
   const videoId = params.get("videoId") || "";
   const { plugins, pluginsLoaded } = usePlugins();
   const [video, setVideo] = React.useState<Video>();
-  const [usePlayer, setUsePlayer] = React.useState(false);
   const plugin = plugins.find((p) => p.id === pluginId);
   const [playlistVideos, setPlaylistVideos] = React.useState<Video[]>();
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
@@ -31,14 +32,12 @@ const PluginVideo: React.FC = () => {
   });
 
   React.useEffect(() => {
+    dispatch(setPlayerInfo({ apiId, pluginId }));
+  }, [dispatch, apiId, pluginId]);
+
+  React.useEffect(() => {
     const getVideo = async () => {
       if (pluginsLoaded && plugin && apiId) {
-        if (plugin.hasPlayer) {
-          setUsePlayer(true);
-          if (await plugin.hasDefined.onUsePlayer()) {
-            setUsePlayer(await plugin.remote.onUsePlayer());
-          }
-        }
         if (await plugin.hasDefined.onGetVideo()) {
           const video = await plugin.remote.onGetVideo({ apiId });
           setVideo(video);
@@ -66,12 +65,6 @@ const PluginVideo: React.FC = () => {
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Player
-        video={video}
-        usePlayer={usePlayer}
-        plugin={plugin}
-        apiId={apiId}
-      />
       {video && <PluginVideoInfo video={video} />}
       {playlistVideos && (
         <PluginVideoPlaylist
