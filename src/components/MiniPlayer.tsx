@@ -1,11 +1,13 @@
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
 import PluginPlayer from "./PluginPlayer";
 import VideoPlayer from "./VideoPlayer";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import usePlugins from "../hooks/usePlugins";
 import { useLocation } from "react-router-dom";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { closePlayer } from "../store/reducers/playerReducer";
 
 const MiniPlayer: React.FC = () => {
   const playerState = useAppSelector((state) => state.player);
@@ -16,6 +18,7 @@ const MiniPlayer: React.FC = () => {
   const width = 274;
   const [video, setVideo] = React.useState<Video>();
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const useDefaultPlayer =
     location.pathname.endsWith("/live") ||
     location.pathname.endsWith(`/videos/${playerState.apiId}`);
@@ -42,6 +45,10 @@ const MiniPlayer: React.FC = () => {
     getVideo();
   }, [pluginsLoaded, plugin, playerState.apiId]);
 
+  const onClose = () => {
+    dispatch(closePlayer());
+  };
+
   if (!playerState.pluginId) {
     return null;
   }
@@ -57,14 +64,23 @@ const MiniPlayer: React.FC = () => {
           ? undefined
           : {
               position: "fixed",
-              bottom: "32px",
-              right: "32px",
+              bottom: "16px",
+              right: "16px",
               width: `${width}px`,
               height: `${height}px`,
               zIndex: 100,
             }
       }
     >
+      {!useDefaultPlayer && (
+        <IconButton
+          aria-label="close"
+          sx={{ position: "absolute", right: -10, top: -15 }}
+          onClick={onClose}
+        >
+          <CancelIcon />
+        </IconButton>
+      )}
       {video && !usePlayer ? (
         <VideoPlayer video={video} isMiniPlayer={!useDefaultPlayer} />
       ) : null}
