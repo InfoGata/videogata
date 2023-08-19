@@ -69,6 +69,7 @@ const MiniPlayer: React.FC = () => {
               width: `${width}px`,
               height: `${height}px`,
               zIndex: 100,
+              transition: "height 200ms ease-in-out, width 200ms ease-in-out",
             }
       }
     >
