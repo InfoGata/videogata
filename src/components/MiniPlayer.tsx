@@ -1,11 +1,18 @@
-import { Box, IconButton } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  IconButton,
+  CardActionArea,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { Video } from "../plugintypes";
 import PluginPlayer from "./PluginPlayer";
 import VideoPlayer from "./VideoPlayer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import usePlugins from "../hooks/usePlugins";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { closePlayer } from "../store/reducers/playerReducer";
 
@@ -14,7 +21,7 @@ const MiniPlayer: React.FC = () => {
   const [usePlayer, setUsePlayer] = React.useState(false);
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === playerState.pluginId);
-  const height = 154;
+  const height = 164;
   const width = 274;
   const [video, setVideo] = React.useState<Video>();
   const location = useLocation();
@@ -23,6 +30,7 @@ const MiniPlayer: React.FC = () => {
     location.pathname.endsWith("/live") ||
     location.pathname.endsWith(`/videos/${playerState.apiId}`);
   const useMiniPlayer = useAppSelector((state) => state.settings.useMiniPlayer);
+  const url = `/plugins/${video?.pluginId}/videos/${video?.apiId}`;
 
   React.useEffect(() => {
     const getVideo = async () => {
@@ -64,7 +72,7 @@ const MiniPlayer: React.FC = () => {
           ? undefined
           : {
               position: "fixed",
-              bottom: "16px",
+              bottom: "64px",
               right: "16px",
               width: `${width}px`,
               height: `${height}px`,
@@ -93,6 +101,15 @@ const MiniPlayer: React.FC = () => {
           isLive={playerState.isLive}
           isMiniPlayer={!useDefaultPlayer}
         />
+      )}
+      {!useDefaultPlayer && video && (
+        <Card>
+          <CardActionArea component={Link} to={url}>
+            <CardContent>
+              <Typography variant="body2">{video.title}</Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
       )}
     </Box>
   );
