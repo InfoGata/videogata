@@ -34,24 +34,33 @@ const MiniPlayer: React.FC = () => {
 
   React.useEffect(() => {
     const getVideo = async () => {
-      if (pluginsLoaded && plugin && playerState.apiId) {
+      if (pluginsLoaded && plugin) {
         if (plugin.hasPlayer) {
           setUsePlayer(true);
           if (await plugin.hasDefined.onUsePlayer()) {
             setUsePlayer(await plugin.remote.onUsePlayer());
           }
         }
-        if (await plugin.hasDefined.onGetVideo()) {
-          const video = await plugin.remote.onGetVideo({
-            apiId: playerState.apiId,
-          });
-          setVideo(video);
+        if (playerState.apiId && !playerState.isLive) {
+          if (await plugin.hasDefined.onGetVideo()) {
+            const video = await plugin.remote.onGetVideo({
+              apiId: playerState.apiId,
+            });
+            setVideo(video);
+          }
+        } else if (playerState.channelApiId && playerState.isLive) {
+          if (await plugin.hasDefined.onGetLiveVideo()) {
+            const video = await plugin.remote.onGetLiveVideo({
+              channelApiId: playerState.channelApiId,
+            });
+            setVideo(video);
+          }
         }
       }
     };
 
     getVideo();
-  }, [pluginsLoaded, plugin, playerState.apiId]);
+  }, [pluginsLoaded, plugin, playerState]);
 
   const onClose = () => {
     dispatch(closePlayer());
