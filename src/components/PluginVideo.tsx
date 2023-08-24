@@ -12,6 +12,7 @@ import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import RecommendedVideos from "./RecommendVideos";
 import { useAppDispatch } from "../store/hooks";
 import { setPlayerInfo } from "../store/reducers/playerReducer";
+import { useQuery } from "react-query";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -22,7 +23,6 @@ const PluginVideo: React.FC = () => {
   const playlistId = params.get("playlistId") || "";
   const videoId = params.get("videoId") || "";
   const { plugins, pluginsLoaded } = usePlugins();
-  const [video, setVideo] = React.useState<Video>();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [playlistVideos, setPlaylistVideos] = React.useState<Video[]>();
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
@@ -35,18 +35,18 @@ const PluginVideo: React.FC = () => {
     dispatch(setPlayerInfo({ apiId, pluginId }));
   }, [dispatch, apiId, pluginId]);
 
-  React.useEffect(() => {
-    const getVideo = async () => {
-      if (pluginsLoaded && plugin && apiId) {
-        if (await plugin.hasDefined.onGetVideo()) {
-          const video = await plugin.remote.onGetVideo({ apiId });
-          setVideo(video);
-        }
+  const getVideo = async () => {
+    if (pluginsLoaded && plugin && apiId) {
+      if (await plugin.hasDefined.onGetVideo()) {
+        const video = await plugin.remote.onGetVideo({ apiId });
+        return video;
       }
-    };
+    }
+  };
 
-    getVideo();
-  }, [pluginsLoaded, plugin, apiId]);
+  const query = useQuery(["pluginVideo", pluginId, apiId], getVideo, {
+    enabled: pluginsLoaded,
+  });
 
   React.useEffect(() => {
     const getPlaylistVideos = async () => {
@@ -65,7 +65,7 @@ const PluginVideo: React.FC = () => {
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {video && <PluginVideoInfo video={video} />}
+      {query.data && <PluginVideoInfo video={query.data} />}
       {playlistVideos && (
         <PluginVideoPlaylist
           videos={playlistVideos}
@@ -77,12 +77,12 @@ const PluginVideo: React.FC = () => {
         <Grid item xs={9}>
           <PluginVideoComments
             apiId={apiId || ""}
-            pluginId={video?.pluginId || ""}
+            pluginId={query.data?.pluginId || ""}
           />
         </Grid>
         <RecommendedVideos
-          pluginId={video?.pluginId || ""}
-          videos={video?.recommendedVideos || []}
+          pluginId={query.data?.pluginId || ""}
+          videos={query.data?.recommendedVideos || []}
         />
       </Grid>
       <ConfirmPluginDialog

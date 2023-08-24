@@ -8,13 +8,13 @@ import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PluginVideoInfo from "./PluginVideoInfo";
 import { useDispatch } from "react-redux";
 import { setPlayerInfo } from "../store/reducers/playerReducer";
+import { useQuery } from "react-query";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
   const dispatch = useDispatch();
   const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
-  const [video, setVideo] = React.useState<Video>();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
@@ -26,27 +26,27 @@ const PluginVideo: React.FC = () => {
     dispatch(setPlayerInfo({ pluginId, isLive: true, channelApiId: apiId }));
   }, [dispatch, apiId, pluginId]);
 
-  React.useEffect(() => {
-    const getVideo = async () => {
-      if (pluginsLoaded && plugin && apiId) {
-        if (await plugin.hasDefined.onGetVideo()) {
-          const video = await plugin.remote.onGetLiveVideo({
-            channelApiId: apiId,
-          });
-          setVideo(video);
-        }
+  const getVideo = async () => {
+    if (pluginsLoaded && plugin && apiId) {
+      if (await plugin.hasDefined.onGetVideo()) {
+        const video = await plugin.remote.onGetLiveVideo({
+          channelApiId: apiId,
+        });
+        return video;
       }
-    };
+    }
+  };
 
-    getVideo();
-  }, [pluginsLoaded, plugin, apiId]);
+  const query = useQuery(["pluginLive", pluginId, apiId], getVideo, {
+    enabled: pluginsLoaded,
+  });
 
   return (
     <>
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {video && <PluginVideoInfo video={video} />}
+      {query.data && <PluginVideoInfo video={query.data} />}
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}
