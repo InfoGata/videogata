@@ -8,6 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
+import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Playlist, Video } from "../plugintypes";
@@ -25,6 +26,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const [name, setName] = React.useState("");
   const formId = nanoid();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
 
   const onSubmit = (e: React.FormEvent) => {
@@ -35,6 +37,8 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
       videos: videos,
     };
     dispatch(addPlaylist(playlist));
+    enqueueSnackbar(t("playlistCreated"));
+
     handleClose();
   };
 
