@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   Link as LinkIcon,
   PlaylistAdd,
   Star,
@@ -15,6 +16,7 @@ import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import PlaylistMenuItem from "../components/PlaylistMenuItem";
 import { db } from "../database";
 import { PlaylistInfo, Video } from "../plugintypes";
+import { NestedMenuItem } from "mui-nested-menu";
 
 const VideoMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -116,15 +118,24 @@ const VideoMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
           </ListItemIcon>
           <ListItemText primary={t("addToNewPlaylist")} />
         </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            videos={menuVideo ? [menuVideo] : []}
-            closeMenu={closeMenu}
-            title={t("addToPlaylist", { playlistName: p.name })}
-          />
-        ))}
+        {playlists.length > 0 && (
+          <NestedMenuItem
+            parentMenuOpen={Boolean(anchorEl)}
+            label={t("addToPlaylist")}
+            rightIcon={<ArrowRight />}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                videos={menuVideo ? [menuVideo] : []}
+                closeMenu={closeMenu}
+                title={p.name ?? ""}
+              />
+            ))}
+          </NestedMenuItem>
+        )}
       </Menu>
       <AddPlaylistDialog
         videos={menuVideo ? [menuVideo] : []}
