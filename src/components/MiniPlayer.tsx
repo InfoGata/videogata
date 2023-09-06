@@ -60,7 +60,13 @@ const MiniPlayer: React.FC = () => {
     };
 
     getVideo();
-  }, [pluginsLoaded, plugin, playerState]);
+  }, [
+    pluginsLoaded,
+    plugin,
+    playerState.apiId,
+    playerState.isLive,
+    playerState.channelApiId,
+  ]);
 
   const onClose = () => {
     dispatch(closePlayer());
