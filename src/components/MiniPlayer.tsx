@@ -99,7 +99,7 @@ const MiniPlayer: React.FC = () => {
       {!useDefaultPlayer && (
         <IconButton
           aria-label="close"
-          sx={{ position: "absolute", right: -10, top: -15 }}
+          sx={{ position: "absolute", right: -10, top: -15, zIndex: 100 }}
           onClick={onClose}
         >
           <CancelIcon />
