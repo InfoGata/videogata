@@ -9,41 +9,45 @@ interface VideoJSProps {
   isMiniPlayer?: boolean;
 }
 
-class VideoJS extends React.Component<VideoJSProps> {
-  private videoNode: HTMLVideoElement | null = null;
-  private player: VideoJsPlayer | null = null;
-
-  componentDidMount() {
-    if (this.videoNode) {
-      this.player = videojs(this.videoNode, this.props.options, () => {
-        videojs.log("onPlayerReady", this);
+const VideoJS: React.FC<VideoJSProps> = (props) => {
+  const { isMiniPlayer, videoSources, options } = props;
+  const videoRef = React.useRef(null);
+  const playerRef = React.useRef<VideoJsPlayer | null>(null);
+  React.useEffect(() => {
+    if (!playerRef.current) {
+      const videoElement = videoRef.current;
+      if (!videoElement) return;
+      playerRef.current = videojs(videoElement, options, () => {
+        videojs.log("onPlayerReady");
       });
     }
-  }
+  }, [options, videoRef]);
 
-  componentWillUnmount() {
-    if (this.player) {
-      this.player.dispose();
-    }
-  }
+  React.useEffect(() => {
+    const player = playerRef.current;
+    return () => {
+      if (player) {
+        player.dispose();
+        playerRef.current = null;
+      }
+    };
+  }, [playerRef]);
 
-  render() {
-    return (
-      <div
-        data-vjs-player
-        style={{
-          width: "100%",
-          height: this.props.isMiniPlayer ? undefined : "75vh",
-        }}
-      >
-        <video ref={(node) => (this.videoNode = node)} className="video-js">
-          {this.props.videoSources.map((v, i) => (
-            <source src={v.source} type={v.type} key={i} />
-          ))}
-        </video>
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      data-vjs-player
+      style={{
+        width: "100%",
+        height: isMiniPlayer ? "150px" : "75vh",
+      }}
+    >
+      <video ref={videoRef} className="video-js">
+        {videoSources.map((v, i) => (
+          <source src={v.source} type={v.type} key={i} />
+        ))}
+      </video>
+    </div>
+  );
+};
 
 export default VideoJS;
