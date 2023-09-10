@@ -1,22 +1,33 @@
 import React from "react";
+import useDeepCompareEffect from "use-deep-compare-effect";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "video.js/dist/video-js.css";
-import { VideoSource } from "./plugintypes";
 
 interface VideoJSProps {
   options: VideoJsPlayerOptions;
-  videoSources: VideoSource[];
   isMiniPlayer?: boolean;
 }
 
 const VideoJS: React.FC<VideoJSProps> = (props) => {
-  const { isMiniPlayer, videoSources, options } = props;
-  const videoRef = React.useRef(null);
+  const { isMiniPlayer, options } = props;
+  const videoRef = React.useRef<HTMLDivElement>(null);
   const playerRef = React.useRef<VideoJsPlayer | null>(null);
+
+  useDeepCompareEffect(() => {
+    if (playerRef.current) {
+      const player = playerRef.current;
+      if (options.sources) {
+        player.src(options.sources);
+      }
+    }
+  }, [options.sources]);
+
   React.useEffect(() => {
     if (!playerRef.current) {
-      const videoElement = videoRef.current;
-      if (!videoElement) return;
+      const videoElement = document.createElement("video-js");
+      videoElement.classList.add("vjs-big-play-centered");
+      videoRef.current?.appendChild(videoElement);
+
       playerRef.current = videojs(videoElement, options, () => {
         videojs.log("onPlayerReady");
       });
@@ -26,7 +37,7 @@ const VideoJS: React.FC<VideoJSProps> = (props) => {
   React.useEffect(() => {
     const player = playerRef.current;
     return () => {
-      if (player) {
+      if (player && !player.isDisposed()) {
         player.dispose();
         playerRef.current = null;
       }
@@ -34,18 +45,13 @@ const VideoJS: React.FC<VideoJSProps> = (props) => {
   }, [playerRef]);
 
   return (
-    <div
-      data-vjs-player
-      style={{
-        width: "100%",
-        height: isMiniPlayer ? "150px" : "75vh",
-      }}
-    >
-      <video ref={videoRef} className="video-js">
-        {videoSources.map((v, i) => (
-          <source src={v.source} type={v.type} key={i} />
-        ))}
-      </video>
+    <div data-vjs-player>
+      <div
+        style={{
+          maxHeight: "75vh",
+        }}
+        ref={videoRef}
+      />
     </div>
   );
 };

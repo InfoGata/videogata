@@ -1,4 +1,3 @@
-import { Grid } from "@mui/material";
 import React from "react";
 import { VideoJsPlayerOptions } from "video.js";
 import VideoJS from "../VideoJS";
@@ -14,16 +13,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
   const options: VideoJsPlayerOptions = {
     autoplay: true,
     controls: true,
+    responsive: true,
+    fluid: true,
+    sources: video.sources?.map((s) => ({
+      src: s.source,
+      type: s.type,
+    })),
     playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
   };
 
-  return (
-    <VideoJS
-      options={options}
-      videoSources={video.sources ?? []}
-      isMiniPlayer={isMiniPlayer}
-    />
-  );
+  return <VideoJS options={options} isMiniPlayer={isMiniPlayer} />;
 };
 
 export default VideoPlayer;
