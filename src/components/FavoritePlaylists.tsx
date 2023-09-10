@@ -17,11 +17,13 @@ import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
 import thumbnail from "../thumbnail.png";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import { useTranslation } from "react-i18next";
 
 const FavoriteChannels: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
   const { openMenu } = useItemMenu();
   const sanitizer = DOMPurify.sanitize;
+  const { t } = useTranslation();
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = thumbnail;
@@ -71,7 +73,13 @@ const FavoriteChannels: React.FC = () => {
   });
   return (
     <Grid container spacing={2}>
-      {playlistsCards}
+      {playlists && playlists.length > 0 ? (
+        playlistsCards
+      ) : (
+        <Grid item>
+          <Typography>{t("noFavoritePlaylists")}</Typography>
+        </Grid>
+      )}
     </Grid>
   );
 };
