@@ -2,6 +2,7 @@ import React from "react";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "video.js/dist/video-js.css";
+import "videojs-hotkeys";
 
 interface VideoJSProps {
   options: VideoJsPlayerOptions;
