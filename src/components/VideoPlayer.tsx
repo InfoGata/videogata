@@ -14,7 +14,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
     autoplay: true,
     controls: true,
     responsive: true,
-    fluid: true,
+    fill: true,
+    controlBar: {
+      pictureInPictureToggle: false,
+    },
     sources: video.sources?.map((s) => ({
       src: s.source,
       type: s.type,

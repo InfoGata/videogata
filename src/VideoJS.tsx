@@ -48,7 +48,8 @@ const VideoJS: React.FC<VideoJSProps> = (props) => {
     <div data-vjs-player>
       <div
         style={{
-          maxHeight: "75vh",
+          width: "100%",
+          height: isMiniPlayer ? "150px" : "75vh",
         }}
         ref={videoRef}
       />
