@@ -5,7 +5,6 @@ import {
   CardActionArea,
   CardActions,
   CardContent,
-  CardMedia,
   Chip,
   Grid,
   IconButton,
@@ -15,12 +14,8 @@ import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
-import thumbnail from "../thumbnail.png";
-import {
-  formatSeconds,
-  getThumbnailImage,
-  playlistThumbnailSize,
-} from "../utils";
+import { formatSeconds } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 
 interface VideoCardProps {
   pluginId: string;
@@ -33,8 +28,6 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
   const sanitizer = DOMPurify.sanitize;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
 
-  const image = getThumbnailImage(video.images, playlistThumbnailSize);
-
   const url = `/plugins/${pluginId}/videos/${video.apiId}`;
   const channelUrl = `/plugins/${pluginId}/channels/${video.channelApiId}`;
 
@@ -44,19 +37,10 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
     }
   };
 
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
-
   return (
     <Card sx={{ maxWidth: "250px" }}>
       <CardActionArea component={Link} to={url}>
-        <CardMedia
-          component="img"
-          alt={video.title}
-          image={image}
-          onError={onImageError}
-        />
+        <PlaylistImage images={video.images} />
         <CardContent>
           <Typography
             variant="body2"

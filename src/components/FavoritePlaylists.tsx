@@ -3,7 +3,6 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Grid,
   IconButton,
   Stack,
@@ -12,22 +11,18 @@ import {
 import { useLiveQuery } from "dexie-react-hooks";
 import DOMPurify from "dompurify";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
 import thumbnail from "../thumbnail.png";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import { useTranslation } from "react-i18next";
+import PlaylistImage from "./PlaylistImage";
 
 const FavoriteChannels: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
   const { openMenu } = useItemMenu();
   const sanitizer = DOMPurify.sanitize;
   const { t } = useTranslation();
-
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
 
   const playlistsCards = playlists?.map((p) => {
     const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,12 +37,7 @@ const FavoriteChannels: React.FC = () => {
             component={Link}
             to={`/plugins/${p.pluginId}/playlists/${p.apiId}`}
           >
-            <CardMedia
-              component={"img"}
-              image={getThumbnailImage(p.images, playlistThumbnailSize)}
-              alt={p.name}
-              onError={onImageError}
-            />
+            <PlaylistImage images={p.images} />
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>

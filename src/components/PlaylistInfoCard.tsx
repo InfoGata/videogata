@@ -1,18 +1,10 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Chip, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
-import thumbnail from "../thumbnail.png";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 
 interface PlaylistInfoCardProps {
   name: string;
@@ -37,19 +29,11 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
   const { t } = useTranslation();
   const sanitizer = DOMPurify.sanitize;
 
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
-
   return (
     <Card sx={{ display: "flex" }}>
-      <CardMedia
-        component="img"
-        alt={name}
-        image={getThumbnailImage(images, playlistThumbnailSize)}
-        onError={onImageError}
-        sx={{ height: "200px", width: "200px" }}
-      />
+      <Box>
+        <PlaylistImage images={images} />
+      </Box>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography

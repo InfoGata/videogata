@@ -10,14 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
-import { Image } from "mui-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import useVideoMenu from "../hooks/useVideoMenu";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
@@ -41,8 +40,6 @@ const TopItemCards: React.FC = () => {
   });
 
   const topVideoComponents = query.data?.videos?.items.map((v) => {
-    const image = getThumbnailImage(v.images, playlistThumbnailSize);
-
     const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       openMenu(event, v);
     };
@@ -62,7 +59,7 @@ const TopItemCards: React.FC = () => {
           component={Link}
           to={`/plugins/${pluginId}/videos/${v.apiId}`}
         >
-          <Image src={image} height={200} />
+          <PlaylistImage images={v.images} />
         </CardActionArea>
         <CardActions>
           <Stack direction="row" alignItems="center" gap={1}>

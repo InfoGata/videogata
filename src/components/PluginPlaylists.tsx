@@ -3,7 +3,6 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardMedia,
   CircularProgress,
   Grid,
   Typography,
@@ -15,7 +14,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import thumbnail from "../thumbnail.png";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -46,12 +45,7 @@ const PluginPlaylists: React.FC = () => {
           component={Link}
           to={`/plugins/${pluginId}/playlists/${p.apiId}?isuserplaylist`}
         >
-          <CardMedia
-            component={"img"}
-            image={getThumbnailImage(p.images, playlistThumbnailSize)}
-            alt={p.name}
-            onError={onImageError}
-          />
+          <PlaylistImage images={p.images} />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
               {p.name}
