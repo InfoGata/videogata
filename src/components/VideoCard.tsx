@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
 import { formatSeconds } from "../utils";
 import PlaylistImage from "./PlaylistImage";
+import TimeAgo from "timeago-react";
 
 interface VideoCardProps {
   pluginId: string;
@@ -41,7 +42,7 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
     <Card sx={{ maxWidth: "250px" }}>
       <CardActionArea component={Link} to={url}>
         <PlaylistImage images={video.images} />
-        <CardContent>
+        <CardContent sx={{ padding: "4px" }}>
           <Typography
             variant="body2"
             dangerouslySetInnerHTML={{
@@ -58,10 +59,10 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
           ) : null}
         </CardContent>
       </CardActionArea>
-      <CardActions>
+      <CardActions sx={{ padding: 0 }}>
         <Grid container justifyContent="center" alignItems="center">
-          {video.channelName ? (
-            <Grid item xs={8}>
+          <Grid item xs={10}>
+            {video.channelName ? (
               <Button
                 size="small"
                 component={Link}
@@ -70,21 +71,28 @@ const VideoCard: React.FC<VideoCardProps> = (props) => {
               >
                 {video.channelName}
               </Button>
-            </Grid>
-          ) : null}
-          {video.views ? (
-            <Grid container item xs={3}>
-              <Typography variant="body2">
-                {numberFormatter.format(video.views)}
-              </Typography>
-              <Visibility fontSize="small" />
-            </Grid>
-          ) : null}
-          <Grid item xs={1}>
+            ) : null}
+          </Grid>
+          <Grid item xs={2}>
             {openMenu && (
               <IconButton onClick={openVideoMenu} size="small">
                 <MoreVert fontSize="inherit" />
               </IconButton>
+            )}
+          </Grid>
+          <Grid container item xs={12}>
+            {video.views ? (
+              <>
+                <Visibility fontSize="small" />
+                <Typography variant="body2">
+                  {numberFormatter.format(video.views)}•
+                </Typography>
+              </>
+            ) : null}
+            {video.uploadDate && (
+              <Typography variant="body2">
+                <TimeAgo datetime={video.uploadDate} />
+              </Typography>
             )}
           </Grid>
         </Grid>
