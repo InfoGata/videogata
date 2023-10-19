@@ -42,6 +42,8 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
+import { setPluginsPreInstalled } from "../store/reducers/settingsReducer";
+import { defaultPlugins } from "../default-plugins";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -73,6 +75,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const dispatch = useAppDispatch();
   const loadingPlugin = React.useRef(false);
   const { t } = useTranslation("plugins");
+
+  const pluginsPreinstalled = useAppSelector(
+    (state) => state.settings.pluginsPreinstalled
+  );
 
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
@@ -349,10 +355,17 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       enqueueSnackbar(`A plugin with Id ${plugin.id} is already installed`);
       return;
     }
-    const pluginFrame = await loadPlugin(plugin);
-    setPluginFrames([...pluginFrames, pluginFrame]);
-    await db.plugins.add(plugin);
+    await loadAndAddPlugin(plugin);
   };
+
+  const loadAndAddPlugin = React.useCallback(
+    async (plugin: PluginInfo) => {
+      const pluginFrame = await loadPlugin(plugin);
+      setPluginFrames((prev) => [...prev, pluginFrame]);
+      await db.plugins.add(plugin);
+    },
+    [loadPlugin]
+  );
 
   const updatePlugin = React.useCallback(
     async (plugin: PluginInfo, id: string, pluginFiles?: FileList) => {
@@ -364,6 +377,31 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     },
     [loadPlugin, pluginFrames]
   );
+
+  React.useEffect(() => {
+    const preinstall = async () => {
+      if (pluginsLoaded && !pluginsPreinstalled) {
+        // Make sure preinstall plugins aren't already installed
+        const presinstallPlugins = defaultPlugins.filter(
+          (dp) => !!dp.preinstall
+        );
+        const plugs = await db.plugins.toArray();
+        const newPlugins = presinstallPlugins.filter(
+          (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
+        );
+        await mapAsync(newPlugins, async (newPlugin) => {
+          const fileType = getFileTypeFromPluginUrl(newPlugin.url);
+          const plugin = await getPlugin(fileType, true);
+          if (!plugin) return;
+
+          await loadAndAddPlugin(plugin);
+        });
+        dispatch(setPluginsPreInstalled());
+      }
+    };
+
+    preinstall();
+  }, [dispatch, pluginsLoaded, pluginsPreinstalled, loadAndAddPlugin]);
 
   React.useEffect(() => {
     const checkUpdate = async () => {

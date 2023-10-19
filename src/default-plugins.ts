@@ -3,6 +3,7 @@ export interface PluginDescription {
   name: string;
   url: string;
   description: string;
+  preinstall?: boolean;
 }
 
 export const defaultPlugins: PluginDescription[] = [
@@ -11,6 +12,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Youtube",
     description: "Plugin for playing videos from youtube.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-videogata@latest/manifest.json",
+    preinstall: true,
   },
   {
     id: "MLWVs6Y6j3EI6mT76Jo-S",

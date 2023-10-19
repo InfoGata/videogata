@@ -5,6 +5,7 @@ interface SettingsState {
   corsProxyUrl?: string;
   disableAutoUpdatePlugins?: boolean;
   useMiniPlayer?: boolean;
+  pluginsPreinstalled?: boolean;
 }
 
 const initialState: SettingsState = {};
@@ -37,6 +38,9 @@ const settingsSlice = createSlice({
         useMiniPlayer: !state.useMiniPlayer,
       };
     },
+    setPluginsPreInstalled: (state) => {
+      return { ...state, pluginsPreinstalled: true };
+    },
   },
 });
 
@@ -45,5 +49,6 @@ export const {
   saveCorsProxyUrl,
   toggleDisableAutoUpdatePlugins,
   toggleUseMiniPlayer,
+  setPluginsPreInstalled,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;
