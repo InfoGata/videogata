@@ -53,14 +53,14 @@ const Comment: React.FC<CommentProps> = (props) => {
         <Typography color="textSecondary" variant="body1">
           {comment.content}
         </Typography>
-        {comment.likes && (
+        {comment.likes ? (
           <Grid item container>
             <ThumbUp fontSize="small" />
             <Typography variant="body2">
               {numberFormatter.format(comment.likes)}
             </Typography>
           </Grid>
-        )}
+        ) : null}
         <Grid item>{comment.replyCount && replyElement}</Grid>
       </Grid>
     </Grid>
