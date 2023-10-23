@@ -23,7 +23,8 @@ import {
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { plugins, addPlugin, pluginsLoaded } = usePlugins();
+  const { plugins, addPlugin, pluginsLoaded, preinstallComplete } =
+    usePlugins();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -46,9 +47,13 @@ const PluginCards: React.FC = () => {
   };
 
   const pluginCards = defaultPlugins
-    .filter((dp) => !plugins.some((p) => dp.id === p.id))
-    .map((p, i) => (
-      <Grid item xs={4} key={i}>
+    .filter(
+      (dp) =>
+        !plugins.some((p) => dp.id === p.id) &&
+        (preinstallComplete || !dp.preinstall)
+    )
+    .map((p) => (
+      <Grid item xs={4} key={p.id}>
         <Card>
           <CardContent>
             <Typography>{p.name}</Typography>
