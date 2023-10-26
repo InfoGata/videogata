@@ -37,7 +37,7 @@ const TopBar: React.FC = () => {
         <Typography
           variant="h6"
           noWrap={true}
-          sx={{ display: { xs: "none", sm: "block" } }}
+          sx={{ display: { xs: "none", sm: "block" }, pr: 2 }}
         >
           <Link color="inherit" underline="none" component={RouterLink} to="/">
             VideoGata
