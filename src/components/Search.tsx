@@ -57,7 +57,6 @@ const Search: React.FC = () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
       searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
-      console.log(searchAll);
     }
 
     if (searchAll?.videos) {

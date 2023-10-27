@@ -4,6 +4,9 @@ import { alpha, styled } from "@mui/material/styles";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../store/hooks";
+import usePlugins from "../hooks/usePlugins";
+import { debounce } from "@mui/material/utils";
 
 const SearchBarComponent = styled(Autocomplete)(({ theme }) => ({
   position: "relative",
@@ -22,20 +25,91 @@ const SearchBarComponent = styled(Autocomplete)(({ theme }) => ({
 }));
 
 const SearchBar: React.FC = () => {
+  const pluginId = useAppSelector((state) => state.settings.currentPluginId);
+  const { plugins } = usePlugins();
+  const searchPlugin = plugins.find((p) => p.id === pluginId);
   const [search, setSearch] = React.useState("");
+  const [currentSearch, setCurrentSearch] = React.useState("");
+  const [options, setOptions] = React.useState<string[]>([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleSubmit = (event: React.FormEvent<{}>) => {
-    navigate(`/search?q=${search}`);
-    event.preventDefault();
+  const searchQuery = (searchTerm: string) => {
+    navigate(`/search?q=${searchTerm}`);
   };
+
+  const handleSubmit = (event: React.FormEvent<{}>) => {
+    event.preventDefault();
+    searchQuery(search);
+  };
+
+  const onGetSuggestions = React.useCallback(
+    async (query: string) => {
+      if (
+        searchPlugin &&
+        (await searchPlugin.hasDefined.onGetSearchSuggestions())
+      ) {
+        const suggestions = await searchPlugin.remote.onGetSearchSuggestions({
+          query,
+        });
+        return suggestions;
+      }
+    },
+    [searchPlugin]
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getSuggestionDebounce = React.useMemo(
+    () =>
+      debounce(
+        (
+          request: string,
+          callback: (suggestions: string[] | undefined) => void
+        ) => {
+          onGetSuggestions(request).then((data) => {
+            callback(data);
+          });
+        },
+        500
+      ),
+    [onGetSuggestions]
+  );
+
+  React.useEffect(() => {
+    let active = true;
+    if (search === "") {
+      setOptions([]);
+      return;
+    }
+    if (currentSearch === search) {
+      return;
+    }
+
+    getSuggestionDebounce(search, (suggestions) => {
+      if (active) {
+        if (suggestions) {
+          setOptions(suggestions);
+        }
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [search, currentSearch, getSuggestionDebounce]);
+
   return (
     <form onSubmit={handleSubmit}>
       <SearchBarComponent
         freeSolo
         onInputChange={(_event, newInputValue) => {
           setSearch(newInputValue);
+        }}
+        onChange={(_event: any, newValue: unknown) => {
+          if (typeof newValue === "string") {
+            searchQuery(newValue);
+            setCurrentSearch(newValue);
+          }
         }}
         renderInput={(params) => {
           const { InputProps, ...rest } = params;
@@ -54,7 +128,8 @@ const SearchBar: React.FC = () => {
             />
           );
         }}
-        options={[]}
+        options={options}
+        filterOptions={(x) => x}
       />
     </form>
   );

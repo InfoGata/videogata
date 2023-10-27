@@ -5,6 +5,7 @@ import {
   ChannelVideosResult,
   CommentReplyRequest,
   GetLiveVideoRequest,
+  GetSearchSuggestionRequest,
   GetVideoRequest,
   ParseUrlType,
   Playlist,
@@ -50,6 +51,9 @@ export interface PluginMethodInterface {
   onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
   onLookupVideoUrls(urls: string[]): Promise<Video[]>;
+  onGetSearchSuggestions(
+    request: GetSearchSuggestionRequest
+  ): Promise<string[]>;
 }
 
 export interface PluginMessage {

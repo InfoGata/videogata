@@ -187,4 +187,8 @@ export interface FilterOption {
   value: string;
 }
 
+export interface GetSearchSuggestionRequest {
+  query: string;
+}
+
 export type ParseUrlType = "playlist" | "video";
