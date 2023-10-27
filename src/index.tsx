@@ -12,6 +12,7 @@ import "./i18n";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import * as Sentry from "@sentry/browser";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 Sentry.init({
   dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
@@ -27,9 +28,14 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
+        <HelmetProvider>
+          <Helmet>
+            <title>VideoGata</title>
+          </Helmet>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </HelmetProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>

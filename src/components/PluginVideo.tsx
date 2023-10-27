@@ -13,6 +13,7 @@ import RecommendedVideos from "./RecommendVideos";
 import { useAppDispatch } from "../store/hooks";
 import { setPlayerInfo } from "../store/reducers/playerReducer";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet-async";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -62,6 +63,11 @@ const PluginVideo: React.FC = () => {
 
   return (
     <>
+      {query.data && (
+        <Helmet>
+          <title>{query.data.title}</title>
+        </Helmet>
+      )}
       <Backdrop open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
