@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { Video } from "../plugintypes";
+import VideoDescrption from "./VideoDescrption";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -95,14 +96,7 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
       ) : null}
       <Divider />
       {video.description ? (
-        <Typography
-          sx={{ whiteSpace: "pre-line" }}
-          component="div"
-          variant="body1"
-          dangerouslySetInnerHTML={{
-            __html: sanitizer(video.description),
-          }}
-        />
+        <VideoDescrption description={video.description} />
       ) : null}
       <Divider />
     </Grid>
