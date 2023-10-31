@@ -4,6 +4,8 @@ import { db } from "../database";
 import useVideoMenu from "../hooks/useVideoMenu";
 import VideoCards from "./VideoCards";
 import {
+  Backdrop,
+  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -11,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppSelector } from "../store/hooks";
 import { Playlist, Video } from "../plugintypes";
 import { MoreHoriz, UploadFile } from "@mui/icons-material";
 import ImportDialog from "./ImportDialog";
@@ -57,6 +59,14 @@ const FavoriteVideos: React.FC = () => {
       <ListItemText primary={t("importVideoByUrl")} />
     </MenuItem>,
   ];
+
+  if (!videos) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
 
   return (
     <>

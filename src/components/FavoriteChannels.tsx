@@ -1,8 +1,10 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
+  Backdrop,
   Card,
   CardActionArea,
   CardActions,
+  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -15,7 +17,6 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import thumbnail from "../thumbnail.png";
 import PlaylistImage from "./PlaylistImage";
 
 const FavoriteChannels: React.FC = () => {
@@ -23,6 +24,14 @@ const FavoriteChannels: React.FC = () => {
   const sanitizer = DOMPurify.sanitize;
   const { openMenu } = useItemMenu();
   const { t } = useTranslation();
+
+  if (!channels) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
 
   const channelCards = channels?.map((c) => {
     const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,6 +70,7 @@ const FavoriteChannels: React.FC = () => {
       </Grid>
     );
   });
+
   return (
     <Grid container spacing={2}>
       {channels && channels.length > 0 ? (
