@@ -255,10 +255,12 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         onGetVideo: (video: Video) => {
           video.pluginId = plugin.id;
+          video.id = nanoid();
           return video;
         },
         onGetLiveVideo: (video: Video) => {
           video.pluginId = plugin.id;
+          video.id = nanoid();
           return video;
         },
         onGetPlaylistVideos: (result: PlaylistVideosResult) => {
