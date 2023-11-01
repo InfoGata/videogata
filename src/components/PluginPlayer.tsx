@@ -10,10 +10,12 @@ interface PluginPlayerProps {
   isLive?: boolean;
   plugin?: PluginFrameContainer;
   isMiniPlayer?: boolean;
+  timeInSeconds?: number;
 }
 
 const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
-  const { apiId, plugin, isLive, channelApiId, isMiniPlayer } = props;
+  const { apiId, plugin, isLive, channelApiId, isMiniPlayer, timeInSeconds } =
+    props;
   const [playerHtml, setPlayerHtml] = React.useState<string>();
   const ref = React.useRef<HTMLIFrameElement>(null);
   const { pluginMessage } = usePlugins();
@@ -61,11 +63,12 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     }
   };
 
-  const srcUrl = `${getPluginSubdomain(
+  let srcUrl = `${getPluginSubdomain(
     plugin?.id
   )}/ui.html?apiId=${apiId}&isLive=${
     isLive === true
   }&channelApiId=${channelApiId}`;
+  srcUrl = timeInSeconds ? `${srcUrl}#t=${timeInSeconds}` : `${srcUrl}#`;
 
   return (
     <>

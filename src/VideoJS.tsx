@@ -7,10 +7,11 @@ import "videojs-hotkeys";
 interface VideoJSProps {
   options: VideoJsPlayerOptions;
   isMiniPlayer?: boolean;
+  timeInSeconds?: number;
 }
 
 const VideoJS: React.FC<VideoJSProps> = (props) => {
-  const { isMiniPlayer, options } = props;
+  const { isMiniPlayer, options, timeInSeconds } = props;
   const videoRef = React.useRef<HTMLDivElement>(null);
   const playerRef = React.useRef<VideoJsPlayer | null>(null);
 
@@ -44,6 +45,12 @@ const VideoJS: React.FC<VideoJSProps> = (props) => {
       }
     };
   }, [playerRef]);
+
+  // React.useEffect(() => {
+  //   if (playerRef.current && timeInSeconds) {
+  //     playerRef.current.currentTime(timeInSeconds);
+  //   }
+  // }, [timeInSeconds]);
 
   return (
     <div data-vjs-player>

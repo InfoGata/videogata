@@ -29,8 +29,18 @@ const MiniPlayer: React.FC = () => {
   const useDefaultPlayer =
     location.pathname.endsWith("/live") ||
     location.pathname.endsWith(`/videos/${playerState.apiId}`);
+  const params = new URLSearchParams(location.search);
+  const timeInSeconds = params.has("t")
+    ? parseInt(params.get("t") ?? "0", 10)
+    : undefined;
   const useMiniPlayer = useAppSelector((state) => state.settings.useMiniPlayer);
   const url = `/plugins/${video?.pluginId}/videos/${video?.apiId}`;
+
+  React.useEffect(() => {
+    if (timeInSeconds) {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  }, [timeInSeconds]);
 
   React.useEffect(() => {
     const getVideo = async () => {
@@ -106,7 +116,11 @@ const MiniPlayer: React.FC = () => {
         </IconButton>
       )}
       {video && !usePlayer ? (
-        <VideoPlayer video={video} isMiniPlayer={!useDefaultPlayer} />
+        <VideoPlayer
+          video={video}
+          isMiniPlayer={!useDefaultPlayer}
+          timeInSeconds={timeInSeconds}
+        />
       ) : null}
       {usePlayer && (
         <PluginPlayer
@@ -115,6 +129,7 @@ const MiniPlayer: React.FC = () => {
           plugin={plugin}
           isLive={playerState.isLive}
           isMiniPlayer={!useDefaultPlayer}
+          timeInSeconds={timeInSeconds}
         />
       )}
       {!useDefaultPlayer && video && (

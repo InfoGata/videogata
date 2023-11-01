@@ -6,10 +6,11 @@ import { Video } from "../plugintypes";
 interface VideoPlayerProps {
   video: Video;
   isMiniPlayer?: boolean;
+  timeInSeconds?: number;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
-  const { video, isMiniPlayer } = props;
+  const { video, isMiniPlayer, timeInSeconds } = props;
   const options: VideoJsPlayerOptions = {
     autoplay: true,
     controls: true,
@@ -31,7 +32,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
     },
   };
 
-  return <VideoJS options={options} isMiniPlayer={isMiniPlayer} />;
+  return (
+    <VideoJS
+      options={options}
+      isMiniPlayer={isMiniPlayer}
+      timeInSeconds={timeInSeconds}
+    />
+  );
 };
 
 export default VideoPlayer;
