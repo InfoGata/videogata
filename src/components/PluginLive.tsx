@@ -1,14 +1,13 @@
-import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
+import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
-import { Video } from "../plugintypes";
+import { setPlayerInfo } from "../store/reducers/playerReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PluginVideoInfo from "./PluginVideoInfo";
-import { useDispatch } from "react-redux";
-import { setPlayerInfo } from "../store/reducers/playerReducer";
-import { useQuery } from "react-query";
+import Spinner from "./Spinner";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -43,9 +42,7 @@ const PluginVideo: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={isLoading} />
       {query.data && <PluginVideoInfo video={query.data} />}
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}

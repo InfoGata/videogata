@@ -1,23 +1,22 @@
-import { useLiveQuery } from "dexie-react-hooks";
-import React from "react";
-import { db } from "../database";
-import useVideoMenu from "../hooks/useVideoMenu";
-import VideoCards from "./VideoCards";
+import { MoreHoriz, UploadFile } from "@mui/icons-material";
 import {
-  Backdrop,
-  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
   MenuItem,
   Typography,
 } from "@mui/material";
+import { useLiveQuery } from "dexie-react-hooks";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../store/hooks";
+import { db } from "../database";
+import useVideoMenu from "../hooks/useVideoMenu";
 import { Playlist, Video } from "../plugintypes";
-import { MoreHoriz, UploadFile } from "@mui/icons-material";
+import { useAppSelector } from "../store/hooks";
 import ImportDialog from "./ImportDialog";
 import PlaylistMenu from "./PlaylistMenu";
+import Spinner from "./Spinner";
+import VideoCards from "./VideoCards";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());
@@ -61,11 +60,7 @@ const FavoriteVideos: React.FC = () => {
   ];
 
   if (!videos) {
-    return (
-      <Backdrop open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <Spinner open={true} />;
   }
 
   return (

@@ -1,19 +1,20 @@
-import { Backdrop, CircularProgress, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import React from "react";
+import { Helmet } from "react-helmet-async";
+import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
 import { db } from "../database";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
+import { useAppDispatch } from "../store/hooks";
+import { setPlayerInfo } from "../store/reducers/playerReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PluginVideoComments from "./PluginVideoComments";
 import PluginVideoInfo from "./PluginVideoInfo";
 import PluginVideoPlaylist from "./PluginVideoPlaylist";
 import RecommendedVideos from "./RecommendVideos";
-import { useAppDispatch } from "../store/hooks";
-import { setPlayerInfo } from "../store/reducers/playerReducer";
-import { useQuery } from "react-query";
-import { Helmet } from "react-helmet-async";
+import Spinner from "./Spinner";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -68,9 +69,7 @@ const PluginVideo: React.FC = () => {
           <title>{query.data.title}</title>
         </Helmet>
       )}
-      <Backdrop open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={isLoading} />
       {query.data && <PluginVideoInfo video={query.data} />}
       {playlistVideos && (
         <PluginVideoPlaylist

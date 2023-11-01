@@ -1,7 +1,5 @@
 import { Delete, Edit, MoreHoriz, UploadFile } from "@mui/icons-material";
 import {
-  Backdrop,
-  CircularProgress,
   Grid,
   IconButton,
   ListItemIcon,
@@ -26,6 +24,7 @@ import EditPlaylistDialog from "./EditPlaylistDialog";
 import ImportDialog from "./ImportDialog";
 import PlaylistMenu from "./PlaylistMenu";
 import SelectVideoListPlugin from "./SelectVideoListPlugin";
+import Spinner from "./Spinner";
 import VideoList from "./VideoList";
 
 const PlaylistVideos: React.FC = () => {
@@ -138,9 +137,7 @@ const PlaylistVideos: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={playlist === false}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={playlist === false} />
       {playlist ? (
         <>
           <Grid sx={{ display: "flex" }}>

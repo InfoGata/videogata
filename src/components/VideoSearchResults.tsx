@@ -1,4 +1,3 @@
-import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
@@ -7,6 +6,7 @@ import useVideoMenu from "../hooks/useVideoMenu";
 import { FilterInfo, PageInfo } from "../plugintypes";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
+import Spinner from "./Spinner";
 import VideoCards from "./VideoCards";
 
 interface VideoSearchResultsProps {
@@ -75,9 +75,7 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading} />
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}

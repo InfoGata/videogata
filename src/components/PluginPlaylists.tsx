@@ -1,9 +1,7 @@
 import {
-  Backdrop,
   Card,
   CardActionArea,
   CardContent,
-  CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
@@ -15,6 +13,7 @@ import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import thumbnail from "../thumbnail.png";
 import PlaylistImage from "./PlaylistImage";
+import Spinner from "./Spinner";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -57,9 +56,7 @@ const PluginPlaylists: React.FC = () => {
   ));
   return plugin ? (
     <>
-      <Backdrop open={query.isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading} />
       <Grid container spacing={2}>
         {playlistLinks}
       </Grid>

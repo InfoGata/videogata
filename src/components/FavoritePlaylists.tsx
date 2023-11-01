@@ -1,10 +1,8 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
-  Backdrop,
   Card,
   CardActionArea,
   CardActions,
-  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -18,6 +16,7 @@ import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
 import PlaylistImage from "./PlaylistImage";
+import Spinner from "./Spinner";
 
 const FavoriteChannels: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
@@ -26,11 +25,7 @@ const FavoriteChannels: React.FC = () => {
   const { t } = useTranslation();
 
   if (!playlists) {
-    return (
-      <Backdrop open={true}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
+    return <Spinner />;
   }
 
   const playlistsCards = playlists?.map((p) => {

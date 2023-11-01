@@ -1,4 +1,3 @@
-import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import { Channel, PageInfo } from "../plugintypes";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
+import Spinner from "./Spinner";
 import VideoCards from "./VideoCards";
 
 const ChannelPage: React.FC = () => {
@@ -58,9 +58,7 @@ const ChannelPage: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading || isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading || isLoading} />
       {channel && (
         <PlaylistInfoCard
           name={channel.name || ""}
