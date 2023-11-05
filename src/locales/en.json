@@ -4,6 +4,7 @@
     "home": "Home",
     "plugin": "Plugins",
     "plugins": "Plugins",
+    "availablePlugins": "Available Plugins",
     "selectPlugin": "Select Plugin",
     "none": "None",
     "settings": "Settings",
@@ -108,7 +109,8 @@
     "loadPluginFromUrl": "Load Plugin From Url",
     "homepage": "Home Page",
     "failedPlugins": "Failed to load plugins",
-    "clickReload": "Click to reload plugins"
+    "clickReload": "Click to reload plugins",
+    "installedPlugins": "Installed Plugins"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
