@@ -10,32 +10,39 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
-import thumbnail from "../thumbnail.png";
+import { PageInfo, UserPlaylistRequest } from "../plugintypes";
+import Pager from "./Pager";
 import PlaylistImage from "./PlaylistImage";
 import Spinner from "./Spinner";
 
 const PluginPlaylists: React.FC = () => {
-  const { plugins } = usePlugins();
+  const { plugins, pluginsLoaded } = usePlugins();
   const { pluginId } = useParams<"pluginId">();
   const { t } = useTranslation();
+  const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const plugin = plugins.find((p) => p.id === pluginId);
+
+  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
+    usePagination(currentPage);
 
   const getPlaylists = async () => {
     if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
-      const request = {};
+      const request: UserPlaylistRequest = {
+        pageInfo: page,
+      };
       const p = await plugin.remote.onGetUserPlaylists(request);
+      setCurrentPage(p.pageInfo);
       return p.items;
     }
     return [];
   };
 
-  const query = useQuery(["pluginplaylists", pluginId], getPlaylists);
+  const query = useQuery(["pluginplaylists", pluginId, page], getPlaylists, {
+    enabled: pluginsLoaded && !!plugin,
+  });
   const playlists = query.data || [];
-
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
 
   const playlistLinks = playlists.map((p, i) => (
     <Grid item xs={2} key={i}>
@@ -60,6 +67,12 @@ const PluginPlaylists: React.FC = () => {
       <Grid container spacing={2}>
         {playlistLinks}
       </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
     </>
   ) : (
     <>{t("notFound")}</>
