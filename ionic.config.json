@@ -1,0 +1,7 @@
+{
+  "name": "VideoGata",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

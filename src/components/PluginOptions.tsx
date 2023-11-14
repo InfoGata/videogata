@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -58,6 +59,9 @@ const PluginOptions: React.FC = () => {
   const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
   let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
   if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
+  // window.open needs allow-top-navigation-by-user-activiation
+  if (Capacitor.isNativePlatform())
+    sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
 
   const iframeOnload = async () => {
     const pluginData = await db.plugins.get(plugin.id || "");

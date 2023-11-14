@@ -3,6 +3,7 @@ import i18next from "./i18n";
 import { ImageInfo, PluginInfo, Video } from "./plugintypes";
 import thumbnail from "./thumbnail.png";
 import { DirectoryFile, FileType, Manifest } from "./types";
+import { Capacitor } from "@capacitor/core";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -179,7 +180,7 @@ export async function filterAsync<T>(
 }
 
 export const getPluginSubdomain = (id?: string): string => {
-  if (import.meta.env.PROD) {
+  if (import.meta.env.PROD || Capacitor.isNativePlatform()) {
     const domain = import.meta.env.VITE_DOMAIN || "videogata.com";
     const protocol = domain.startsWith("localhost")
       ? window.location.protocol
