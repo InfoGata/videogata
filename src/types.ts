@@ -35,23 +35,6 @@ export interface DirectoryFile extends File {
   webkitRelativePath: string;
 }
 
-export interface Manifest {
-  name: string;
-  script: string;
-  id?: string;
-  version?: string;
-  description?: string;
-  options?: string | ManifestOptions;
-  player?: string;
-  updateUrl?: string;
-  homepage?: string;
-}
-
-export interface ManifestOptions {
-  page: string;
-  sameOrigin?: boolean;
-}
-
 export const enum SearchResultType {
   Videos = "videos",
   Playlists = "playlists",

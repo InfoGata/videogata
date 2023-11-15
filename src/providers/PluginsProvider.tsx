@@ -27,13 +27,14 @@ import {
   SearchPlaylistResult,
   SearchVideoResult,
   Video,
+  Manifest,
 } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   addPlaylistVideos,
   addPlaylists,
 } from "../store/reducers/playlistReducer";
-import { Manifest, NetworkRequest } from "../types";
+import { NetworkRequest } from "../types";
 import {
   getFileText,
   getFileTypeFromPluginUrl,

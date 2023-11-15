@@ -97,6 +97,7 @@ export interface PluginInfo {
   optionsSameOrigin?: boolean;
   manifestUrl?: string;
   homepage?: string;
+  manifest?: Manifest;
 }
 
 export interface SearchVideoResult extends SearchResult {
@@ -192,3 +193,19 @@ export interface GetSearchSuggestionRequest {
 }
 
 export type ParseUrlType = "playlist" | "video";
+
+export interface Manifest {
+  name: string;
+  script: string;
+  id?: string;
+  version?: string;
+  description?: string;
+  options?: string | ManifestOptions;
+  player?: string;
+  updateUrl?: string;
+  homepage?: string;
+}
+export interface ManifestOptions {
+  page: string;
+  sameOrigin?: boolean;
+}
