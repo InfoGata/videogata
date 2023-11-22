@@ -1,9 +1,16 @@
 import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
-import { ImageInfo, Manifest, PluginInfo, Video } from "./plugintypes";
+import {
+  ImageInfo,
+  Manifest,
+  ManifestAuthentication,
+  PluginInfo,
+  Video,
+} from "./plugintypes";
 import thumbnail from "./thumbnail.png";
 import { DirectoryFile, FileType } from "./types";
+import isElectron from "is-electron";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -195,6 +202,10 @@ export const hasExtension = () => {
   return typeof window.InfoGata !== "undefined";
 };
 
+export const corsIsDisabled = () => {
+  return hasExtension() || isElectron() || Capacitor.isNativePlatform();
+};
+
 export const generatePluginId = () => {
   // Cannot use '-' or '_' if they show up and beginning or end of id.
   const nanoid = customAlphabet(
@@ -218,6 +229,31 @@ export const mergeVideos = (arr1: Video[], arr2: Video[]): Video[] => {
     }
   });
   return Array.from(map.values());
+};
+
+const getCookiesFromUrl = (url: string): Promise<Map<string, string>> => {
+  return new Promise((resolve) => {
+    window.cordova.plugins.CookiesPlugin.getCookie(url, (cookies) => {
+      const cookieMap = new Map<string, string>(
+        cookies
+          .split(";")
+          .map((c) => c.trim().split("="))
+          .map((c) => [c[0], c[1]])
+      );
+      resolve(cookieMap);
+    });
+  });
+};
+
+export const isLoggedIn = async (auth: ManifestAuthentication) => {
+  if (Capacitor.isNativePlatform()) {
+    const cookies = await getCookiesFromUrl(auth.loginUrl);
+    return auth.cookiesToFind.every((c) => cookies.has(c));
+  } else if (hasExtension() && window.InfoGata.isLoggedIn) {
+    return await window.InfoGata.isLoggedIn(auth);
+  }
+
+  return false;
 };
 
 export const searchThumbnailSize = 40;

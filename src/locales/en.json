@@ -110,7 +110,9 @@
     "homepage": "Home Page",
     "failedPlugins": "Failed to load plugins",
     "clickReload": "Click to reload plugins",
-    "installedPlugins": "Installed Plugins"
+    "installedPlugins": "Installed Plugins",
+    "login": "Login",
+    "isLoggedIn": "Currently Logged in"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",

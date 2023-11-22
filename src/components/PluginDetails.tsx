@@ -12,7 +12,14 @@ import { useParams } from "react-router-dom";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
-import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
+import {
+  corsIsDisabled,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+  isLoggedIn,
+} from "../utils";
+import { Capacitor } from "@capacitor/core";
+import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -22,6 +29,34 @@ const PluginDetails: React.FC = () => {
   const [playerSize, setPlayerSize] = React.useState(0);
   const { updatePlugin } = usePlugins();
   const { t } = useTranslation(["plugins", "common"]);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const hasLogin = corsIsDisabled() && !!plugin?.manifest?.authentication;
+
+  const iframeListener = React.useCallback(async (event: MessageEvent<any>) => {
+    if (event.source !== window) {
+      return;
+    }
+
+    if (event.data.type === "infogata-extension-notify-login") {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener("message", iframeListener);
+    return () => window.removeEventListener("message", iframeListener);
+  }, [iframeListener]);
+
+  React.useEffect(() => {
+    const checkLogin = async () => {
+      let hasLoggedIn = false;
+      if (plugin?.manifest?.authentication) {
+        hasLoggedIn = await isLoggedIn(plugin?.manifest?.authentication);
+      }
+      setLoggedIn(hasLoggedIn);
+    };
+    checkLogin();
+  }, [plugin]);
 
   const loadPluginFromDb = React.useCallback(async () => {
     const p = await db.plugins.get(pluginId || "");
@@ -37,6 +72,35 @@ const PluginDetails: React.FC = () => {
       setPlayerSize(playerBlob.size);
     }
   }, [pluginId]);
+
+  const onLogin = () => {
+    if (plugin?.manifest?.authentication?.loginUrl) {
+      if (Capacitor.isNativePlatform()) {
+        const win = InAppBrowser.create(
+          plugin.manifest.authentication.loginUrl,
+          "_blank"
+        );
+        win.on("loadstop").subscribe(async () => {
+          if (plugin.manifest?.authentication) {
+            const hasLoggedIn = await isLoggedIn(
+              plugin.manifest.authentication
+            );
+            if (hasLoggedIn) {
+              win.close();
+              setLoggedIn(true);
+            }
+          }
+        });
+      } else {
+        if (window.InfoGata.openLoginWindow) {
+          window.InfoGata.openLoginWindow(
+            plugin.manifest.authentication,
+            plugin.id || ""
+          );
+        }
+      }
+    }
+  };
 
   React.useEffect(() => {
     loadPluginFromDb();
@@ -127,6 +191,17 @@ const PluginDetails: React.FC = () => {
                     secondary={plugin.manifestUrl}
                   />
                 </ListItemButton>
+              </ListItem>
+            )}
+            {hasLogin && (
+              <ListItem disablePadding>
+                {loggedIn ? (
+                  <ListItemText primary={t("plugins:isLoggedIn")} />
+                ) : (
+                  <ListItemButton onClick={onLogin}>
+                    <ListItemText primary={t("plugins:login")} />
+                  </ListItemButton>
+                )}
               </ListItem>
             )}
           </List>

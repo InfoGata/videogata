@@ -124,6 +124,10 @@ export interface UserPlaylistRequest {
   pageInfo?: PageInfo;
 }
 
+export interface UserChannelRequest {
+  pageInfo?: PageInfo;
+}
+
 export interface PlaylistVideoRequest {
   apiId?: string;
   isUserPlaylist: boolean;
@@ -204,7 +208,14 @@ export interface Manifest {
   player?: string;
   updateUrl?: string;
   homepage?: string;
+  authentication?: ManifestAuthentication;
 }
+
+export interface ManifestAuthentication {
+  loginUrl: string;
+  cookiesToFind: string[];
+}
+
 export interface ManifestOptions {
   page: string;
   sameOrigin?: boolean;

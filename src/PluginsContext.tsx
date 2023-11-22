@@ -17,6 +17,7 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
+  UserChannelRequest,
   UserPlaylistRequest,
   Video,
   VideoCommentsRequest,
@@ -32,6 +33,7 @@ export interface PluginMethodInterface {
   onGetUserPlaylists(
     request: UserPlaylistRequest
   ): Promise<SearchPlaylistResult>;
+  onGetUserChannels(request: UserChannelRequest): Promise<SearchChannelResult>;
   onGetPlaylistVideos(
     request: PlaylistVideoRequest
   ): Promise<PlaylistVideosResult>;
@@ -54,6 +56,7 @@ export interface PluginMethodInterface {
   onGetSearchSuggestions(
     request: GetSearchSuggestionRequest
   ): Promise<string[]>;
+  onPostLogin(): Promise<void>;
 }
 
 export interface PluginMessage {

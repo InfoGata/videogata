@@ -1,5 +1,5 @@
+import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
-import isElectron from "is-electron";
 import { useSnackbar } from "notistack";
 import { PluginInterface } from "plugin-frame";
 import React from "react";
@@ -14,9 +14,11 @@ import PluginsContext, {
 } from "../PluginsContext";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import { db } from "../database";
+import { defaultPlugins } from "../default-plugins";
 import i18n from "../i18n";
 import {
   ChannelVideosResult,
+  Manifest,
   NotificationMessage,
   Playlist,
   PlaylistInfo,
@@ -27,24 +29,24 @@ import {
   SearchPlaylistResult,
   SearchVideoResult,
   Video,
-  Manifest,
 } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   addPlaylistVideos,
   addPlaylists,
 } from "../store/reducers/playlistReducer";
+import { setPluginsPreInstalled } from "../store/reducers/settingsReducer";
 import { NetworkRequest } from "../types";
 import {
+  corsIsDisabled,
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
   getPluginSubdomain,
   hasExtension,
+  isLoggedIn,
   mapAsync,
 } from "../utils";
-import { setPluginsPreInstalled } from "../store/reducers/settingsReducer";
-import { defaultPlugins } from "../default-plugins";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -62,7 +64,32 @@ interface ApplicationPluginInterface extends PluginInterface {
   getPlaylistsInfo(): Promise<PlaylistInfo[]>;
   addPlaylists(playlists: Playlist[]): Promise<void>;
   addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
+  isLoggedIn(): Promise<boolean>;
 }
+
+function iteratorFor(items: any) {
+  var iterator = {
+    next: function () {
+      var value = items.shift();
+      return { done: value === undefined, value: value };
+    },
+    [Symbol.iterator]: () => {
+      return iterator;
+    },
+  };
+
+  return iterator;
+}
+
+const getHeaderEntries = (
+  headers: Headers
+): IterableIterator<[string, string]> => {
+  var items: string[][] = [];
+  headers.forEach(function (value, name) {
+    items.push([name, value]);
+  });
+  return iteratorFor(items);
+};
 
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
@@ -111,13 +138,16 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             return await window.InfoGata.networkRequest(input, init);
           }
 
-          const response = await fetch(input, init);
+          const response = Capacitor.isNativePlatform()
+            ? await window.cordovaFetch(input, init)
+            : await fetch(input, init);
 
           const body = await response.blob();
 
-          const responseHeaders = Object.fromEntries(
-            response.headers.entries()
-          );
+          // cordova-plugin-fetch does not support Headers.entries
+          const responseHeaders = Capacitor.isNativePlatform()
+            ? Object.fromEntries(getHeaderEntries(response.headers))
+            : Object.fromEntries(response.headers.entries());
 
           // Remove forbidden header
           if (responseHeaders["set-cookie"]) {
@@ -134,8 +164,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return result;
         },
         isNetworkRequestCorsDisabled: async () => {
-          const isDisabled = hasExtension() || isElectron();
-          return isDisabled;
+          return corsIsDisabled();
         },
         postUiMessage: async (message: any) => {
           setPluginMessage({ pluginId: plugin.id, message });
@@ -191,6 +220,12 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         getLocale: async () => {
           return i18n.language;
+        },
+        isLoggedIn: async () => {
+          if (plugin.manifest?.authentication) {
+            return await isLoggedIn(plugin.manifest.authentication);
+          }
+          return false;
         },
       };
 
@@ -297,6 +332,12 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           result.forEach((t) => {
             t.id = nanoid();
             t.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetUserChannels: (result: SearchChannelResult) => {
+          result.items.forEach((i) => {
+            i.id = nanoid();
           });
           return result;
         },

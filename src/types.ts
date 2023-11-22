@@ -1,4 +1,9 @@
-import { Channel, PlaylistInfo, Video } from "./plugintypes";
+import {
+  Channel,
+  ManifestAuthentication,
+  PlaylistInfo,
+  Video,
+} from "./plugintypes";
 
 export interface NetworkRequest {
   body: Blob | ArrayBuffer;
@@ -13,11 +18,25 @@ export interface InfoGataExtension {
     input: RequestInfo,
     init?: RequestInit
   ) => Promise<NetworkRequest>;
+  getVersion?: () => string;
+  isLoggedIn?: (auth: ManifestAuthentication) => Promise<boolean>;
+  openLoginWindow?: (
+    auth: ManifestAuthentication,
+    pluginId: string
+  ) => Promise<void>;
+}
+
+interface CookiePlugins {
+  getCookie(url: string, callback: (cookies: string) => void): void;
 }
 
 declare global {
   interface Window {
     InfoGata: InfoGataExtension;
+    cordovaFetch: typeof fetch;
+  }
+  interface CordovaPlugins {
+    CookiesPlugin: CookiePlugins;
   }
 }
 
