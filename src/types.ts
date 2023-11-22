@@ -18,7 +18,6 @@ export interface InfoGataExtension {
     input: RequestInfo,
     init?: RequestInit
   ) => Promise<NetworkRequest>;
-  getVersion?: () => string;
   isLoggedIn?: (auth: ManifestAuthentication) => Promise<boolean>;
   openLoginWindow?: (
     auth: ManifestAuthentication,
