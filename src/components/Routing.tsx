@@ -24,6 +24,7 @@ import Privacy from "./Privacy";
 import Search from "./Search";
 import Settings from "./Settings";
 import MiniPlayer from "./MiniPlayer";
+import UserPluginChannels from "./UserPluginChannels";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -80,6 +81,10 @@ const Routing: React.FC = () => {
         <Route
           path="/plugins/:pluginId/playlists/:apiId"
           element={<PluginPlaylist />}
+        />
+        <Route
+          path="/plugins/:pluginId/channels"
+          element={<UserPluginChannels />}
         />
         <Route
           path="/plugins/:pluginId/channels/:apiId"
