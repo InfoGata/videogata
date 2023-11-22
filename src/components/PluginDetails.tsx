@@ -23,24 +23,31 @@ import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
-  const [plugin, setPlugin] = React.useState<PluginInfo>();
+  const [pluginInfo, setPluginInfo] = React.useState<PluginInfo>();
   const [scriptSize, setScriptSize] = React.useState(0);
   const [optionSize, setOptionsSize] = React.useState(0);
   const [playerSize, setPlayerSize] = React.useState(0);
-  const { updatePlugin } = usePlugins();
+  const { updatePlugin, plugins } = usePlugins();
+  const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const hasLogin = corsIsDisabled() && !!plugin?.manifest?.authentication;
+  const hasLogin = corsIsDisabled() && !!pluginInfo?.manifest?.authentication;
 
-  const iframeListener = React.useCallback(async (event: MessageEvent<any>) => {
-    if (event.source !== window) {
-      return;
-    }
+  const iframeListener = React.useCallback(
+    async (event: MessageEvent<any>) => {
+      if (event.source !== window) {
+        return;
+      }
 
-    if (event.data.type === "infogata-extension-notify-login") {
-      setLoggedIn(true);
-    }
-  }, []);
+      if (event.data.type === "infogata-extension-notify-login") {
+        setLoggedIn(true);
+        if (plugin && (await plugin.hasDefined.onPostLogin())) {
+          await plugin.remote.onPostLogin();
+        }
+      }
+    },
+    [plugin]
+  );
 
   React.useEffect(() => {
     window.addEventListener("message", iframeListener);
@@ -50,17 +57,17 @@ const PluginDetails: React.FC = () => {
   React.useEffect(() => {
     const checkLogin = async () => {
       let hasLoggedIn = false;
-      if (plugin?.manifest?.authentication) {
-        hasLoggedIn = await isLoggedIn(plugin?.manifest?.authentication);
+      if (pluginInfo?.manifest?.authentication) {
+        hasLoggedIn = await isLoggedIn(pluginInfo?.manifest?.authentication);
       }
       setLoggedIn(hasLoggedIn);
     };
     checkLogin();
-  }, [plugin]);
+  }, [pluginInfo]);
 
   const loadPluginFromDb = React.useCallback(async () => {
     const p = await db.plugins.get(pluginId || "");
-    setPlugin(p);
+    setPluginInfo(p);
     const scriptBlob = new Blob([p?.script || ""]);
     setScriptSize(scriptBlob.size);
     if (p?.optionsHtml) {
@@ -74,16 +81,16 @@ const PluginDetails: React.FC = () => {
   }, [pluginId]);
 
   const onLogin = () => {
-    if (plugin?.manifest?.authentication?.loginUrl) {
+    if (pluginInfo?.manifest?.authentication?.loginUrl) {
       if (Capacitor.isNativePlatform()) {
         const win = InAppBrowser.create(
-          plugin.manifest.authentication.loginUrl,
+          pluginInfo.manifest.authentication.loginUrl,
           "_blank"
         );
         win.on("loadstop").subscribe(async () => {
-          if (plugin.manifest?.authentication) {
+          if (pluginInfo.manifest?.authentication) {
             const hasLoggedIn = await isLoggedIn(
-              plugin.manifest.authentication
+              pluginInfo.manifest.authentication
             );
             if (hasLoggedIn) {
               win.close();
@@ -94,8 +101,8 @@ const PluginDetails: React.FC = () => {
       } else {
         if (window.InfoGata.openLoginWindow) {
           window.InfoGata.openLoginWindow(
-            plugin.manifest.authentication,
-            plugin.id || ""
+            pluginInfo.manifest.authentication,
+            pluginInfo.id || ""
           );
         }
       }
@@ -107,13 +114,13 @@ const PluginDetails: React.FC = () => {
   }, [loadPluginFromDb]);
 
   const onUpdate = async () => {
-    if (plugin?.manifestUrl) {
-      const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
+    if (pluginInfo?.manifestUrl) {
+      const fileType = getFileTypeFromPluginUrl(pluginInfo.manifestUrl);
       const newPlugin = await getPlugin(fileType);
-      if (newPlugin && plugin.id) {
-        newPlugin.id = plugin.id;
-        newPlugin.manifestUrl = plugin.manifestUrl;
-        await updatePlugin(newPlugin, plugin.id);
+      if (newPlugin && pluginInfo.id) {
+        newPlugin.id = pluginInfo.id;
+        newPlugin.manifestUrl = pluginInfo.manifestUrl;
+        await updatePlugin(newPlugin, pluginInfo.id);
         await loadPluginFromDb();
       }
     }
@@ -121,29 +128,29 @@ const PluginDetails: React.FC = () => {
 
   return (
     <>
-      {plugin ? (
+      {pluginInfo ? (
         <div>
           <Typography variant="h3">
             {t("plugins:pluginDetailsTitle")}
           </Typography>
-          <Typography variant="h6">{plugin.name}</Typography>
+          <Typography variant="h6">{pluginInfo.name}</Typography>
           <List>
             <ListItem>
               <ListItemText
                 primary={t("plugins:pluginDescription")}
-                secondary={plugin.description}
+                secondary={pluginInfo.description}
               />
             </ListItem>
-            {plugin.homepage && (
+            {pluginInfo.homepage && (
               <ListItem disablePadding>
                 <ListItemButton
                   component="a"
-                  href={plugin.homepage}
+                  href={pluginInfo.homepage}
                   target="_blank"
                 >
                   <ListItemText
                     primary={t("plugins:homepage")}
-                    secondary={plugin.homepage}
+                    secondary={pluginInfo.homepage}
                   />
                 </ListItemButton>
               </ListItem>
@@ -151,11 +158,11 @@ const PluginDetails: React.FC = () => {
             <ListItem>
               <ListItemText
                 primary={t("plugins:version")}
-                secondary={plugin.version}
+                secondary={pluginInfo.version}
               />
             </ListItem>
             <ListItem>
-              <ListItemText primary="Id" secondary={plugin.id} />
+              <ListItemText primary="Id" secondary={pluginInfo.id} />
             </ListItem>
             <ListItem>
               <ListItemText
@@ -179,16 +186,16 @@ const PluginDetails: React.FC = () => {
                 />
               </ListItem>
             )}
-            {plugin.manifestUrl && (
+            {pluginInfo.manifestUrl && (
               <ListItem disablePadding>
                 <ListItemButton
                   component="a"
-                  href={plugin.manifestUrl}
+                  href={pluginInfo.manifestUrl}
                   target="_blank"
                 >
                   <ListItemText
                     primary={t("plugins:updateUrl")}
-                    secondary={plugin.manifestUrl}
+                    secondary={pluginInfo.manifestUrl}
                   />
                 </ListItemButton>
               </ListItem>
@@ -205,7 +212,7 @@ const PluginDetails: React.FC = () => {
               </ListItem>
             )}
           </List>
-          {plugin.manifestUrl && (
+          {pluginInfo.manifestUrl && (
             <Button onClick={onUpdate}>{t("plugins:updatePlugin")}</Button>
           )}
         </div>
