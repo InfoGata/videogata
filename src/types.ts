@@ -27,6 +27,7 @@ export interface InfoGataExtension {
     auth: ManifestAuthentication,
     pluginId: string
   ) => Promise<void>;
+  getVersion?: () => Promise<string>;
 }
 
 interface CookiePlugins {

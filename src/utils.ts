@@ -5,6 +5,7 @@ import { ImageInfo, Manifest, PluginInfo, Video } from "./plugintypes";
 import thumbnail from "./thumbnail.png";
 import { DirectoryFile, FileType } from "./types";
 import isElectron from "is-electron";
+import semverGte from "semver/functions/gte";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -198,6 +199,15 @@ export const hasExtension = () => {
 
 export const corsIsDisabled = () => {
   return hasExtension() || isElectron() || Capacitor.isNativePlatform();
+};
+
+export const hasAuthentication = async () => {
+  const minVersion = "1.1.0";
+  if (hasExtension() && window.InfoGata.getVersion) {
+    const version = await window.InfoGata.getVersion();
+    return semverGte(version, minVersion);
+  }
+  return false;
 };
 
 export const generatePluginId = () => {

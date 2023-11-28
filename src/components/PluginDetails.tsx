@@ -1,3 +1,5 @@
+import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
+import { Capacitor } from "@capacitor/core";
 import {
   Button,
   List,
@@ -6,17 +8,19 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
-import { corsIsDisabled, getFileTypeFromPluginUrl, getPlugin } from "../utils";
-import { Capacitor } from "@capacitor/core";
-import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
 import { NotifyLoginMessage } from "../types";
-import { useLiveQuery } from "dexie-react-hooks";
+import {
+  getFileTypeFromPluginUrl,
+  getPlugin,
+  hasAuthentication,
+} from "../utils";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -28,7 +32,15 @@ const PluginDetails: React.FC = () => {
   const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
   const pluginAuth = useLiveQuery(() => db.pluginAuths.get(pluginId || ""));
-  const hasLogin = corsIsDisabled() && !!pluginInfo?.manifest?.authentication;
+  const [hasAuth, setHasAuth] = React.useState(false); //corsIsDisabled() && !!pluginInfo?.manifest?.authentication;
+
+  React.useEffect(() => {
+    const getHasAuth = async () => {
+      const platformHasAuth = await hasAuthentication();
+      setHasAuth(platformHasAuth && !!pluginInfo?.manifest?.authentication);
+    };
+    getHasAuth();
+  }, [pluginInfo]);
 
   const iframeListener = React.useCallback(
     async (event: MessageEvent<NotifyLoginMessage>) => {
@@ -200,7 +212,7 @@ const PluginDetails: React.FC = () => {
                 </ListItemButton>
               </ListItem>
             )}
-            {hasLogin && (
+            {hasAuth && (
               <ListItem disablePadding>
                 {pluginAuth ? (
                   <ListItemButton onClick={onLogout}>
