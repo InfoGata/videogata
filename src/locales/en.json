@@ -112,7 +112,7 @@
     "clickReload": "Click to reload plugins",
     "installedPlugins": "Installed Plugins",
     "login": "Login",
-    "isLoggedIn": "Currently Logged in"
+    "logout": "Logout"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",

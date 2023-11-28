@@ -213,7 +213,10 @@ export interface Manifest {
 
 export interface ManifestAuthentication {
   loginUrl: string;
-  cookiesToFind: string[];
+  cookiesToFind?: string[];
+  loginButton?: string;
+  headersToFind?: string[];
+  completionUrl?: string;
 }
 
 export interface ManifestOptions {

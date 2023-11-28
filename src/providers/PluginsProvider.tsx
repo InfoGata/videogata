@@ -44,7 +44,6 @@ import {
   getPlugin,
   getPluginSubdomain,
   hasExtension,
-  isLoggedIn,
   mapAsync,
 } from "../utils";
 
@@ -134,13 +133,29 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
         networkRequest: async (input: RequestInfo, init?: RequestInit) => {
+          const pluginAuth = plugin?.id
+            ? await db.pluginAuths.get(plugin.id)
+            : undefined;
+          const newInit = init ?? {};
+          if (!pluginAuth) {
+            newInit.credentials = "omit";
+          } else if (Object.keys(pluginAuth.headers).length > 0) {
+            const headers = new Headers(newInit.headers);
+            for (const prop in pluginAuth.headers) {
+              headers.set(prop, pluginAuth.headers[prop]);
+            }
+            newInit.headers = Object.entries(headers);
+          }
+
           if (hasExtension()) {
-            return await window.InfoGata.networkRequest(input, init);
+            return await window.InfoGata.networkRequest(input, newInit, {
+              auth: plugin.manifest?.authentication,
+            });
           }
 
           const response = Capacitor.isNativePlatform()
-            ? await window.cordovaFetch(input, init)
-            : await fetch(input, init);
+            ? await window.cordovaFetch(input, newInit)
+            : await fetch(input, newInit);
 
           const body = await response.blob();
 
@@ -222,8 +237,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return i18n.language;
         },
         isLoggedIn: async () => {
-          if (plugin.manifest?.authentication) {
-            return await isLoggedIn(plugin.manifest.authentication);
+          if (plugin.manifest?.authentication && plugin.id) {
+            const pluginAuth = await db.pluginAuths.get(plugin.id);
+            return !!pluginAuth;
           }
           return false;
         },

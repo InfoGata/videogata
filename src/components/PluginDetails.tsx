@@ -12,14 +12,11 @@ import { useParams } from "react-router-dom";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
-import {
-  corsIsDisabled,
-  getFileTypeFromPluginUrl,
-  getPlugin,
-  isLoggedIn,
-} from "../utils";
+import { corsIsDisabled, getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { Capacitor } from "@capacitor/core";
 import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
+import { NotifyLoginMessage } from "../types";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -30,19 +27,24 @@ const PluginDetails: React.FC = () => {
   const { updatePlugin, plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const pluginAuth = useLiveQuery(() => db.pluginAuths.get(pluginId || ""));
   const hasLogin = corsIsDisabled() && !!pluginInfo?.manifest?.authentication;
 
   const iframeListener = React.useCallback(
-    async (event: MessageEvent<any>) => {
+    async (event: MessageEvent<NotifyLoginMessage>) => {
       if (event.source !== window) {
         return;
       }
 
       if (event.data.type === "infogata-extension-notify-login") {
-        setLoggedIn(true);
-        if (plugin && (await plugin.hasDefined.onPostLogin())) {
-          await plugin.remote.onPostLogin();
+        if (plugin && event.data.pluginId === plugin.id) {
+          db.pluginAuths.put({
+            pluginId: plugin.id || "",
+            headers: event.data.headers,
+          });
+          if (await plugin.hasDefined.onPostLogin()) {
+            await plugin.remote.onPostLogin();
+          }
         }
       }
     },
@@ -53,17 +55,6 @@ const PluginDetails: React.FC = () => {
     window.addEventListener("message", iframeListener);
     return () => window.removeEventListener("message", iframeListener);
   }, [iframeListener]);
-
-  React.useEffect(() => {
-    const checkLogin = async () => {
-      let hasLoggedIn = false;
-      if (pluginInfo?.manifest?.authentication) {
-        hasLoggedIn = await isLoggedIn(pluginInfo?.manifest?.authentication);
-      }
-      setLoggedIn(hasLoggedIn);
-    };
-    checkLogin();
-  }, [pluginInfo]);
 
   const loadPluginFromDb = React.useCallback(async () => {
     const p = await db.plugins.get(pluginId || "");
@@ -87,17 +78,20 @@ const PluginDetails: React.FC = () => {
           pluginInfo.manifest.authentication.loginUrl,
           "_blank"
         );
-        win.on("loadstop").subscribe(async () => {
-          if (pluginInfo.manifest?.authentication) {
-            const hasLoggedIn = await isLoggedIn(
-              pluginInfo.manifest.authentication
-            );
-            if (hasLoggedIn) {
-              win.close();
-              setLoggedIn(true);
-            }
-          }
+        win.on("message").subscribe(async (params) => {
+          const message = params.data.message;
+          console.log(message);
         });
+        const INJECTED_JAVASCRIPT = `(function() {
+          var open = XMLHttpRequest.prototype.open;
+          XMLHttpRequest.prototype.open = function() {
+              this.addEventListener("load", function() {
+                  var message = {"status" : this.status, "response" : this.response}
+                  webkit.messageHandlers.cordova_iab.postMessage(stringifiedMessageObj);"
+              });
+              open.apply(this, arguments);
+          };})();`;
+        win.executeScript({ code: INJECTED_JAVASCRIPT });
       } else {
         if (window.InfoGata.openLoginWindow) {
           window.InfoGata.openLoginWindow(
@@ -123,6 +117,12 @@ const PluginDetails: React.FC = () => {
         await updatePlugin(newPlugin, pluginInfo.id);
         await loadPluginFromDb();
       }
+    }
+  };
+
+  const onLogout = async () => {
+    if (pluginId) {
+      db.pluginAuths.delete(pluginId);
     }
   };
 
@@ -202,8 +202,10 @@ const PluginDetails: React.FC = () => {
             )}
             {hasLogin && (
               <ListItem disablePadding>
-                {loggedIn ? (
-                  <ListItemText primary={t("plugins:isLoggedIn")} />
+                {pluginAuth ? (
+                  <ListItemButton onClick={onLogout}>
+                    <ListItemText primary={t("plugins:logout")} />
+                  </ListItemButton>
                 ) : (
                   <ListItemButton onClick={onLogin}>
                     <ListItemText primary={t("plugins:login")} />

@@ -54,17 +54,6 @@ const FavoriteChannels: React.FC = () => {
     };
     return (
       <>
-        <Grid>
-          {channelPlugins.map((p) => (
-            <Button
-              component={Link}
-              to={`/plugins/${p.id}/channels`}
-              key={p.id}
-            >
-              {p.name}
-            </Button>
-          ))}
-        </Grid>
         <Grid item xs={2} key={c.apiId}>
           <Card>
             <CardActionArea
@@ -98,15 +87,25 @@ const FavoriteChannels: React.FC = () => {
   });
 
   return (
-    <Grid container spacing={2}>
-      {channels && channels.length > 0 ? (
-        channelCards
-      ) : (
-        <Grid item>
-          <Typography>{t("noFavoriteChannels")}</Typography>
-        </Grid>
-      )}
-    </Grid>
+    <>
+      <Grid>
+        {channelPlugins.map((p) => (
+          <Button component={Link} to={`/plugins/${p.id}/channels`} key={p.id}>
+            {p.name}
+          </Button>
+        ))}
+      </Grid>
+
+      <Grid container spacing={2}>
+        {channels && channels.length > 0 ? (
+          channelCards
+        ) : (
+          <Grid item>
+            <Typography>{t("noFavoriteChannels")}</Typography>
+          </Grid>
+        )}
+      </Grid>
+    </>
   );
 };
 

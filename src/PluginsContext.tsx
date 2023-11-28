@@ -57,6 +57,7 @@ export interface PluginMethodInterface {
     request: GetSearchSuggestionRequest
   ): Promise<string[]>;
   onPostLogin(): Promise<void>;
+  onPostLogout(): Promise<void>;
 }
 
 export interface PluginMessage {

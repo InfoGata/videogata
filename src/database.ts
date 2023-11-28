@@ -6,9 +6,11 @@ import {
   PluginInfo,
   Video,
 } from "./plugintypes";
+import { PluginAuthentication } from "./types";
 
 class VideoDatabase extends Dexie {
   plugins: Dexie.Table<PluginInfo, string>;
+  pluginAuths: Dexie.Table<PluginAuthentication, string>;
   playlists: Dexie.Table<Playlist, string>;
   favoriteVideos: Dexie.Table<Video, string>;
   favoriteChannels: Dexie.Table<Channel, string>;
@@ -25,11 +27,15 @@ class VideoDatabase extends Dexie {
       favoriteChannels: "id, [pluginId+apiId]",
       favoritePlaylists: "id, [pluginId+apiId]",
     });
+    this.version(3).stores({
+      pluginAuths: "pluginId",
+    });
     this.plugins = this.table("plugins");
     this.playlists = this.table("playlists");
     this.favoriteVideos = this.table("favoriteVideos");
     this.favoriteChannels = this.table("favoriteChannels");
     this.favoritePlaylists = this.table("favoritePlaylists");
+    this.pluginAuths = this.table("pluginAuths");
   }
 }
 

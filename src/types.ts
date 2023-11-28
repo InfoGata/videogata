@@ -13,12 +13,16 @@ export interface NetworkRequest {
   url: string;
 }
 
+export interface NetworkRequestOptions {
+  auth?: ManifestAuthentication;
+}
+
 export interface InfoGataExtension {
   networkRequest: (
     input: RequestInfo,
-    init?: RequestInit
+    init?: RequestInit,
+    options?: NetworkRequestOptions
   ) => Promise<NetworkRequest>;
-  isLoggedIn?: (auth: ManifestAuthentication) => Promise<boolean>;
   openLoginWindow?: (
     auth: ManifestAuthentication,
     pluginId: string
@@ -58,6 +62,17 @@ export const enum SearchResultType {
   Playlists = "playlists",
   Channels = "channels",
 }
+
+export interface PluginAuthentication {
+  pluginId: string;
+  headers: Record<string, string>;
+}
+
+export type NotifyLoginMessage = {
+  type: "infogata-extension-notify-login";
+  pluginId: string;
+  headers: Record<string, string>;
+};
 
 export type TrackItemType = {
   type: "video";
