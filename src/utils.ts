@@ -207,7 +207,23 @@ export const hasAuthentication = async () => {
     const version = await window.InfoGata.getVersion();
     return semverGte(version, minVersion);
   }
-  return false;
+  return Capacitor.isNativePlatform();
+};
+
+export const getCookiesFromUrl = (
+  url: string
+): Promise<Map<string, string>> => {
+  return new Promise((resolve) => {
+    window.cordova.plugins.CookiesPlugin.getCookie(url, (cookies) => {
+      const cookieMap = new Map<string, string>(
+        cookies
+          .split(";")
+          .map((c) => c.trim().split("="))
+          .map((c) => [c[0], c[1]])
+      );
+      resolve(cookieMap);
+    });
+  });
 };
 
 export const generatePluginId = () => {

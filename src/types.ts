@@ -89,3 +89,10 @@ export type ChannelItemType = {
 };
 
 export type ItemMenuType = TrackItemType | PlaylistItemType | ChannelItemType;
+
+export interface LoginInfo {
+  foundCookies: boolean;
+  foundHeaders: boolean;
+  foundCompletionUrl: boolean;
+  headers: Record<string, string>;
+}

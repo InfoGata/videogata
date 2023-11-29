@@ -410,6 +410,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
     setPluginFrames(newPlugins);
     await db.plugins.delete(pluginFrame.id || "");
+    await db.pluginAuths.delete(pluginFrame.id || "");
   };
 
   const addPlugin = async (plugin: PluginInfo) => {

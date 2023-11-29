@@ -15,8 +15,9 @@ import { useParams } from "react-router-dom";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
-import { NotifyLoginMessage } from "../types";
+import { LoginInfo, NotifyLoginMessage } from "../types";
 import {
+  getCookiesFromUrl,
   getFileTypeFromPluginUrl,
   getPlugin,
   hasAuthentication,
@@ -32,7 +33,7 @@ const PluginDetails: React.FC = () => {
   const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
   const pluginAuth = useLiveQuery(() => db.pluginAuths.get(pluginId || ""));
-  const [hasAuth, setHasAuth] = React.useState(false); //corsIsDisabled() && !!pluginInfo?.manifest?.authentication;
+  const [hasAuth, setHasAuth] = React.useState(false);
 
   React.useEffect(() => {
     const getHasAuth = async () => {
@@ -85,31 +86,48 @@ const PluginDetails: React.FC = () => {
 
   const onLogin = () => {
     if (pluginInfo?.manifest?.authentication?.loginUrl) {
+      const authentication = pluginInfo.manifest.authentication;
       if (Capacitor.isNativePlatform()) {
         const win = InAppBrowser.create(
           pluginInfo.manifest.authentication.loginUrl,
           "_blank"
         );
-        win.on("message").subscribe(async (params) => {
-          const message = params.data.message;
-          console.log(message);
+        const loginInfo: LoginInfo = {
+          foundCookies: !authentication.cookiesToFind,
+          foundCompletionUrl: !authentication.completionUrl,
+          foundHeaders: !authentication.headersToFind,
+          headers: {},
+        };
+
+        const completeLogin = () => {
+          win.close();
+          db.pluginAuths.put({
+            pluginId: pluginId || "",
+            headers: loginInfo.headers,
+          });
+        };
+
+        win.on("loadstop").subscribe(async (event) => {
+          if (authentication.cookiesToFind && !loginInfo.foundCookies) {
+            const cookies = await getCookiesFromUrl(authentication.loginUrl);
+            loginInfo.foundCookies = authentication.cookiesToFind.every((c) =>
+              cookies.has(c)
+            );
+          }
+          if (event.url === authentication.completionUrl) {
+            loginInfo.foundCompletionUrl = true;
+          }
+          if (
+            loginInfo.foundCookies &&
+            loginInfo.foundCompletionUrl &&
+            loginInfo.foundHeaders
+          ) {
+            completeLogin();
+          }
         });
-        const INJECTED_JAVASCRIPT = `(function() {
-          var open = XMLHttpRequest.prototype.open;
-          XMLHttpRequest.prototype.open = function() {
-              this.addEventListener("load", function() {
-                  var message = {"status" : this.status, "response" : this.response}
-                  webkit.messageHandlers.cordova_iab.postMessage(stringifiedMessageObj);"
-              });
-              open.apply(this, arguments);
-          };})();`;
-        win.executeScript({ code: INJECTED_JAVASCRIPT });
       } else {
         if (window.InfoGata.openLoginWindow) {
-          window.InfoGata.openLoginWindow(
-            pluginInfo.manifest.authentication,
-            pluginInfo.id || ""
-          );
+          window.InfoGata.openLoginWindow(authentication, pluginInfo.id || "");
         }
       }
     }

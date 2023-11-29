@@ -80,7 +80,7 @@
     "test": "vitest",
     "electron:start": "electron-vite preview",
     "electron:dev": "electron-vite dev",
-    "electron:build": "electron-vite dbuild",
+    "electron:build": "electron-vite build",
     "android": "npm run build && cap run android"
   },
   "browserslist": {
