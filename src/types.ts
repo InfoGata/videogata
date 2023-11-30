@@ -37,7 +37,6 @@ interface CookiePlugins {
 declare global {
   interface Window {
     InfoGata: InfoGataExtension;
-    cordovaFetch: typeof fetch;
   }
   interface CordovaPlugins {
     CookiesPlugin: CookiePlugins;

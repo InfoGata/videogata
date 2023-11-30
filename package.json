@@ -37,7 +37,6 @@
     "axios": "^0.21.1",
     "babel-plugin-import": "^1.13.5",
     "cordova-plugin-cookies": "^0.0.2",
-    "cordova-plugin-fetch": "git+https://git@github.com/aporat/cordova-plugin-fetch.git",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.3",

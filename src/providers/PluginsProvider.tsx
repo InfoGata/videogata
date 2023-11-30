@@ -1,4 +1,3 @@
-import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
 import { useSnackbar } from "notistack";
 import { PluginInterface } from "plugin-frame";
@@ -66,30 +65,6 @@ interface ApplicationPluginInterface extends PluginInterface {
   isLoggedIn(): Promise<boolean>;
 }
 
-function iteratorFor(items: any) {
-  var iterator = {
-    next: function () {
-      var value = items.shift();
-      return { done: value === undefined, value: value };
-    },
-    [Symbol.iterator]: () => {
-      return iterator;
-    },
-  };
-
-  return iterator;
-}
-
-const getHeaderEntries = (
-  headers: Headers
-): IterableIterator<[string, string]> => {
-  var items: string[][] = [];
-  headers.forEach(function (value, name) {
-    items.push([name, value]);
-  });
-  return iteratorFor(items);
-};
-
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
   const hasUpdated = React.useRef(false);
@@ -153,21 +128,13 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             });
           }
 
-          const response = Capacitor.isNativePlatform()
-            ? await window.cordovaFetch(input, newInit)
-            : await fetch(input, newInit);
+          const response = await fetch(input, newInit);
 
           const body = await response.blob();
 
-          // cordova-plugin-fetch does not support Headers.entries
-          const responseHeaders = Capacitor.isNativePlatform()
-            ? Object.fromEntries(getHeaderEntries(response.headers))
-            : Object.fromEntries(response.headers.entries());
-
-          // Remove forbidden header
-          if (responseHeaders["set-cookie"]) {
-            delete responseHeaders["set-cookie"];
-          }
+          const responseHeaders = Object.fromEntries(
+            response.headers.entries()
+          );
 
           const result = {
             body: body,
