@@ -20,6 +20,7 @@ import { filterAsync } from "../utils";
 
 interface ImportDialogProps {
   open: boolean;
+  title?: string;
   handleClose: () => void;
   parseType: ParseUrlType;
   onSuccess: (item: Video[] | Playlist) => void;
@@ -51,7 +52,7 @@ const lookupUrl = async (
 };
 
 const ImportDialog: React.FC<ImportDialogProps> = (props) => {
-  const { open, handleClose, parseType, onSuccess } = props;
+  const { open, handleClose, parseType, onSuccess, title } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { plugins } = usePlugins();
   const [url, setUrl] = React.useState("");
@@ -102,7 +103,9 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">{t("import")}</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {title ? title : t("import")}
+      </DialogTitle>
       <DialogContent>
         <form id={formId} onSubmit={onSubmit}>
           <TextField
@@ -134,7 +137,7 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
           type="submit"
           form={formId}
         >
-          {t("import")}
+          {t("confirm")}
         </Button>
       </DialogActions>
     </Dialog>

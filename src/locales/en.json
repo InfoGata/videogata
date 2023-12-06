@@ -22,6 +22,7 @@
     "importVideoByUrl": "Import Video By Url",
     "importPlaylistByUrl": "Import Playlist By Url",
     "import": "Import",
+    "openVideoUrl": "Open Video Url",
     "playlistImported": "{{playlistName}} imported",
     "noImporters": "No plugins can import url",
     "playlists": "Playlists",

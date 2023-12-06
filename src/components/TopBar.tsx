@@ -15,6 +15,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import SearchBar from "./SearchBar";
+import GlobalOptions from "./GlobalOptions";
 
 const TopBar: React.FC = () => {
   const { t } = useTranslation();
@@ -46,6 +47,7 @@ const TopBar: React.FC = () => {
         <SearchBar />
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+          <GlobalOptions />
           <IconButton component={RouterLink} to="/donate">
             <Tooltip title={t("donate")} placement="bottom">
               <Favorite />
