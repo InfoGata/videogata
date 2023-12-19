@@ -121,7 +121,6 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           ) {
             newInit.credentials = "omit";
           }
-          console.log("request credentials", newInit.credentials);
 
           if (pluginAuth) {
             if (Object.keys(pluginAuth.headers).length > 0) {
@@ -131,6 +130,17 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               }
               newInit.headers = Object.fromEntries(headers.entries());
             } else if (Object.keys(pluginAuth.domainHeaders ?? {}).length > 0) {
+              const url = new URL(input);
+              const domainHeaderKey = Object.keys(
+                pluginAuth.domainHeaders!
+              ).find((dh) => url.host.endsWith(dh));
+              if (domainHeaderKey) {
+                const headers = new Headers(newInit.headers);
+                for (const prop in pluginAuth.domainHeaders![domainHeaderKey]) {
+                  headers.set(prop, pluginAuth.headers[prop]);
+                }
+                newInit.headers = Object.fromEntries(headers.entries());
+              }
             }
           }
 
