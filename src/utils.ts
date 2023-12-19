@@ -226,6 +226,33 @@ export const getCookiesFromUrl = (
   });
 };
 
+export const isAuthorizedDomain = (
+  input: string,
+  loginUrl?: string,
+  domainHeaders?: Record<string, any>
+): boolean => {
+  if (!loginUrl) return false;
+
+  const allowedHost = new URL(loginUrl).host;
+  const inputHost = new URL(input).host;
+  if (allowedHost === inputHost) {
+    return true;
+  }
+  if (domainHeaders && Object.keys(domainHeaders).length > 0) {
+    return Object.keys(domainHeaders).some((d) => inputHost.endsWith(d));
+  }
+  return false;
+};
+
+export const headersInitToEntries = (headers: HeadersInit) => {
+  if (Array.isArray(headers)) {
+    return headers;
+  }
+  return headers instanceof Headers
+    ? Object.fromEntries(headers.entries())
+    : headers;
+};
+
 export const generatePluginId = () => {
   // Cannot use '-' or '_' if they show up and beginning or end of id.
   const nanoid = customAlphabet(
