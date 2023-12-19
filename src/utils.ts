@@ -244,15 +244,6 @@ export const isAuthorizedDomain = (
   return false;
 };
 
-export const headersInitToEntries = (headers: HeadersInit) => {
-  if (Array.isArray(headers)) {
-    return headers;
-  }
-  return headers instanceof Headers
-    ? Object.fromEntries(headers.entries())
-    : headers;
-};
-
 export const generatePluginId = () => {
   // Cannot use '-' or '_' if they show up and beginning or end of id.
   const nanoid = customAlphabet(
