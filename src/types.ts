@@ -19,7 +19,7 @@ export interface NetworkRequestOptions {
 
 export interface InfoGataExtension {
   networkRequest: (
-    input: RequestInfo,
+    input: string,
     init?: RequestInit,
     options?: NetworkRequestOptions
   ) => Promise<NetworkRequest>;
