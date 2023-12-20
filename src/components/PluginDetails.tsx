@@ -155,6 +155,12 @@ const PluginDetails: React.FC = () => {
     if (pluginId) {
       db.pluginAuths.delete(pluginId);
     }
+
+    if (plugin) {
+      if (await plugin.hasDefined.onPostLogout()) {
+        await plugin.remote.onPostLogout();
+      }
+    }
   };
 
   return (
