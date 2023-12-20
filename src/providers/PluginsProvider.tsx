@@ -137,7 +137,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               if (domainHeaderKey) {
                 const headers = new Headers(newInit.headers);
                 for (const prop in pluginAuth.domainHeaders![domainHeaderKey]) {
-                  headers.set(prop, pluginAuth.headers[prop]);
+                  headers.set(
+                    prop,
+                    pluginAuth.domainHeaders![domainHeaderKey][prop]
+                  );
                 }
                 newInit.headers = Object.fromEntries(headers.entries());
               }
