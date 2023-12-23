@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 import usePlugins from "../hooks/usePlugins";
 import { debounce } from "@mui/material/utils";
+import { filterAsync } from "../utils";
+import { PluginFrameContainer } from "../PluginsContext";
 
 const SearchBarComponent = styled(Autocomplete)(({ theme }) => ({
   position: "relative",
@@ -25,14 +27,17 @@ const SearchBarComponent = styled(Autocomplete)(({ theme }) => ({
 }));
 
 const SearchBar: React.FC = () => {
-  const pluginId = useAppSelector((state) => state.settings.currentPluginId);
+  const currentPluginId = useAppSelector(
+    (state) => state.settings.currentPluginId
+  );
   const { plugins } = usePlugins();
-  const searchPlugin = plugins.find((p) => p.id === pluginId);
   const [search, setSearch] = React.useState("");
   const [currentSearch, setCurrentSearch] = React.useState("");
   const [options, setOptions] = React.useState<string[]>([]);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [searchPlugin, setSearchPlugin] =
+    React.useState<PluginFrameContainer>();
 
   const searchQuery = (searchTerm: string) => {
     navigate(`/search?q=${searchTerm}`);
@@ -43,12 +48,22 @@ const SearchBar: React.FC = () => {
     searchQuery(search);
   };
 
+  React.useEffect(() => {
+    const getSearchPlugin = async () => {
+      const validPlugins = await filterAsync(plugins, (p) =>
+        p.hasDefined.onGetSearchSuggestions()
+      );
+      const plugin = validPlugins.some((p) => p.id === currentPluginId)
+        ? validPlugins.find((p) => p.id === currentPluginId)
+        : validPlugins[0];
+      setSearchPlugin(plugin);
+    };
+    getSearchPlugin();
+  }, [currentPluginId, plugins]);
+
   const onGetSuggestions = React.useCallback(
     async (query: string) => {
-      if (
-        searchPlugin &&
-        (await searchPlugin.hasDefined.onGetSearchSuggestions())
-      ) {
+      if (searchPlugin) {
         const suggestions = await searchPlugin.remote.onGetSearchSuggestions({
           query,
         });
