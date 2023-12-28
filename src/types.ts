@@ -97,3 +97,9 @@ export interface LoginInfo {
   foundCompletionUrl: boolean;
   headers: Record<string, string>;
 }
+
+export interface NavigationLinkItem {
+  title: string;
+  link: string;
+  icon: React.JSX.Element;
+}
