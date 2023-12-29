@@ -20,12 +20,12 @@ import {
   addPlaylistVideos,
   setPlaylistVideos,
 } from "../store/reducers/playlistReducer";
-import EditPlaylistDialog from "./EditPlaylistDialog";
-import ImportDialog from "./ImportDialog";
-import PlaylistMenu from "./PlaylistMenu";
-import SelectVideoListPlugin from "./SelectVideoListPlugin";
-import Spinner from "./Spinner";
-import VideoList from "./VideoList";
+import EditPlaylistDialog from "../components/EditPlaylistDialog";
+import ImportDialog from "../components/ImportDialog";
+import PlaylistMenu from "../components/PlaylistMenu";
+import SelectVideoListPlugin from "../components/SelectVideoListPlugin";
+import Spinner from "../components/Spinner";
+import VideoList from "../components/VideoList";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();

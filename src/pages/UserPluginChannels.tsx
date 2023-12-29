@@ -6,9 +6,9 @@ import useFindPlugin from "../hooks/useFindPlugin";
 import { PageInfo, UserChannelRequest } from "../plugintypes";
 import usePagination from "../hooks/usePagination";
 import { Grid, List } from "@mui/material";
-import Spinner from "./Spinner";
-import Pager from "./Pager";
-import ChannelSearchResult from "./ChannelSearchResult";
+import Spinner from "../components/Spinner";
+import Pager from "../components/Pager";
+import ChannelSearchResult from "../components/ChannelSearchResult";
 
 const UserPluginChannels: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();

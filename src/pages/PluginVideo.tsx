@@ -9,12 +9,12 @@ import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setPlayerInfo } from "../store/reducers/playerReducer";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import PluginVideoComments from "./PluginVideoComments";
-import PluginVideoInfo from "./PluginVideoInfo";
-import PluginVideoPlaylist from "./PluginVideoPlaylist";
-import RecommendedVideos from "./RecommendVideos";
-import Spinner from "./Spinner";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import PluginVideoComments from "../components/PluginVideoComments";
+import PluginVideoInfo from "../components/PluginVideoInfo";
+import PluginVideoPlaylist from "../components/PluginVideoPlaylist";
+import RecommendedVideos from "../components/RecommendVideos";
+import Spinner from "../components/Spinner";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

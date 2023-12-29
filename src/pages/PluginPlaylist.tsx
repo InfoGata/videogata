@@ -10,12 +10,12 @@ import useSelected from "../hooks/useSelected";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { PageInfo, PlaylistInfo } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import Pager from "./Pager";
-import PlaylistInfoCard from "./PlaylistInfoCard";
-import PlaylistMenu from "./PlaylistMenu";
-import Spinner from "./Spinner";
-import VideoList from "./VideoList";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import Pager from "../components/Pager";
+import PlaylistInfoCard from "../components/PlaylistInfoCard";
+import PlaylistMenu from "../components/PlaylistMenu";
+import Spinner from "../components/Spinner";
+import VideoList from "../components/VideoList";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

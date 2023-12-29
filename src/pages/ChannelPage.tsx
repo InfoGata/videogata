@@ -6,11 +6,11 @@ import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { Channel, PageInfo } from "../plugintypes";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import Pager from "./Pager";
-import PlaylistInfoCard from "./PlaylistInfoCard";
-import Spinner from "./Spinner";
-import VideoCards from "./VideoCards";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import Pager from "../components/Pager";
+import PlaylistInfoCard from "../components/PlaylistInfoCard";
+import Spinner from "../components/Spinner";
+import VideoCards from "../components/VideoCards";
 
 const ChannelPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

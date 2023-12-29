@@ -15,8 +15,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import PlaylistImage from "./PlaylistImage";
-import Spinner from "./Spinner";
+import PlaylistImage from "../components/PlaylistImage";
+import Spinner from "../components/Spinner";
 
 const FavoriteChannels: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());

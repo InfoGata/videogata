@@ -13,9 +13,9 @@ import { Link } from "react-router-dom";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { PageInfo, UserPlaylistRequest } from "../plugintypes";
-import Pager from "./Pager";
-import PlaylistImage from "./PlaylistImage";
-import Spinner from "./Spinner";
+import Pager from "../components/Pager";
+import PlaylistImage from "../components/PlaylistImage";
+import Spinner from "../components/Spinner";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();

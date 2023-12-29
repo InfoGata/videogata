@@ -6,11 +6,11 @@ import { useLocation } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
 import { SearchResultType } from "../types";
-import ChannelSearchResults from "./ChannelSearchResults";
-import PlaylistSearchResults from "./PlaylistSearchResults";
-import SelectPlugin from "./SelectPlugin";
-import Spinner from "./Spinner";
-import VideoSearchResults from "./VideoSearchResults";
+import ChannelSearchResults from "../components/ChannelSearchResults";
+import PlaylistSearchResults from "../components/PlaylistSearchResults";
+import SelectPlugin from "../components/SelectPlugin";
+import Spinner from "../components/Spinner";
+import VideoSearchResults from "../components/VideoSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;

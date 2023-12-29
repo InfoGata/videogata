@@ -13,10 +13,10 @@ import { db } from "../database";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { Playlist, Video } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import ImportDialog from "./ImportDialog";
-import PlaylistMenu from "./PlaylistMenu";
-import Spinner from "./Spinner";
-import VideoCards from "./VideoCards";
+import ImportDialog from "../components/ImportDialog";
+import PlaylistMenu from "../components/PlaylistMenu";
+import Spinner from "../components/Spinner";
+import VideoCards from "../components/VideoCards";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());

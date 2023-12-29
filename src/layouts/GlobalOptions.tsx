@@ -7,7 +7,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import React from "react";
-import ImportDialog from "./ImportDialog";
+import ImportDialog from "../components/ImportDialog";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Playlist, Video } from "../plugintypes";

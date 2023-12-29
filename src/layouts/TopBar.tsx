@@ -14,8 +14,8 @@ import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
-import SearchBar from "./SearchBar";
 import GlobalOptions from "./GlobalOptions";
+import SearchBar from "./SearchBar";
 
 const TopBar: React.FC = () => {
   const { t } = useTranslation();

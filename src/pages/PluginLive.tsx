@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePlugins from "../hooks/usePlugins";
 import { setPlayerInfo } from "../store/reducers/playerReducer";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import PluginVideoInfo from "./PluginVideoInfo";
-import Spinner from "./Spinner";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import PluginVideoInfo from "../components/PluginVideoInfo";
+import Spinner from "../components/Spinner";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
