@@ -7,12 +7,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import App from "./App";
 import "./i18n";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import * as Sentry from "@sentry/browser";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes";
 
 Sentry.init({
   dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
@@ -33,7 +34,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <title>VideoGata</title>
           </Helmet>
           <ThemeProvider theme={theme}>
-            <App />
+            <RouterProvider router={router} />
           </ThemeProvider>
         </HelmetProvider>
       </PersistGate>

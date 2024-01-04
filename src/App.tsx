@@ -1,24 +1,20 @@
 import { Box, Button, CssBaseline } from "@mui/material";
-import isElectron from "is-electron";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter, HashRouter } from "react-router-dom";
+import MainContainer from "./components/MainContriner";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import Routing from "./components/Routing";
-import SideBar from "./layouts/SideBar";
-import TopBar from "./layouts/TopBar";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
+import SideBar from "./layouts/SideBar";
+import TopBar from "./layouts/TopBar";
 import ItemMenuProvider from "./providers/ItemMenuProvider";
 import PluginsProvider from "./providers/PluginsProvider";
 import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import { hasExtension } from "./utils";
-
-const Router = isElectron() ? HashRouter : BrowserRouter;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,22 +75,20 @@ const App: React.FC = () => {
       )}
     >
       <QueryClientProvider client={queryClient}>
-        <Router>
-          <MatomoRouterProvider>
-            <PluginsProvider>
-              <VideoMenuProvider>
-                <ItemMenuProvider>
-                  <Box sx={{ display: "flex" }}>
-                    <CssBaseline />
-                    <TopBar />
-                    <SideBar />
-                    <Routing />
-                  </Box>
-                </ItemMenuProvider>
-              </VideoMenuProvider>
-            </PluginsProvider>
-          </MatomoRouterProvider>
-        </Router>
+        <MatomoRouterProvider>
+          <PluginsProvider>
+            <VideoMenuProvider>
+              <ItemMenuProvider>
+                <Box sx={{ display: "flex" }}>
+                  <CssBaseline />
+                  <TopBar />
+                  <SideBar />
+                  <MainContainer />
+                </Box>
+              </ItemMenuProvider>
+            </VideoMenuProvider>
+          </PluginsProvider>
+        </MatomoRouterProvider>
       </QueryClientProvider>
     </SnackbarProvider>
   );
