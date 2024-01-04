@@ -53,36 +53,34 @@ const FavoriteChannels: React.FC = () => {
       }
     };
     return (
-      <>
-        <Grid item xs={2} key={c.apiId}>
-          <Card>
-            <CardActionArea
-              component={Link}
-              to={`/plugins/${c.pluginId}/channels/${c.apiId}`}
-            >
-              <PlaylistImage images={c.images} />
-            </CardActionArea>
-            <CardActions>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <IconButton size="small" onClick={openChannelMenu}>
-                  <MoreHoriz />
-                </IconButton>
-                <Typography
-                  title={c.name}
-                  gutterBottom
-                  variant="body2"
-                  component="span"
-                  width={230}
-                  noWrap
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizer(c.name),
-                  }}
-                />
-              </Stack>
-            </CardActions>
-          </Card>
-        </Grid>
-      </>
+      <Grid item xs={2} key={c.apiId}>
+        <Card>
+          <CardActionArea
+            component={Link}
+            to={`/plugins/${c.pluginId}/channels/${c.apiId}`}
+          >
+            <PlaylistImage images={c.images} />
+          </CardActionArea>
+          <CardActions>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <IconButton size="small" onClick={openChannelMenu}>
+                <MoreHoriz />
+              </IconButton>
+              <Typography
+                title={c.name}
+                gutterBottom
+                variant="body2"
+                component="span"
+                width={230}
+                noWrap
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(c.name),
+                }}
+              />
+            </Stack>
+          </CardActions>
+        </Card>
+      </Grid>
     );
   });
 
