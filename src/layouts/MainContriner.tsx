@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import MiniPlayer from "./MiniPlayer";
+import MiniPlayer from "../components/MiniPlayer";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
