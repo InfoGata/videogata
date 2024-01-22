@@ -113,10 +113,14 @@
     "clickReload": "Click to reload plugins",
     "installedPlugins": "Installed Plugins",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "openMenu": "Open Menu",
+    "updateFound": "Update Found",
+    "noUpdateFound": "No Update Found"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
-    "useMiniPlayer": "Use Mini Player"
+    "useMiniPlayer": "Use Mini Player",
+    "corsProxy": "Cors Proxy Url"
   }
 }

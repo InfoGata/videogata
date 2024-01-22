@@ -1,23 +1,19 @@
-import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
-import { Capacitor } from "@capacitor/core";
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
+import Spinner from "@/components/Spinner";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
-import { PluginInfo } from "../plugintypes";
-import { LoginInfo, NotifyLoginMessage } from "../types";
+import { Manifest } from "../plugintypes";
+import { FileType, NotifyLoginMessage } from "../types";
 import {
-  getCookiesFromUrl,
+  directoryProps,
+  getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
   hasAuthentication,
@@ -25,15 +21,62 @@ import {
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
-  const [pluginInfo, setPluginInfo] = React.useState<PluginInfo>();
-  const [scriptSize, setScriptSize] = React.useState(0);
-  const [optionSize, setOptionsSize] = React.useState(0);
-  const [playerSize, setPlayerSize] = React.useState(0);
   const { updatePlugin, plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
   const pluginAuth = useLiveQuery(() => db.pluginAuths.get(pluginId || ""));
   const [hasAuth, setHasAuth] = React.useState(false);
+  const [hasUpdate, setHasUpdate] = React.useState(false);
+  const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const updatePluginFromFilelist = async (files: FileList) => {
+    const fileType: FileType = {
+      filelist: files,
+    };
+    const newPlugin = await getPlugin(fileType);
+
+    if (newPlugin && plugin && plugin.id) {
+      newPlugin.id = plugin.id;
+      await updatePlugin(newPlugin, plugin.id, files);
+    }
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    setLoading(true);
+    await updatePluginFromFilelist(files);
+    setLoading(false);
+  };
+
+  const onReload = async () => {
+    if (!plugin) return;
+
+    const files = plugin.fileList;
+    if (!files) return;
+
+    setLoading(true);
+    await updatePluginFromFilelist(files);
+    setLoading(false);
+  };
+
+  const pluginInfo = useLiveQuery(() => db.plugins.get(pluginId || ""));
+  const scriptSize = React.useMemo(() => {
+    const scriptBlob = new Blob([pluginInfo?.script || ""]);
+    return scriptBlob.size;
+  }, [pluginInfo]);
+  const optionSize = React.useMemo(() => {
+    return pluginInfo?.optionsHtml
+      ? new Blob([pluginInfo?.optionsHtml || ""]).size
+      : 0;
+  }, [pluginInfo]);
+  const playerSize = React.useMemo(() => {
+    return pluginInfo?.playerHtml
+      ? new Blob([pluginInfo?.playerHtml || ""]).size
+      : 0;
+  }, [pluginInfo]);
 
   React.useEffect(() => {
     const getHasAuth = async () => {
@@ -56,7 +99,7 @@ const PluginDetails: React.FC = () => {
             headers: event.data.headers,
             domainHeaders: event.data.domainHeaders,
           });
-          if (await plugin.hasDefined.onPostLogin()) {
+          if (await plugin?.hasDefined.onPostLogin()) {
             await plugin.remote.onPostLogin();
           }
         }
@@ -70,73 +113,16 @@ const PluginDetails: React.FC = () => {
     return () => window.removeEventListener("message", iframeListener);
   }, [iframeListener]);
 
-  const loadPluginFromDb = React.useCallback(async () => {
-    const p = await db.plugins.get(pluginId || "");
-    setPluginInfo(p);
-    const scriptBlob = new Blob([p?.script || ""]);
-    setScriptSize(scriptBlob.size);
-    if (p?.optionsHtml) {
-      const optionsBlob = new Blob([p.optionsHtml]);
-      setOptionsSize(optionsBlob.size);
-    }
-    if (p?.playerHtml) {
-      const playerBlob = new Blob([p.playerHtml]);
-      setPlayerSize(playerBlob.size);
-    }
-  }, [pluginId]);
-
   const onLogin = () => {
     if (pluginInfo?.manifest?.authentication?.loginUrl) {
-      const authentication = pluginInfo.manifest.authentication;
-      if (Capacitor.isNativePlatform()) {
-        const win = InAppBrowser.create(
-          pluginInfo.manifest.authentication.loginUrl,
-          "_blank"
+      if (window.InfoGata.openLoginWindow) {
+        window.InfoGata.openLoginWindow(
+          pluginInfo.manifest.authentication,
+          pluginInfo.id || ""
         );
-        const loginInfo: LoginInfo = {
-          foundCookies: !authentication.cookiesToFind,
-          foundCompletionUrl: !authentication.completionUrl,
-          foundHeaders: !authentication.headersToFind,
-          headers: {},
-        };
-
-        const completeLogin = () => {
-          win.close();
-          db.pluginAuths.put({
-            pluginId: pluginId || "",
-            headers: loginInfo.headers,
-          });
-        };
-
-        win.on("loadstop").subscribe(async (event) => {
-          if (authentication.cookiesToFind && !loginInfo.foundCookies) {
-            const cookies = await getCookiesFromUrl(authentication.loginUrl);
-            loginInfo.foundCookies = authentication.cookiesToFind.every((c) =>
-              cookies.has(c)
-            );
-          }
-          if (event.url === authentication.completionUrl) {
-            loginInfo.foundCompletionUrl = true;
-          }
-          if (
-            loginInfo.foundCookies &&
-            loginInfo.foundCompletionUrl &&
-            loginInfo.foundHeaders
-          ) {
-            completeLogin();
-          }
-        });
-      } else {
-        if (window.InfoGata.openLoginWindow) {
-          window.InfoGata.openLoginWindow(authentication, pluginInfo.id || "");
-        }
       }
     }
   };
-
-  React.useEffect(() => {
-    loadPluginFromDb();
-  }, [loadPluginFromDb]);
 
   const onUpdate = async () => {
     if (pluginInfo?.manifestUrl) {
@@ -146,118 +132,137 @@ const PluginDetails: React.FC = () => {
         newPlugin.id = pluginInfo.id;
         newPlugin.manifestUrl = pluginInfo.manifestUrl;
         await updatePlugin(newPlugin, pluginInfo.id);
-        await loadPluginFromDb();
       }
     }
+  };
+
+  const checkUpdate = async () => {
+    if (!isCheckingUpdate && pluginInfo?.manifestUrl) {
+      setIsCheckingUpdate(true);
+      const fileType = getFileTypeFromPluginUrl(pluginInfo.manifestUrl);
+      const manifestText = await getFileText(fileType, "manifest.json");
+      if (manifestText) {
+        const manifest = JSON.parse(manifestText) as Manifest;
+        if (manifest.version !== pluginInfo.version) {
+          setHasUpdate(true);
+          toast(t("plugins:updateFound"));
+        } else {
+          setHasUpdate(false);
+          toast(t("plugins:noUpdateFound"));
+        }
+      }
+    }
+    setIsCheckingUpdate(false);
   };
 
   const onLogout = async () => {
     if (pluginId) {
       db.pluginAuths.delete(pluginId);
-    }
-
-    if (plugin) {
-      if (await plugin.hasDefined.onPostLogout()) {
+      if (plugin && (await plugin.hasDefined.onPostLogout())) {
         await plugin.remote.onPostLogout();
       }
     }
   };
 
+  if (!pluginInfo) {
+    return <div>{t("common:notFound")}</div>;
+  }
+
+  const aboutLinks: (AboutLinkProps | null)[] = [
+    {
+      title: t("plugins:pluginDescription"),
+      description: pluginInfo.description,
+    },
+    pluginInfo.homepage
+      ? {
+          title: t("plugins:homepage"),
+          description: pluginInfo.homepage,
+          url: pluginInfo.homepage,
+        }
+      : null,
+    { title: t("plugins:version"), description: pluginInfo.version },
+    { title: "Id", description: pluginInfo.id },
+    { title: t("plugins:scriptSize"), description: `${scriptSize / 1000} kb` },
+    {
+      title: t("plugins:optionsPageSize"),
+      description: `${optionSize / 1000} kb`,
+    },
+    {
+      title: t("plugins:playerPageSize"),
+      description: `${playerSize / 1000} kb`,
+    },
+    pluginInfo.manifestUrl
+      ? {
+          title: t("plugins:updateUrl"),
+          description: pluginInfo.manifestUrl,
+          url: pluginInfo.manifestUrl,
+        }
+      : null,
+  ];
+
   return (
     <>
-      {pluginInfo ? (
-        <div>
-          <Typography variant="h3">
-            {t("plugins:pluginDetailsTitle")}
-          </Typography>
-          <Typography variant="h6">{pluginInfo.name}</Typography>
-          <List>
-            <ListItem>
-              <ListItemText
-                primary={t("plugins:pluginDescription")}
-                secondary={pluginInfo.description}
-              />
-            </ListItem>
-            {pluginInfo.homepage && (
-              <ListItem disablePadding>
-                <ListItemButton
-                  component="a"
-                  href={pluginInfo.homepage}
-                  target="_blank"
-                >
-                  <ListItemText
-                    primary={t("plugins:homepage")}
-                    secondary={pluginInfo.homepage}
-                  />
-                </ListItemButton>
-              </ListItem>
-            )}
-            <ListItem>
-              <ListItemText
-                primary={t("plugins:version")}
-                secondary={pluginInfo.version}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Id" secondary={pluginInfo.id} />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={t("plugins:scriptSize")}
-                secondary={`${scriptSize / 1000} kb`}
-              />
-            </ListItem>
-            {!!optionSize && (
-              <ListItem>
-                <ListItemText
-                  primary={t("plugins:optionsPageSize")}
-                  secondary={`${optionSize / 1000} kb`}
-                />
-              </ListItem>
-            )}
-            {!!playerSize && (
-              <ListItem>
-                <ListItemText
-                  primary={t("plugins:playerPageSize")}
-                  secondary={`${playerSize / 1000} kb`}
-                />
-              </ListItem>
-            )}
-            {pluginInfo.manifestUrl && (
-              <ListItem disablePadding>
-                <ListItemButton
-                  component="a"
-                  href={pluginInfo.manifestUrl}
-                  target="_blank"
-                >
-                  <ListItemText
-                    primary={t("plugins:updateUrl")}
-                    secondary={pluginInfo.manifestUrl}
-                  />
-                </ListItemButton>
-              </ListItem>
-            )}
-            {hasAuth && (
-              <ListItem disablePadding>
-                {pluginAuth ? (
-                  <ListItemButton onClick={onLogout}>
-                    <ListItemText primary={t("plugins:logout")} />
-                  </ListItemButton>
-                ) : (
-                  <ListItemButton onClick={onLogin}>
-                    <ListItemText primary={t("plugins:login")} />
-                  </ListItemButton>
-                )}
-              </ListItem>
-            )}
-          </List>
+      <Spinner open={loading} />
+      <div>
+        <h1 className="text-3xl font-bold">
+          {t("plugins:pluginDetailsTitle")}
+        </h1>
+        <h2 className="text-2xl font-semibold">{pluginInfo.name}</h2>
+        <div className="flex gap-2 flex-wrap">
+          {pluginInfo.optionsHtml && (
+            <Link
+              className={cn(buttonVariants({ variant: "outline" }))}
+              to={`/plugins/${pluginInfo.id}/options`}
+            >
+              {t("plugins:options")}
+            </Link>
+          )}
           {pluginInfo.manifestUrl && (
-            <Button onClick={onUpdate}>{t("plugins:updatePlugin")}</Button>
+            <Button variant="outline" onClick={checkUpdate}>
+              {t("plugins:checkForUpdates")}
+            </Button>
+          )}
+          {hasUpdate && (
+            <Button variant="outline" onClick={onUpdate}>
+              {t("plugins:updatePlugin")}
+            </Button>
+          )}
+
+          <label
+            htmlFor={`update-plugin-${pluginInfo.id}`}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "cursor-pointer"
+            )}
+          >
+            <input
+              id={`update-plugin-${pluginInfo.id}`}
+              type="file"
+              {...directoryProps}
+              onChange={onFileChange}
+              className="hidden"
+            />
+            {t("plugins:updateFromFile")}
+          </label>
+
+          {plugin?.fileList && (
+            <Button className="cursor-pointer" onClick={onReload}>
+              <span>{t("plugins:reloadPlugin")}</span>
+            </Button>
+          )}
+          {hasAuth && pluginAuth && (
+            <Button variant="outline" onClick={onLogout}>
+              {t("plugins:login")}
+            </Button>
+          )}
+          {hasAuth && !pluginAuth && (
+            <Button variant="outline" onClick={onLogin}>
+              {t("plugins:login")}
+            </Button>
           )}
         </div>
-      ) : (
-        <>{t("common:notFound")}</>
-      )}
+        {aboutLinks.map((a) => a && <AboutLink {...a} key={a.title} />)}
+      </div>
     </>
   );
 };

@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -54,7 +53,6 @@ const PluginInstall: React.FC = () => {
         setIsLoading(false);
       }
     };
-
     installPlugin();
   }, [manifestUrl, headerKey, headerValue, t]);
 
@@ -73,21 +71,18 @@ const PluginInstall: React.FC = () => {
   return (
     <>
       <Spinner open={isLoading} />
-      {isInstalling ? (
-        <Typography variant="h4">
-          {t("installingPlugin", { manifestUrl })}
-        </Typography>
-      ) : (
-        <Typography variant="h4">
-          {t("failedToInstall", { manifestUrl })}
-        </Typography>
-      )}
+      <h4 className="font-bold text-2xl">
+        {isInstalling
+          ? t("installingPlugin", { manifestUrl })
+          : t("failedToInstall", { manifestUrl })}
+      </h4>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}
         handleClose={onConfirmPluginClose}
         afterConfirm={onAfterConfirm}
         afterCancel={onAfterCancel}
+        installUrl={manifestUrl}
       />
     </>
   );

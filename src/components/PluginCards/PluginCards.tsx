@@ -11,14 +11,14 @@ import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { PluginDescription, defaultPlugins } from "../default-plugins";
-import usePlugins from "../hooks/usePlugins";
+import { PluginDescription, defaultPlugins } from "../../default-plugins";
+import usePlugins from "../../hooks/usePlugins";
 import {
   generatePluginId,
   getFileTypeFromPluginUrl,
   getPlugin,
-} from "../utils";
-import Spinner from "./Spinner";
+} from "../../utils";
+import Spinner from "../Spinner";
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
