@@ -2,7 +2,11 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  createTheme,
+  StyledEngineProvider,
+  ThemeProvider,
+} from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -33,9 +37,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Helmet>
             <title>VideoGata</title>
           </Helmet>
-          <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
-          </ThemeProvider>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <RouterProvider router={router} />
+            </ThemeProvider>
+          </StyledEngineProvider>
         </HelmetProvider>
       </PersistGate>
     </Provider>
