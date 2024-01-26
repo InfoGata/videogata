@@ -1,30 +1,15 @@
-import { MoreHoriz } from "@mui/icons-material";
-import {
-  Card,
-  CardActionArea,
-  CardActions,
-  Fade,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
-import DOMPurify from "dompurify";
+import useVideoMenu from "@/hooks/useVideoMenu";
+import { cn } from "@/lib/utils";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
-import useVideoMenu from "../hooks/useVideoMenu";
-import PlaylistImage from "./PlaylistImage";
+import HomeVideoCard from "./HomeVideoCard";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const { openMenu } = useVideoMenu();
-  const { t } = useTranslation();
-  const sanitizer = DOMPurify.sanitize;
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -39,75 +24,24 @@ const TopItemCards: React.FC = () => {
     staleTime: 1000 * 60 * 5,
   });
 
-  const topVideoComponents = query.data?.videos?.items.map((v) => {
+  const videoCards = query.data?.videos?.items.map((v) => {
     const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       openMenu(event, v);
     };
 
-    return (
-      <Card
-        key={v.id}
-        sx={{
-          width: 280,
-          height: 250,
-          display: "inline-block",
-          margin: "10px",
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        <CardActionArea
-          component={Link}
-          to={`/plugins/${pluginId}/videos/${v.apiId}`}
-        >
-          <PlaylistImage images={v.images} />
-        </CardActionArea>
-        <CardActions>
-          <Stack direction="row" alignItems="center" gap={1}>
-            <IconButton size="small" onClick={openVideoMenu}>
-              <MoreHoriz />
-            </IconButton>
-            <Typography
-              title={v.title}
-              gutterBottom
-              variant="body2"
-              component="span"
-              width={230}
-              noWrap
-              dangerouslySetInnerHTML={{
-                __html: sanitizer(v.title || ""),
-              }}
-            />
-          </Stack>
-        </CardActions>
-      </Card>
-    );
+    return <HomeVideoCard key={v.apiId} video={v} openMenu={openVideoMenu} />;
   });
 
   return (
     <>
-      <Grid sx={{ display: pluginId ? "block" : "none" }}>
+      <div className={cn(pluginId ? "block" : "hidden")}>
         <SelectPlugin
           pluginId={pluginId}
           setPluginId={setPluginId}
           methodName="onGetTopItems"
         />
-      </Grid>
-      <Fade in={!!topVideoComponents}>
-        <Grid>
-          <Typography variant="h5" style={{ marginLeft: "15px" }}>
-            {t("topVideos")}
-          </Typography>
-          <Grid
-            sx={{
-              whiteSpace: "nowrap",
-              overflowX: "scroll",
-              "&::-webkit-scrollbar": { display: "none" },
-            }}
-          >
-            {topVideoComponents}
-          </Grid>
-        </Grid>
-      </Fade>
+      </div>
+      <div className="grid grid-cols-4 gap-5">{videoCards}</div>
     </>
   );
 };

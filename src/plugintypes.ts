@@ -41,6 +41,7 @@ export interface Video {
   description?: string;
   channelName?: string;
   channelApiId?: string;
+  channelThumbnails?: ImageInfo[];
   recommendedVideos?: Video[];
   uploadDate?: string;
   originalUrl?: string;
