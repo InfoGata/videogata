@@ -13,10 +13,9 @@ import DOMPurify from "dompurify";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import PlaylistImage from "../components/PlaylistImage";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import PlaylistImage from "../components/PlaylistImage";
-import Spinner from "../components/Spinner";
 
 const FavoriteChannels: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
@@ -25,7 +24,7 @@ const FavoriteChannels: React.FC = () => {
   const { t } = useTranslation();
 
   if (!playlists) {
-    return <Spinner />;
+    return <></>;
   }
 
   const playlistsCards = playlists?.map((p) => {

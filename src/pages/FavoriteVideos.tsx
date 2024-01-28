@@ -1,22 +1,17 @@
-import { MoreHoriz, UploadFile } from "@mui/icons-material";
-import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import HomeVideoCard from "@/components/HomeVideoCard";
+import { Button } from "@/components/ui/button";
+import { UploadFile } from "@mui/icons-material";
+import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
+import { MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import ImportDialog from "../components/ImportDialog";
+import PlaylistMenu from "../components/PlaylistMenu";
 import { db } from "../database";
 import useVideoMenu from "../hooks/useVideoMenu";
 import { Playlist, Video } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import ImportDialog from "../components/ImportDialog";
-import PlaylistMenu from "../components/PlaylistMenu";
-import Spinner from "../components/Spinner";
-import VideoCards from "../components/VideoCards";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());
@@ -60,18 +55,26 @@ const FavoriteVideos: React.FC = () => {
   ];
 
   if (!videos) {
-    return <Spinner open={true} />;
+    return <></>;
   }
+
+  const videoCards = videos.map((v) => {
+    const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+      openMenu(event, v);
+    };
+
+    return <HomeVideoCard key={v.apiId} video={v} openMenu={openVideoMenu} />;
+  });
 
   return (
     <>
-      <IconButton onClick={openFavoritesMenu}>
-        <MoreHoriz fontSize="large" />
-      </IconButton>
+      <Button size="icon" variant="ghost" onClick={openFavoritesMenu}>
+        <MoreHorizontalIcon fontSize="large" />
+      </Button>
       {videos && videos.length > 0 ? (
-        <VideoCards videos={videos || []} openMenu={openMenu} />
+        <div className="grid grid-cols-4 gap-5">{videoCards}</div>
       ) : (
-        <Typography>{t("noFavoriteVideos")}</Typography>
+        <h3>{t("noFavoriteVideos")}</h3>
       )}
       <ImportDialog
         open={importDialogOpen}

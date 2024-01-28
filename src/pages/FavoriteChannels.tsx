@@ -14,13 +14,12 @@ import DOMPurify from "dompurify";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { PluginFrameContainer } from "../PluginsContext";
+import PlaylistImage from "../components/PlaylistImage";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import PlaylistImage from "../components/PlaylistImage";
-import Spinner from "../components/Spinner";
 import usePlugins from "../hooks/usePlugins";
 import { filterAsync } from "../utils";
-import { PluginFrameContainer } from "../PluginsContext";
 
 const FavoriteChannels: React.FC = () => {
   const channels = useLiveQuery(() => db.favoriteChannels.toArray());
@@ -43,7 +42,7 @@ const FavoriteChannels: React.FC = () => {
   }, [plugins]);
 
   if (!channels) {
-    return <Spinner />;
+    return <></>;
   }
 
   const channelCards = channels?.map((c) => {
