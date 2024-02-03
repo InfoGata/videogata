@@ -1,15 +1,14 @@
-import useVideoMenu from "@/hooks/useVideoMenu";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { useQuery } from "react-query";
 import usePlugins from "../hooks/usePlugins";
 import HomeVideoCard from "./HomeVideoCard";
 import SelectPlugin from "./SelectPlugin";
+import VideoCardSkeleton from "./VideoCardSkeleton";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
-  const { openMenu } = useVideoMenu();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -25,11 +24,7 @@ const TopItemCards: React.FC = () => {
   });
 
   const videoCards = query.data?.videos?.items.map((v) => {
-    const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-      openMenu(event, v);
-    };
-
-    return <HomeVideoCard key={v.apiId} video={v} openMenu={openVideoMenu} />;
+    return <HomeVideoCard key={v.apiId} video={v} />;
   });
 
   return (
@@ -41,7 +36,13 @@ const TopItemCards: React.FC = () => {
           methodName="onGetTopItems"
         />
       </div>
-      <div className="grid grid-cols-4 gap-5">{videoCards}</div>
+      <div className="grid grid-cols-4 gap-5 mt-4">
+        {query.isLoading
+          ? Array(8)
+              .fill(true)
+              .map(() => <VideoCardSkeleton />)
+          : videoCards}
+      </div>
     </>
   );
 };

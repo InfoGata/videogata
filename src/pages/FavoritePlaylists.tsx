@@ -24,10 +24,14 @@ const FavoriteChannels: React.FC = () => {
   const { t } = useTranslation();
 
   if (!playlists) {
-    return <></>;
+    return null;
   }
 
-  const playlistsCards = playlists?.map((p) => {
+  if (playlists.length === 0) {
+    return <h3>{t("noFavoritePlaylists")}</h3>;
+  }
+
+  const playlistsCards = playlists.map((p) => {
     const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (openMenu) {
         openMenu(event, { type: "playlist", item: p });
@@ -64,15 +68,10 @@ const FavoriteChannels: React.FC = () => {
       </Grid>
     );
   });
+
   return (
     <Grid container spacing={2}>
-      {playlists && playlists.length > 0 ? (
-        playlistsCards
-      ) : (
-        <Grid item>
-          <Typography>{t("noFavoritePlaylists")}</Typography>
-        </Grid>
-      )}
+      {playlistsCards}
     </Grid>
   );
 };

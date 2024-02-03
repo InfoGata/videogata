@@ -4,21 +4,19 @@ import {
   getThumbnailImage,
   playlistThumbnailSize,
 } from "@/utils";
-import { MoreVertical } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import TimeAgo from "timeago-react";
-import { Button } from "./ui/button";
 import DOMPurify from "dompurify";
+import VideoMenu from "@/pages/VideoMenu";
 
 interface Props {
   video: Video;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, video: Video) => void;
 }
 
 const HomeVideoCard: React.FC<Props> = (props) => {
-  const { video, openMenu } = props;
+  const { video } = props;
   const { t } = useTranslation();
   const image = getThumbnailImage(video.images, playlistThumbnailSize);
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -27,12 +25,8 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   const url = `/plugins/${video.pluginId}/videos/${video.apiId}`;
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
 
-  const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    openMenu(event, video);
-  };
-
   return (
-    <div key={video.id} className="group">
+    <div className="group">
       <Link to={url} className="relative block">
         <img
           src={image}
@@ -51,14 +45,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
               />
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="invisible group-hover:visible focus:visible"
-              onClick={openVideoMenu}
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+            <VideoMenu video={video} />
           </div>
           <Link to={channelUrl} className="text-muted-foreground text-sm">
             {video.channelName}

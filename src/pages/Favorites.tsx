@@ -1,36 +1,35 @@
-import { Tab, Tabs } from "@mui/material";
+import FavoriteLink from "@/components/Favorites/FavoriteLink";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const Favorites: React.FC = () => {
-  const { pathname } = useLocation();
   const { t } = useTranslation();
 
+  const favoriteLinks: { title: string; url: string }[] = [
+    {
+      title: t("videos"),
+      url: "/favorites/videos",
+    },
+    {
+      title: t("channels"),
+      url: "/favorites/channels",
+    },
+    {
+      title: t("playlists"),
+      url: "/favorites/playlists",
+    },
+  ];
+
   return (
-    <>
-      <Tabs value={pathname}>
-        <Tab
-          label={t("videos")}
-          value="/favorites/videos"
-          to="videos"
-          component={Link}
-        />
-        <Tab
-          label={t("channels")}
-          value="/favorites/channels"
-          to="channels"
-          component={Link}
-        />
-        <Tab
-          label={t("playlists")}
-          value="/favorites/playlists"
-          to="playlists"
-          component={Link}
-        />
-      </Tabs>
+    <div>
+      <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 mb-2 text-muted-foreground">
+        {favoriteLinks.map((fl) => (
+          <FavoriteLink key={fl.title} {...fl} />
+        ))}
+      </div>
       <Outlet />
-    </>
+    </div>
   );
 };
 

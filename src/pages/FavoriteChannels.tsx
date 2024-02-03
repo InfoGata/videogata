@@ -42,10 +42,14 @@ const FavoriteChannels: React.FC = () => {
   }, [plugins]);
 
   if (!channels) {
-    return <></>;
+    return null;
   }
 
-  const channelCards = channels?.map((c) => {
+  if (channels.length === 0) {
+    return <h3>{t("noFavoriteChannels")}</h3>;
+  }
+
+  const channelCards = channels.map((c) => {
     const openChannelMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (openMenu) {
         openMenu(event, { type: "channel", item: c });
@@ -84,7 +88,7 @@ const FavoriteChannels: React.FC = () => {
   });
 
   return (
-    <>
+    <div>
       <Grid>
         {channelPlugins.map((p) => (
           <Button component={Link} to={`/plugins/${p.id}/channels`} key={p.id}>
@@ -92,17 +96,10 @@ const FavoriteChannels: React.FC = () => {
           </Button>
         ))}
       </Grid>
-
       <Grid container spacing={2}>
-        {channels && channels.length > 0 ? (
-          channelCards
-        ) : (
-          <Grid item>
-            <Typography>{t("noFavoriteChannels")}</Typography>
-          </Grid>
-        )}
+        {channelCards}
       </Grid>
-    </>
+    </div>
   );
 };
 

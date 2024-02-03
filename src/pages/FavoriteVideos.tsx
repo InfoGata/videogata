@@ -55,7 +55,11 @@ const FavoriteVideos: React.FC = () => {
   ];
 
   if (!videos) {
-    return <></>;
+    return null;
+  }
+
+  if (videos.length === 0) {
+    return <h3>{t("noFavoriteVideos")}</h3>;
   }
 
   const videoCards = videos.map((v) => {
@@ -67,15 +71,11 @@ const FavoriteVideos: React.FC = () => {
   });
 
   return (
-    <>
+    <div>
       <Button size="icon" variant="ghost" onClick={openFavoritesMenu}>
         <MoreHorizontalIcon fontSize="large" />
       </Button>
-      {videos && videos.length > 0 ? (
-        <div className="grid grid-cols-4 gap-5">{videoCards}</div>
-      ) : (
-        <h3>{t("noFavoriteVideos")}</h3>
-      )}
+      <div className="grid grid-cols-4 gap-5">{videoCards}</div>
       <ImportDialog
         open={importDialogOpen}
         handleClose={closeImportDialog}
@@ -89,7 +89,7 @@ const FavoriteVideos: React.FC = () => {
         onClose={closeFavoritesMenu}
         menuItems={menuItems}
       />
-    </>
+    </div>
   );
 };
 
