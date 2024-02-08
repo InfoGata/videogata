@@ -1,14 +1,13 @@
+import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
-import usePlugins from "../hooks/usePlugins";
 import { useParams } from "react-router-dom";
-import useFindPlugin from "../hooks/useFindPlugin";
-import { PageInfo, UserChannelRequest } from "../plugintypes";
-import usePagination from "../hooks/usePagination";
-import { Grid, List } from "@mui/material";
-import Spinner from "../components/Spinner";
-import Pager from "../components/Pager";
 import ChannelSearchResult from "../components/ChannelSearchResult";
+import Pager from "../components/Pager";
+import Spinner from "../components/Spinner";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import { PageInfo, UserChannelRequest } from "../plugintypes";
 
 const UserPluginChannels: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();

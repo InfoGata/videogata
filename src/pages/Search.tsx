@@ -81,7 +81,10 @@ const Search: React.FC = () => {
   const channelList = query?.data?.channels?.items || [];
   const playlistList = query?.data?.playlists?.items || [];
 
-  const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
+  const handleChange = (
+    _event: React.ChangeEvent<unknown>,
+    newValue: string
+  ) => {
     setTabValue(newValue);
   };
 

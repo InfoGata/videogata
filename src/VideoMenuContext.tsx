@@ -10,6 +10,7 @@ export interface VideoMenuInterface {
   setListElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const VideoMenuContext = React.createContext<VideoMenuInterface>(undefined!);
 
 export default VideoMenuContext;

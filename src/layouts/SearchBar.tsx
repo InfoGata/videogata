@@ -43,7 +43,7 @@ const SearchBar: React.FC = () => {
     navigate(`/search?q=${searchTerm}`);
   };
 
-  const handleSubmit = (event: React.FormEvent<{}>) => {
+  const handleSubmit = (event: React.FormEvent<unknown>) => {
     event.preventDefault();
     searchQuery(search);
   };

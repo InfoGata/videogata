@@ -19,7 +19,7 @@ const timestampToSeconds = (str: string) => {
   let seconds = 0;
   let minutes = 1;
   while (split.length > 0) {
-    let num = split.pop();
+    const num = split.pop();
     if (num) {
       seconds += minutes * parseInt(num, 10);
       minutes *= 60;
@@ -48,8 +48,10 @@ linkify.registerPlugin("timeline", (plugin) => {
   const { COLON, NUM } = scanner.tokens;
 
   const START_STATE = parser.start;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   START_STATE.tt(NUM).tt(COLON).tt(NUM).tt(COLON).tt(NUM, TimelineH);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   START_STATE.tt(NUM).tt(COLON).tt(NUM, TimelineM);
 });

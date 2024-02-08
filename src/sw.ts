@@ -54,7 +54,9 @@ const handleNetworkRequest = async (request: string) => {
   if (hostSet.has(url.host)) {
     try {
       return await sendExtensionRequest(request);
-    } catch {}
+    } catch {
+      /* empty */
+    }
   }
   try {
     const response = await fetch(request);

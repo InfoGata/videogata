@@ -11,7 +11,7 @@ interface VideoJSProps {
 }
 
 const VideoJS: React.FC<VideoJSProps> = (props) => {
-  const { isMiniPlayer, options, timeInSeconds } = props;
+  const { isMiniPlayer, options } = props;
   const videoRef = React.useRef<HTMLDivElement>(null);
   const playerRef = React.useRef<VideoJsPlayer | null>(null);
 

@@ -132,14 +132,17 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             } else if (Object.keys(pluginAuth.domainHeaders ?? {}).length > 0) {
               const url = new URL(input);
               const domainHeaderKey = Object.keys(
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 pluginAuth.domainHeaders!
               ).find((dh) => url.host.endsWith(dh));
               if (domainHeaderKey) {
                 const headers = new Headers(newInit.headers);
-                for (const prop in pluginAuth.domainHeaders![domainHeaderKey]) {
+                for (const prop in pluginAuth.domainHeaders?.[
+                  domainHeaderKey
+                ]) {
                   headers.set(
                     prop,
-                    pluginAuth.domainHeaders![domainHeaderKey][prop]
+                    pluginAuth.domainHeaders?.[domainHeaderKey][prop]
                   );
                 }
                 newInit.headers = Object.fromEntries(headers.entries());
