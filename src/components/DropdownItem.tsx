@@ -22,8 +22,15 @@ const DropdownItem: React.FC<DropdownItemProps> = (props) => {
     return <>{props.children}</>;
   };
 
+  const onClick = (e: React.MouseEvent) => {
+    if (action) {
+      e.stopPropagation();
+      action();
+    }
+  };
+
   return (
-    <DropdownMenuItem onSelect={action}>
+    <DropdownMenuItem onClick={onClick}>
       <InnerComponent>
         {icon}
         <span>{title}</span>

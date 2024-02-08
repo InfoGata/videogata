@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import ImportDialog from "../components/ImportDialog";
 import PlaylistMenu from "../components/PlaylistMenu";
 import { db } from "../database";
-import useVideoMenu from "../hooks/useVideoMenu";
 import { Playlist, Video } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 
@@ -28,8 +27,6 @@ const FavoriteVideos: React.FC = () => {
   const closeFavoritesMenu = () => {
     setFavoriteseMenuAnchorEl(null);
   };
-
-  const { openMenu } = useVideoMenu();
 
   const openImportDialog = () => {
     setImportDialogOpen(true);
@@ -63,11 +60,7 @@ const FavoriteVideos: React.FC = () => {
   }
 
   const videoCards = videos.map((v) => {
-    const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-      openMenu(event, v);
-    };
-
-    return <HomeVideoCard key={v.apiId} video={v} openMenu={openVideoMenu} />;
+    return <HomeVideoCard key={v.apiId} video={v} />;
   });
 
   return (
@@ -77,6 +70,7 @@ const FavoriteVideos: React.FC = () => {
       </Button>
       <div className="grid grid-cols-4 gap-5">{videoCards}</div>
       <ImportDialog
+        setOpen={setImportDialogOpen}
         open={importDialogOpen}
         handleClose={closeImportDialog}
         parseType="video"

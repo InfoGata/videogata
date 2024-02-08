@@ -1,14 +1,3 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  List,
-  ListItem,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { nanoid } from "nanoid";
 import { useSnackbar } from "notistack";
 import React from "react";
@@ -17,6 +6,15 @@ import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { ParseUrlType, Playlist, Video } from "../plugintypes";
 import { filterAsync } from "../utils";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
 
 interface ImportDialogProps {
   open: boolean;
@@ -24,6 +22,7 @@ interface ImportDialogProps {
   handleClose: () => void;
   parseType: ParseUrlType;
   onSuccess: (item: Video[] | Playlist) => void;
+  setOpen: (open: boolean) => void;
 }
 
 const parseTypeToMethod = async (
@@ -52,7 +51,7 @@ const lookupUrl = async (
 };
 
 const ImportDialog: React.FC<ImportDialogProps> = (props) => {
-  const { open, handleClose, parseType, onSuccess, title } = props;
+  const { open, handleClose, parseType, onSuccess, title, setOpen } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { plugins } = usePlugins();
   const [url, setUrl] = React.useState("");
@@ -98,48 +97,40 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">
-        {title ? title : t("import")}
-      </DialogTitle>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <form id={formId} onSubmit={onSubmit}>
-          <TextField
-            autoFocus={true}
-            margin="dense"
-            id="name"
-            label="Url"
-            type="text"
-            fullWidth={true}
-            value={url}
-            onChange={onChange}
-          />
-        </form>
-        <Typography>{t("plugins")}:</Typography>
-        {parserPlugins.length > 0 ? (
-          <List>
-            {parserPlugins.map((p) => (
-              <ListItem key={p.id}>{p.name}</ListItem>
-            ))}
-          </List>
-        ) : (
-          <Typography>{t("noImporters")}</Typography>
-        )}
+        <DialogHeader>
+          <DialogTitle>{title ? title : t("import")}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-2">
+          <form id={formId} onSubmit={onSubmit}>
+            <Input
+              autoFocus={true}
+              type="text"
+              value={url}
+              onChange={onChange}
+            />
+          </form>
+          <h3 className="font-bold">{t("plugins")}:</h3>
+          {parserPlugins.length > 0 ? (
+            <ul>
+              {parserPlugins.map((p) => (
+                <li key={p.id}>{p.name}</li>
+              ))}
+            </ul>
+          ) : (
+            <h4>{t("noImporters")}</h4>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleClose}>
+            {t("cancel")}
+          </Button>
+          <Button variant="outline" type="submit" form={formId}>
+            {t("confirm")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>{t("cancel")}</Button>
-        <Button
-          disabled={parserPlugins.length === 0}
-          type="submit"
-          form={formId}
-        >
-          {t("confirm")}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

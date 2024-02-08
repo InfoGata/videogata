@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import TimeAgo from "timeago-react";
 import DOMPurify from "dompurify";
-import VideoMenu from "@/pages/VideoMenu";
+import VideoMenu from "./VideoMenu";
 
 interface Props {
   video: Video;

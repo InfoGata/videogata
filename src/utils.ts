@@ -2,7 +2,6 @@ import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
 import { ImageInfo, Manifest, PluginInfo, Video } from "./plugintypes";
-import thumbnail from "./thumbnail.png";
 import { DirectoryFile, FileType } from "./types";
 import isElectron from "is-electron";
 import semverGte from "semver/functions/gte";
@@ -56,18 +55,16 @@ export function getFileByDirectoryAndName(files: FileList, name: string) {
 export const getThumbnailImage = (
   images: ImageInfo[] | undefined,
   size: number
-): string => {
+): string | undefined => {
   if (!images) {
-    return thumbnail;
+    return;
   }
 
   const sortedImages = [...images].sort(
     (a, b) => (a.height || 0) - (b.height || 0)
   );
   const thumbnailImage = sortedImages.find((i) => (i.height || 0) >= size);
-  return thumbnailImage
-    ? thumbnailImage.url
-    : sortedImages[0]?.url ?? thumbnail;
+  return thumbnailImage ? thumbnailImage.url : sortedImages[0]?.url;
 };
 
 export function getFileTypeFromPluginUrl(url: string) {

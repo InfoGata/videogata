@@ -175,6 +175,7 @@ const PlaylistVideos: React.FC = () => {
             handleClose={onEditMenuClose}
           />
           <ImportDialog
+            setOpen={setImportDialogOpen}
             open={importDialogOpen}
             handleClose={closeImportDialog}
             parseType="video"

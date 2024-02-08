@@ -7,11 +7,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import React from "react";
-import ImportDialog from "../components/ImportDialog";
-import { t } from "i18next";
 import { useTranslation } from "react-i18next";
-import { Playlist, Video } from "../plugintypes";
 import { useNavigate } from "react-router-dom";
+import ImportDialog from "../components/ImportDialog";
+import { Playlist, Video } from "../plugintypes";
 
 const GlobalOptions: React.FC = () => {
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
@@ -54,6 +53,7 @@ const GlobalOptions: React.FC = () => {
         </MenuItem>
       </Menu>
       <ImportDialog
+        setOpen={setImportDialogOpen}
         title={t("openVideoUrl")}
         open={importDialogOpen}
         handleClose={closeImportDialog}
