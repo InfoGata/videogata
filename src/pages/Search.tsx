@@ -1,43 +1,20 @@
-import { AppBar, Box, Tab, Tabs, Typography } from "@mui/material";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router-dom";
-import usePlugins from "../hooks/usePlugins";
-import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
-import { SearchResultType } from "../types";
 import ChannelSearchResults from "../components/ChannelSearchResults";
 import PlaylistSearchResults from "../components/PlaylistSearchResults";
 import SelectPlugin from "../components/SelectPlugin";
 import Spinner from "../components/Spinner";
 import VideoSearchResults from "../components/VideoSearchResults";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-const TabPanel: React.FC<TabPanelProps> = (props) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`wrapped-tabpanel-${index}`}
-      aria-labelledby={`wrapped-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-};
+import usePlugins from "../hooks/usePlugins";
+import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
+import { SearchResultType } from "../types";
 
 const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
-  const [tabValue, setTabValue] = React.useState<string | boolean>(false);
+  const [tabValue, setTabValue] = React.useState("videos");
   const { plugins } = usePlugins();
   const { t } = useTranslation();
   const location = useLocation();
@@ -81,10 +58,7 @@ const Search: React.FC = () => {
   const channelList = query?.data?.channels?.items || [];
   const playlistList = query?.data?.playlists?.items || [];
 
-  const handleChange = (
-    _event: React.ChangeEvent<unknown>,
-    newValue: string
-  ) => {
+  const handleChange = (newValue: string) => {
     setTabValue(newValue);
   };
 
@@ -96,55 +70,55 @@ const Search: React.FC = () => {
         setPluginId={setPluginId}
         methodName="onSearchAll"
       />
-      <AppBar position="static">
-        <Tabs
-          value={tabValue}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
+      <Tabs value={tabValue} onValueChange={handleChange}>
+        <TabsList className="flex w-full justify-around">
           {videoList.length > 0 ? (
-            <Tab label={t("videos")} value={SearchResultType.Videos} />
+            <TabsTrigger value={SearchResultType.Videos} className="flex-1">
+              {t("videos")}
+            </TabsTrigger>
           ) : null}
           {channelList.length > 0 ? (
-            <Tab label={t("channels")} value={SearchResultType.Channels} />
+            <TabsTrigger value={SearchResultType.Channels} className="flex-1">
+              {t("channels")}
+            </TabsTrigger>
           ) : null}
           {playlistList.length > 0 ? (
-            <Tab label={t("playlists")} value={SearchResultType.Playlists} />
+            <TabsTrigger value={SearchResultType.Playlists} className="flex-1">
+              {t("playlists")}
+            </TabsTrigger>
           ) : null}
-        </Tabs>
-      </AppBar>
-      <TabPanel value={tabValue} index={SearchResultType.Videos}>
-        {!!query.data?.videos && (
-          <VideoSearchResults
-            pluginId={pluginId}
-            searchQuery={searchQuery}
-            initialPage={query.data?.videos?.pageInfo}
-            initialFilter={query.data?.videos?.filterInfo}
-          />
-        )}
-      </TabPanel>
-      <TabPanel value={tabValue} index={SearchResultType.Channels}>
-        {!!query.data?.channels && (
-          <ChannelSearchResults
-            pluginId={pluginId}
-            searchQuery={searchQuery}
-            initialPage={query.data?.channels?.pageInfo}
-            initialFilter={query.data?.channels?.filterInfo}
-          />
-        )}
-      </TabPanel>
-      <TabPanel value={tabValue} index={SearchResultType.Playlists}>
-        {!!query.data?.playlists && (
-          <PlaylistSearchResults
-            pluginId={pluginId}
-            searchQuery={searchQuery}
-            initialPage={query.data?.playlists?.pageInfo}
-            initialFilter={query.data?.playlists?.filterInfo}
-          />
-        )}
-      </TabPanel>
+        </TabsList>
+        <TabsContent value={SearchResultType.Videos}>
+          {!!query.data?.videos && (
+            <VideoSearchResults
+              pluginId={pluginId}
+              searchQuery={searchQuery}
+              initialPage={query.data?.videos?.pageInfo}
+              initialFilter={query.data?.videos?.filterInfo}
+            />
+          )}
+        </TabsContent>
+        <TabsContent value={SearchResultType.Channels}>
+          {!!query.data?.channels && (
+            <ChannelSearchResults
+              pluginId={pluginId}
+              searchQuery={searchQuery}
+              initialPage={query.data?.channels?.pageInfo}
+              initialFilter={query.data?.channels?.filterInfo}
+            />
+          )}
+        </TabsContent>
+        <TabsContent value={SearchResultType.Playlists}>
+          {!!query.data?.playlists && (
+            <PlaylistSearchResults
+              pluginId={pluginId}
+              searchQuery={searchQuery}
+              initialPage={query.data?.playlists?.pageInfo}
+              initialFilter={query.data?.playlists?.filterInfo}
+            />
+          )}
+        </TabsContent>
+      </Tabs>
     </>
   );
 };
