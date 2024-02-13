@@ -36,7 +36,7 @@ const FavoriteChannels: React.FC = () => {
   }
 
   const channelCards = channels.map((c) => {
-    return <ChannelListItem channel={c} />;
+    return <ChannelListItem channel={c} key={c.id} />;
   });
 
   return (

@@ -1,13 +1,12 @@
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
-import ChannelSearchResult from "./ChannelSearchResult";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
 import Spinner from "./Spinner";
+import ChannelListItem from "./ChannelListItem";
 
 interface PlaylistSearchResultsProps {
   pluginId: string;
@@ -67,13 +66,9 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     { staleTime: 60 * 1000 }
   );
 
-  const channelList = query.data?.map((channel) => (
-    <ChannelSearchResult
-      key={channel.apiId}
-      channel={channel}
-      pluginId={pluginId}
-    />
-  ));
+  const channelCards = query.data?.map((c) => {
+    return <ChannelListItem channel={c} key={c.apiId} />;
+  });
 
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);
@@ -86,7 +81,7 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{channelList}</List>
+      <div>{channelCards}</div>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

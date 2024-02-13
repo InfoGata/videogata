@@ -17,20 +17,24 @@ const DropdownItem: React.FC<DropdownItemProps> = (props) => {
       return <Link to={internalPath}>{props.children}</Link>;
     }
     if (url) {
-      return <a href={url} target="_blank" />;
+      return (
+        <a href={url} target="_blank">
+          {props.children}
+        </a>
+      );
     }
     return <>{props.children}</>;
   };
 
   const onClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (action) {
-      e.stopPropagation();
       action();
     }
   };
 
   return (
-    <DropdownMenuItem onClick={onClick}>
+    <DropdownMenuItem onClick={onClick} className="cursor-pointer">
       <InnerComponent>
         {icon}
         <span>{title}</span>

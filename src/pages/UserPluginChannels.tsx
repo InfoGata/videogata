@@ -1,8 +1,7 @@
-import { List } from "@mui/material";
+import ChannelListItem from "@/components/ChannelListItem";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import ChannelSearchResult from "../components/ChannelSearchResult";
 import Pager from "../components/Pager";
 import Spinner from "../components/Spinner";
 import usePagination from "../hooks/usePagination";
@@ -31,18 +30,14 @@ const UserPluginChannels: React.FC = () => {
     enabled: pluginsLoaded && !!plugin,
   });
 
+  const channelCards = query.data?.map((c) => {
+    return <ChannelListItem channel={c} key={c.id} />;
+  });
+
   return (
     <>
       <Spinner open={query.isLoading} />
-      <List>
-        {query.data?.map((channel) => (
-          <ChannelSearchResult
-            key={channel.apiId}
-            channel={channel}
-            pluginId={pluginId || ""}
-          />
-        ))}
-      </List>
+      <div>{channelCards}</div>
       <Pager
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}
