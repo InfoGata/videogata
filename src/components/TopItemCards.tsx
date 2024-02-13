@@ -40,7 +40,7 @@ const TopItemCards: React.FC = () => {
         {query.isLoading
           ? Array(8)
               .fill(true)
-              .map(() => <VideoCardSkeleton />)
+              .map((_, i) => <VideoCardSkeleton key={i} />)
           : videoCards}
       </div>
     </>
