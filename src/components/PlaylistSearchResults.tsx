@@ -1,4 +1,3 @@
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
@@ -6,7 +5,7 @@ import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
-import PlaylistSearchResult from "./PlaylistSearchResult";
+import PlaylistListItem from "./PlaylistListItem";
 import Spinner from "./Spinner";
 
 interface PlaylistSearchResultsProps {
@@ -69,11 +68,7 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
   );
 
   const playlistList = query.data?.map((playlist) => (
-    <PlaylistSearchResult
-      key={playlist.apiId}
-      playlist={playlist}
-      pluginId={pluginId}
-    />
+    <PlaylistListItem key={playlist.apiId} playlist={playlist} />
   ));
 
   const applyFilters = (filters: FilterInfo) => {
@@ -87,7 +82,7 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{playlistList}</List>
+      <div>{playlistList}</div>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

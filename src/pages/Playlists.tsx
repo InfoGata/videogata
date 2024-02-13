@@ -72,6 +72,7 @@ const Playlists: React.FC = () => {
           <PlaylistListItem
             key={p.id}
             playlist={p}
+            noFavorite={true}
             dropdownItems={[
               {
                 icon: <Trash />,

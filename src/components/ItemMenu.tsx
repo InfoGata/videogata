@@ -18,6 +18,7 @@ import { FaRegStar, FaStar } from "react-icons/fa6";
 interface Props {
   itemType: ItemMenuType;
   dropdownItems?: DropdownItemProps[];
+  noFavorite?: boolean;
 }
 
 const getTable = (item: ItemMenuType): Dexie.Table => {
@@ -32,7 +33,7 @@ const getTable = (item: ItemMenuType): Dexie.Table => {
 };
 
 const VideoMenu: React.FC<Props> = (props) => {
-  const { itemType, dropdownItems } = props;
+  const { itemType, dropdownItems, noFavorite } = props;
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -52,7 +53,7 @@ const VideoMenu: React.FC<Props> = (props) => {
   };
 
   const onOpenChange = async (open: boolean) => {
-    if (open) {
+    if (!noFavorite && open) {
       const table = getTable(itemType);
       if (itemType.item.pluginId && itemType.item.apiId) {
         const hasFavorite = await table.get({
@@ -70,11 +71,13 @@ const VideoMenu: React.FC<Props> = (props) => {
   };
 
   const items: (DropdownItemProps | undefined)[] = [
-    {
-      title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
-      icon: isFavorited ? <FaRegStar /> : <FaStar />,
-      action: isFavorited ? removeFavorite : onFavorite,
-    },
+    !noFavorite
+      ? {
+          title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
+          icon: isFavorited ? <FaRegStar /> : <FaStar />,
+          action: isFavorited ? removeFavorite : onFavorite,
+        }
+      : undefined,
     itemType.item.originalUrl
       ? {
           title: t("originalUrl"),
