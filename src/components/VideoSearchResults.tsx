@@ -2,12 +2,12 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
-import useVideoMenu from "../hooks/useVideoMenu";
 import { FilterInfo, PageInfo } from "../plugintypes";
 import Filtering from "./Filtering";
+import HomeVideoCard from "./HomeVideoCard";
 import Pager from "./Pager";
 import Spinner from "./Spinner";
-import VideoCards from "./VideoCards";
+import VideoContainer from "./VideoContainer";
 
 interface VideoSearchResultsProps {
   pluginId: string;
@@ -20,7 +20,6 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
   const { pluginId, searchQuery, initialPage, initialFilter } = props;
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
-  const { openMenu } = useVideoMenu();
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
   );
@@ -73,13 +72,17 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
     resetPage();
   };
 
+  const videoCards = query.data?.map((v) => {
+    return <HomeVideoCard key={v.apiId} video={v} />;
+  });
+
   return (
     <>
       <Spinner open={query.isLoading} />
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <VideoCards videos={query.data || []} openMenu={openMenu} />
+      <VideoContainer>{videoCards}</VideoContainer>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

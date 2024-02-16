@@ -1,16 +1,16 @@
+import HomeVideoCard from "@/components/HomeVideoCard";
+import VideoContainer from "@/components/VideoContainer";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import useVideoMenu from "../hooks/useVideoMenu";
-import { Channel, PageInfo } from "../plugintypes";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Pager from "../components/Pager";
 import PlaylistInfoCard from "../components/PlaylistInfoCard";
 import Spinner from "../components/Spinner";
-import VideoCards from "../components/VideoCards";
+import useFindPlugin from "../hooks/useFindPlugin";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import { Channel, PageInfo } from "../plugintypes";
 
 const ChannelPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -24,7 +24,6 @@ const ChannelPage: React.FC = () => {
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const [channel, setChannel] = React.useState<Channel | null>(state);
-  const { openMenu } = useVideoMenu();
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
     pluginId,
@@ -56,6 +55,10 @@ const ChannelPage: React.FC = () => {
     }
   );
 
+  const videoCards = query.data?.map((v) => {
+    return <HomeVideoCard key={v.apiId} video={v} />;
+  });
+
   return (
     <>
       <Spinner open={query.isLoading || isLoading} />
@@ -68,7 +71,7 @@ const ChannelPage: React.FC = () => {
           channelApiId={channel.apiId}
         />
       )}
-      <VideoCards videos={query?.data || []} openMenu={openMenu} />
+      <VideoContainer>{videoCards}</VideoContainer>
       <Pager
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}

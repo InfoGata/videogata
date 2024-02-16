@@ -5,6 +5,7 @@ import usePlugins from "../hooks/usePlugins";
 import HomeVideoCard from "./HomeVideoCard";
 import SelectPlugin from "./SelectPlugin";
 import VideoCardSkeleton from "./VideoCardSkeleton";
+import VideoContainer from "./VideoContainer";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
@@ -36,13 +37,13 @@ const TopItemCards: React.FC = () => {
           methodName="onGetTopItems"
         />
       </div>
-      <div className="grid grid-cols-4 gap-5 mt-4">
+      <VideoContainer>
         {query.isLoading
           ? Array(8)
               .fill(true)
               .map((_, i) => <VideoCardSkeleton key={i} />)
           : videoCards}
-      </div>
+      </VideoContainer>
     </>
   );
 };

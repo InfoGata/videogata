@@ -11,6 +11,7 @@ import PlaylistMenu from "../components/PlaylistMenu";
 import { db } from "../database";
 import { Playlist, Video } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
+import VideoContainer from "@/components/VideoContainer";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());
@@ -68,7 +69,7 @@ const FavoriteVideos: React.FC = () => {
       <Button size="icon" variant="ghost" onClick={openFavoritesMenu}>
         <MoreHorizontalIcon fontSize="large" />
       </Button>
-      <div className="grid grid-cols-4 gap-5">{videoCards}</div>
+      <VideoContainer>{videoCards}</VideoContainer>
       <ImportDialog
         setOpen={setImportDialogOpen}
         open={importDialogOpen}
