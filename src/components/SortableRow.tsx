@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { TableRow } from "@mui/material";
 import React from "react";
+import { TableRow } from "./ui/table";
 
 interface SortableItemProps {
   id: string;
@@ -23,9 +23,8 @@ const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
 
   return (
     <TableRow
-      hover={true}
       onClick={onClick}
-      sx={{
+      style={{
         position: "relative",
         zIndex: isDragging ? 1 : undefined,
         transform: CSS.Translate.toString(transform),

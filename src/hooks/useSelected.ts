@@ -1,16 +1,17 @@
 import React from "react";
 import { Video } from "../plugintypes";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 const useSelected = (videos: Video[]) => {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const lastSelected = React.useRef<number | null>(null);
 
-  const onSelect = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-    const index = Number(e.target.dataset.index);
+  const onSelect = (e: React.MouseEvent, id: string, index: number) => {
+    const isChecked = !selected.has(id);
     if (
       lastSelected.current !== null &&
       (e.nativeEvent as any).shiftKey &&
-      e.target.checked
+      isChecked
     ) {
       setSelected((prev) => {
         const next = new Set(prev);
@@ -23,15 +24,15 @@ const useSelected = (videos: Video[]) => {
     } else {
       setSelected((prev) => {
         const next = new Set(prev);
-        e.target.checked ? next.add(id) : next.delete(id);
+        isChecked ? next.add(id) : next.delete(id);
         return next;
       });
     }
-    lastSelected.current = e.target.checked ? index : null;
+    lastSelected.current = isChecked ? index : null;
   };
 
-  const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
+  const onSelectAll = (state: CheckedState) => {
+    if (state) {
       setSelected(new Set(videos.map((v) => v.id || "")));
       return;
     }

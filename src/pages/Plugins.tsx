@@ -98,7 +98,6 @@ const Plugins: React.FC = () => {
         open={openUrlDialog}
         setOpen={setOpenUrlDialog}
         handleConfirm={onConfirmUrlDialog}
-        handleClose={onCloseUrlDialog}
       />
     </div>
   );

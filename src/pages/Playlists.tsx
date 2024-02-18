@@ -8,10 +8,11 @@ import { Link } from "react-router-dom";
 import { PluginFrameContainer } from "../PluginsContext";
 import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
-import { Playlist, PlaylistInfo, Video } from "../plugintypes";
+import { Playlist, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
+import { ItemMenuType } from "@/types";
 
 const Playlists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -49,8 +50,10 @@ const Playlists: React.FC = () => {
     setPlugins();
   }, [plugins]);
 
-  const onDelete = (playlist: PlaylistInfo) => {
-    dispatch(deletePlaylist(playlist));
+  const onDelete = (item?: ItemMenuType) => {
+    if (item?.type === "playlist") {
+      dispatch(deletePlaylist(item.item));
+    }
   };
 
   const onImport = (item: Playlist | Video[]) => {
@@ -77,9 +80,7 @@ const Playlists: React.FC = () => {
               {
                 icon: <Trash />,
                 title: t("delete"),
-                action: () => {
-                  onDelete(p);
-                },
+                action: onDelete,
               },
             ]}
           />
@@ -88,7 +89,6 @@ const Playlists: React.FC = () => {
       <ImportDialog
         setOpen={setOpenImportDialog}
         open={openImportDialog}
-        handleClose={onCloseImportDialog}
         parseType="playlist"
         onSuccess={onImport}
       />

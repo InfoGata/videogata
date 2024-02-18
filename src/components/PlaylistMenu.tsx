@@ -1,26 +1,24 @@
-import { ArrowRight, PlaylistAdd } from "@mui/icons-material";
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { ListPlusIcon, MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PlaylistInfo, Video } from "../plugintypes";
 import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import { NestedMenuItem } from "mui-nested-menu";
+import DropdownItem, { DropdownItemProps } from "./DropdownItem";
+import PlaylistSubMenu from "./PlaylistSubMenu";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
   selected?: Set<string>;
   videoList: Video[];
-  menuItems?: JSX.Element[];
-  selectedMenuItems?: JSX.Element[];
-  anchorElement: HTMLElement | null;
-  onClose: () => void;
+  dropdownItems?: DropdownItemProps[];
+  selectedDropdownItems?: DropdownItemProps[];
 }
 
 const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
@@ -28,10 +26,8 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     playlists,
     selected,
     videoList,
-    selectedMenuItems,
-    anchorElement,
-    onClose,
-    menuItems,
+    dropdownItems,
+    selectedDropdownItems,
   } = props;
   const { t } = useTranslation();
 
@@ -39,7 +35,6 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     Video[]
   >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const selectedVideos = selected
     ? videoList.filter((t) => selected.has(t.id ?? ""))
@@ -48,83 +43,69 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
   const addSelectedToNewPlaylist = () => {
     setPlaylistDialogVideos(selectedVideos);
     setPlaylistDialogOpen(true);
-    onClose();
   };
 
   const addToNewPlaylist = () => {
     setPlaylistDialogVideos(videoList);
     setPlaylistDialogOpen(true);
-    onClose();
   };
 
+  const items: (DropdownItemProps | undefined)[] = [
+    ...(dropdownItems || []),
+    {
+      title: t("addVideosToNewPlaylist"),
+      icon: <ListPlusIcon />,
+      action: addToNewPlaylist,
+    },
+  ];
+  const definedItems = items.filter((i): i is DropdownItemProps => !!i);
+
+  const selectedItems: (DropdownItemProps | undefined)[] = [
+    ...(selectedDropdownItems || []),
+    {
+      title: t("addSelectedToNewPlaylist"),
+      icon: <ListPlusIcon />,
+      action: addSelectedToNewPlaylist,
+    },
+  ];
+  const definedSelectedItems = selectedItems.filter(
+    (i): i is DropdownItemProps => !!i
+  );
   return (
     <>
-      <Menu
-        open={Boolean(anchorElement)}
-        onClose={onClose}
-        anchorEl={anchorElement}
-        onClick={onClose}
-      >
-        {menuItems}
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary={t("addVideosToNewPlaylist")} />
-        </MenuItem>
-        {playlists.length > 0 && (
-          <NestedMenuItem
-            parentMenuOpen={Boolean(anchorElement)}
-            label={t("addVideosToPlaylist")}
-            rightIcon={<ArrowRight />}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {playlists.map((p) => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                videos={videoList}
-                closeMenu={onClose}
-                title={p.name ?? ""}
-              />
-            ))}
-          </NestedMenuItem>
-        )}
-        {selected &&
-          selected.size > 0 && [
-            <Divider key="divider" />,
-            selectedMenuItems,
-            <MenuItem onClick={addSelectedToNewPlaylist} key="selected">
-              <ListItemIcon>
-                <PlaylistAdd />
-              </ListItemIcon>
-              <ListItemText primary={t("addSelectedToNewPlaylist")} />
-            </MenuItem>,
-            playlists.length > 0 && (
-              <NestedMenuItem
-                key="selectednested"
-                parentMenuOpen={Boolean(anchorElement)}
-                label={t("addSelectedToPlaylist")}
-                rightIcon={<ArrowRight />}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {playlists.map((p) => (
-                  <PlaylistMenuItem
-                    key={p.id}
-                    playlist={p}
-                    videos={selectedVideos}
-                    closeMenu={onClose}
-                    title={p.name ?? ""}
-                  />
-                ))}
-              </NestedMenuItem>
-            ),
-          ]}
-      </Menu>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <MoreHorizontalIcon fontSize="large" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right">
+          {definedItems.map((i) => (
+            <DropdownItem key={i.title} {...i} />
+          ))}
+          <PlaylistSubMenu
+            title={t("addToPlaylist")}
+            playlists={playlists}
+            videos={videoList}
+          />
+          {selected &&
+            selected.size > 0 && [
+              <DropdownMenuSeparator />,
+              ...definedSelectedItems.map((i) => (
+                <DropdownItem key={i.title} {...i} />
+              )),
+              <PlaylistSubMenu
+                title={t("addSelectedToPlaylist")}
+                playlists={playlists}
+                videos={selectedVideos}
+              />,
+            ]}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <AddPlaylistDialog
         videos={playlistDialogVideos}
         open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
+        setOpen={setPlaylistDialogOpen}
       />
     </>
   );

@@ -9,11 +9,10 @@ import { db } from "@/database";
 import { ItemMenuType } from "@/types";
 import { Link as LinkIcon } from "@mui/icons-material";
 import Dexie from "dexie";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, StarIcon, StarOffIcon } from "lucide-react";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { FaRegStar, FaStar } from "react-icons/fa6";
 
 interface Props {
   itemType: ItemMenuType;
@@ -74,7 +73,7 @@ const VideoMenu: React.FC<Props> = (props) => {
     !noFavorite
       ? {
           title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
-          icon: isFavorited ? <FaRegStar /> : <FaStar />,
+          icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
           action: isFavorited ? removeFavorite : onFavorite,
         }
       : undefined,
@@ -99,7 +98,7 @@ const VideoMenu: React.FC<Props> = (props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {definedItems.map((i) => (
-            <DropdownItem key={i.title} {...i}></DropdownItem>
+            <DropdownItem key={i.title} {...i} item={itemType}></DropdownItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>

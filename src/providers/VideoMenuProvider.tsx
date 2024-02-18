@@ -25,7 +25,6 @@ const VideoMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [menuVideo, setMenuVideo] = React.useState<Video>();
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const [isFavorited, setIsFavorited] = React.useState(false);
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
@@ -139,8 +138,8 @@ const VideoMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
       </Menu>
       <AddPlaylistDialog
         videos={menuVideo ? [menuVideo] : []}
-        handleClose={closePlaylistDialog}
         open={playlistDialogOpen}
+        setOpen={setPlaylistDialogOpen}
       />
     </VideoMenuContext.Provider>
   );

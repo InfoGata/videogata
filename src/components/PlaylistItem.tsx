@@ -1,46 +1,30 @@
-import { MoreHoriz } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Checkbox,
-  IconButton,
-  Link,
-  TableCell,
-  Typography,
-} from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
 import {
   formatSeconds,
   getThumbnailImage,
   searchThumbnailSize,
 } from "../utils";
+import VideoMenu from "./VideoMenu";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Checkbox } from "./ui/checkbox";
+import { TableCell } from "./ui/table";
+import { DropdownItemProps } from "./DropdownItem";
 
 interface PlaylistItemsProps {
   video: Video;
-  showDuration: boolean;
   isSelected?: (id: string) => boolean;
-  onSelectClick?: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => void;
-  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, video: Video) => void;
+  onSelectClick?: (event: React.MouseEvent, id: string, index: number) => void;
   index?: number;
   playlistId?: string;
+  menuItems?: DropdownItemProps[];
 }
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
-  const {
-    video,
-    showDuration,
-    openMenu,
-    onSelectClick,
-    isSelected,
-    index,
-    playlistId,
-  } = props;
+  const { video, onSelectClick, isSelected, index, playlistId, menuItems } =
+    props;
   const sanitizer = DOMPurify.sanitize;
 
   let videoUrl = `/plugins/${video.pluginId}/videos/${video.apiId}`;
@@ -48,91 +32,61 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
     ? `${videoUrl}?playlistId=${playlistId}&videoId=${video.id}`
     : videoUrl;
 
-  const openVideoMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (openMenu) {
-      openMenu(event, video);
-    }
-  };
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (onSelectClick) {
-      onSelectClick(event, video.id || "");
-    }
-  };
-
-  const stopPropagation = (e: React.MouseEvent) => {
+  const onCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (onSelectClick && index !== undefined) {
+      onSelectClick(e, video.id || "", index);
+    }
   };
 
   const image = getThumbnailImage(video.images, searchThumbnailSize);
+
   return (
     <>
-      <TableCell padding="none">
+      <TableCell>
         {isSelected && (
           <Checkbox
-            color="primary"
             checked={isSelected(video.id || "")}
-            onChange={onChange}
-            onClick={stopPropagation}
-            size="small"
-            inputProps={
-              {
-                "data-index": index,
-              } as any
-            }
+            onClick={onCheckboxClick}
           />
         )}
       </TableCell>
       <TableCell>
-        <Box
-          sx={{
-            display: "flex",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          <Avatar alt={video.title} src={image} style={{ borderRadius: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Link
-              component={RouterLink}
-              to={videoUrl}
-              onClick={stopPropagation}
-            >
-              <Typography
-                noWrap={true}
+        <div className="flex">
+          <Avatar className="rounded-none">
+            <AvatarImage src={image} />
+          </Avatar>
+          <div className="min-w-0">
+            <Link to={videoUrl} onClick={onCheckboxClick}>
+              <p
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
                 title={video.title}
-                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                className="truncate"
               />
             </Link>
             {video.channelApiId ? (
               <Link
-                component={RouterLink}
                 to={`/plugins/${video.pluginId}/channels/${video.channelApiId}`}
-                onClick={stopPropagation}
+                onClick={onCheckboxClick}
               >
                 {video.channelName}
               </Link>
             ) : (
-              <Typography
-                variant="body2"
-                noWrap={true}
+              <p
+                className="truncate"
                 dangerouslySetInnerHTML={{
                   __html: sanitizer(video.channelName || ""),
                 }}
-                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
               />
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </TableCell>
-      {showDuration && <TableCell>{formatSeconds(video.duration)}</TableCell>}
-      <TableCell align="right" padding="checkbox">
-        {openMenu && (
-          <IconButton aria-label="options" size="small" onClick={openVideoMenu}>
-            <MoreHoriz />
-          </IconButton>
-        )}
+      <TableCell className="hidden md:table-cell">
+        {formatSeconds(video.duration)}
+      </TableCell>
+      <TableCell align="right">
+        <VideoMenu video={video} isListVideo={true} dropdownItems={menuItems} />
       </TableCell>
     </>
   );

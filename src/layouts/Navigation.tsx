@@ -32,9 +32,6 @@ const Navigation: React.FC = () => {
   const openDialog = () => {
     setDialogOpen(true);
   };
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
 
   const playlistItems = playlists.map((p) => (
     <NavigationPlaylistItem playlist={p} key={p.id} />
@@ -65,7 +62,7 @@ const Navigation: React.FC = () => {
         </ListItemButton>
       </ListItem>
       {navbarOpen ? playlistItems : null}
-      <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
+      <AddPlaylistDialog open={dialogOpen} setOpen={setDialogOpen} />
     </List>
   );
 };

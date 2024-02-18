@@ -1,14 +1,9 @@
 import AddPlaylistDialog from "@/components/AddPlaylistDialog";
 import DropdownItem, { DropdownItemProps } from "@/components/DropdownItem";
-import DropdownPlaylistMenuItem from "@/components/DropdownPlaylistMenuItem";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { db } from "@/database";
@@ -16,22 +11,27 @@ import { cn } from "@/lib/utils";
 import { Video } from "@/plugintypes";
 import { useAppSelector } from "@/store/hooks";
 import {
-  Link as LinkIcon,
-  PlaylistAdd,
-  Subscriptions,
-} from "@mui/icons-material";
-import { MoreVertical } from "lucide-react";
+  MoreVertical,
+  MoreHorizontal,
+  StarIcon,
+  StarOffIcon,
+  ListPlusIcon,
+  ExternalLink,
+} from "lucide-react";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { FaRegStar, FaStar } from "react-icons/fa6";
+import { MdSubscriptions } from "react-icons/md";
+import PlaylistSubMenu from "./PlaylistSubMenu";
 
 interface Props {
   video: Video;
+  isListVideo?: boolean;
+  dropdownItems?: DropdownItemProps[];
 }
 
 const VideoMenu: React.FC<Props> = (props) => {
-  const { video } = props;
+  const { video, isListVideo, dropdownItems } = props;
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -40,7 +40,6 @@ const VideoMenu: React.FC<Props> = (props) => {
   const addVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
   };
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const playlists = useAppSelector((state) => state.playlist.playlists);
 
   const favoriteTrack = async () => {
@@ -60,26 +59,27 @@ const VideoMenu: React.FC<Props> = (props) => {
   const items: (DropdownItemProps | undefined)[] = [
     {
       title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
-      icon: isFavorited ? <FaRegStar /> : <FaStar />,
+      icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
       action: isFavorited ? removeFavorite : favoriteTrack,
     },
     video.channelApiId
       ? {
           title: t("goToChannel"),
-          icon: <Subscriptions />,
+          icon: <MdSubscriptions />,
           internalPath: `/plugins/${video.pluginId}/channels/${video.channelApiId}`,
         }
       : undefined,
     video.originalUrl
       ? {
           title: t("originalUrl"),
-          icon: <LinkIcon />,
+          icon: <ExternalLink />,
           url: video.originalUrl,
         }
       : undefined,
+    ...(dropdownItems || []),
     {
       title: t("addToNewPlaylist"),
-      icon: <PlaylistAdd />,
+      icon: <ListPlusIcon />,
       action: addVideoToNewPlaylist,
     },
   ];
@@ -110,39 +110,36 @@ const VideoMenu: React.FC<Props> = (props) => {
           <Button
             variant="ghost"
             size="icon"
-            className={cn("invisible group-hover:visible", open && "visible")}
+            className={cn(
+              !isListVideo && "invisible group-hover:visible",
+              open && "visible"
+            )}
           >
-            <MoreVertical className="h-4 w-4" />
+            {isListVideo ? (
+              <MoreHorizontal className="h-4 w-4" />
+            ) : (
+              <MoreVertical className="h-4 w-4" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {definedItems.map((i) => (
-            <DropdownItem key={i.title} {...i}></DropdownItem>
+            <DropdownItem
+              key={i.title}
+              {...i}
+              item={{ type: "video", item: video }}
+            />
           ))}
-          {playlists.length > 0 && (
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <PlaylistAdd />
-                <span>{t("addToPlaylist")}</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  {playlists.map((p) => (
-                    <DropdownPlaylistMenuItem
-                      key={p.id}
-                      playlist={p}
-                      videos={[video]}
-                    />
-                  ))}
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-          )}
+          <PlaylistSubMenu
+            title={t("addToPlaylist")}
+            playlists={playlists}
+            videos={[video]}
+          />
         </DropdownMenuContent>
       </DropdownMenu>
       <AddPlaylistDialog
         videos={[video]}
-        handleClose={closePlaylistDialog}
+        setOpen={setPlaylistDialogOpen}
         open={playlistDialogOpen}
       />
     </>

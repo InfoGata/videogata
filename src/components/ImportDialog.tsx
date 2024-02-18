@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -19,7 +18,6 @@ import { Input } from "./ui/input";
 interface ImportDialogProps {
   open: boolean;
   title?: string;
-  handleClose: () => void;
   parseType: ParseUrlType;
   onSuccess: (item: Video[] | Playlist) => void;
   setOpen: (open: boolean) => void;
@@ -51,11 +49,11 @@ const lookupUrl = async (
 };
 
 const ImportDialog: React.FC<ImportDialogProps> = (props) => {
-  const { open, handleClose, parseType, onSuccess, title, setOpen } = props;
+  const { open, parseType, onSuccess, title, setOpen } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { plugins } = usePlugins();
   const [url, setUrl] = React.useState("");
-  const formId = nanoid();
+  const formId = React.useId();
 
   const [parserPlugins, setParserPlugins] = React.useState<
     PluginFrameContainer[]
@@ -88,7 +86,7 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
       enqueueSnackbar(t("noImporters"), { variant: "error" });
     }
     setUrl("");
-    handleClose();
+    setOpen(false);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +121,7 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
           )}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={() => setOpen(false)}>
             {t("cancel")}
           </Button>
           <Button variant="outline" type="submit" form={formId}>

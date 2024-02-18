@@ -18,6 +18,7 @@ import * as Sentry from "@sentry/browser";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
+import { IconContext } from "react-icons";
 
 Sentry.init({
   dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
@@ -39,7 +40,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </Helmet>
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
-              <RouterProvider router={router} />
+              <IconContext.Provider value={{ className: "w-5 h-5" }}>
+                <RouterProvider router={router} />
+              </IconContext.Provider>
             </ThemeProvider>
           </StyledEngineProvider>
         </HelmetProvider>

@@ -1,31 +1,25 @@
-import { Delete, Edit, MoreHoriz, UploadFile } from "@mui/icons-material";
-import {
-  Grid,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { DropdownItemProps } from "@/components/DropdownItem";
+import { Button } from "@/components/ui/button";
+import { ItemMenuType } from "@/types";
 import { useLiveQuery } from "dexie-react-hooks";
+import { FileUpIcon, PencilIcon, Trash, TrashIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { db } from "../database";
-import useSelected from "../hooks/useSelected";
-import useVideoMenu from "../hooks/useVideoMenu";
-import { Playlist, Video } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addPlaylistVideos,
-  setPlaylistVideos,
-} from "../store/reducers/playlistReducer";
 import EditPlaylistDialog from "../components/EditPlaylistDialog";
 import ImportDialog from "../components/ImportDialog";
 import PlaylistMenu from "../components/PlaylistMenu";
 import SelectVideoListPlugin from "../components/SelectVideoListPlugin";
 import Spinner from "../components/Spinner";
 import VideoList from "../components/VideoList";
+import { db } from "../database";
+import useSelected from "../hooks/useSelected";
+import { Playlist, Video } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  addPlaylistVideos,
+  setPlaylistVideos,
+} from "../store/reducers/playlistReducer";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -49,57 +43,13 @@ const PlaylistVideos: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
-    React.useState<null | HTMLElement>(null);
-
-  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setQueueMenuAnchorEl(event.currentTarget);
-  };
-  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
-
-  const getListItems = (video?: Video) => {
-    const deleteClick = async () => {
-      if (playlist && video) {
-        const newVideolist = videos.filter((t) => t.id !== video.id);
-        dispatch(setPlaylistVideos(playlist, newVideolist));
-      }
-    };
-
-    return [
-      <MenuItem onClick={deleteClick} key="delete">
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        <ListItemText primary={t("delete")} />
-      </MenuItem>,
-    ];
-  };
 
   const clearSelectedItems = async () => {
     if (playlist) {
       const newVideoList = videos.filter((t) => !selected.has(t.id ?? ""));
       dispatch(setPlaylistVideos(playlist, newVideoList));
     }
-    closeQueueMenu();
-  };
-
-  const selectedMenuItems = [
-    <MenuItem onClick={clearSelectedItems} key="clear">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary={t("deleteSelectedVideos")} />
-    </MenuItem>,
-  ];
-
-  const { openMenu } = useVideoMenu({
-    playlists,
-    getListItems,
-  });
-
-  const onEditMenuClose = () => {
-    setOpenEditMenu(false);
   };
 
   const onDragOver = (newVideoList: Video[]) => {
@@ -115,24 +65,39 @@ const PlaylistVideos: React.FC = () => {
   const openImportDialog = () => {
     setImportDialogOpen(true);
   };
-  const closeImportDialog = () => {
-    setImportDialogOpen(false);
-  };
 
   const onImport = (item: Video[] | Playlist) => {
     if (playlist && Array.isArray(item)) {
       dispatch(addPlaylistVideos(playlist, item));
-      closeImportDialog();
+      setImportDialogOpen(false);
     }
   };
 
-  const menuItems = [
-    <MenuItem onClick={openImportDialog} key="import">
-      <ListItemIcon>
-        <UploadFile />
-      </ListItemIcon>
-      <ListItemText primary={t("importVideoByUrl")} />
-    </MenuItem>,
+  const dropdownItems: DropdownItemProps[] = [
+    {
+      title: t("importVideoByUrl"),
+      icon: <FileUpIcon />,
+      action: openImportDialog,
+    },
+  ];
+
+  const selectedDropdownItems: DropdownItemProps[] = [
+    {
+      title: t("deleteSelectedVideos"),
+      icon: <TrashIcon />,
+      action: clearSelectedItems,
+    },
+  ];
+
+  const onDelete = (item?: ItemMenuType) => {
+    if (playlist && item?.type === "video") {
+      const newVideolist = videos.filter((t) => t.id !== item.item.id);
+      dispatch(setPlaylistVideos(playlist, newVideolist));
+    }
+  };
+
+  const videoMenuItems: DropdownItemProps[] = [
+    { title: t("delete"), icon: <Trash />, action: onDelete },
   ];
 
   return (
@@ -140,50 +105,44 @@ const PlaylistVideos: React.FC = () => {
       <Spinner open={playlist === false} />
       {playlist ? (
         <>
-          <Grid sx={{ display: "flex" }}>
-            <Typography variant="h3">{playlistInfo?.name}</Typography>
-            <IconButton onClick={onEditMenuOpen}>
-              <Edit />
-            </IconButton>
-          </Grid>
-          <IconButton onClick={openQueueMenu}>
-            <MoreHoriz fontSize="large" />
-          </IconButton>
+          <div className="flex">
+            <h3 className="text-4xl font-bold">{playlistInfo?.name}</h3>
+            <Button variant="ghost" size="icon" onClick={onEditMenuOpen}>
+              <PencilIcon />
+            </Button>
+          </div>
           <PlaylistMenu
             videoList={videos}
             selected={selected}
             playlists={playlists}
-            anchorElement={queueMenuAnchorEl}
-            onClose={closeQueueMenu}
-            selectedMenuItems={selectedMenuItems}
-            menuItems={menuItems}
+            dropdownItems={dropdownItems}
+            selectedDropdownItems={selectedDropdownItems}
           />
           <SelectVideoListPlugin videoList={videos} setSelected={setSelected} />
           <VideoList
             videos={videos}
-            openMenu={openMenu}
             playlistId={playlistId}
             onDragOver={onDragOver}
             onSelect={onSelect}
             isSelected={isSelected}
             onSelectAll={onSelectAll}
             selected={selected}
+            menuItems={videoMenuItems}
           />
           <EditPlaylistDialog
+            setOpen={setOpenEditMenu}
             open={openEditMenu}
             playlist={playlist}
-            handleClose={onEditMenuClose}
           />
           <ImportDialog
             setOpen={setImportDialogOpen}
             open={importDialogOpen}
-            handleClose={closeImportDialog}
             parseType="video"
             onSuccess={onImport}
           />
         </>
       ) : (
-        <>{playlist !== false && <Typography>{t("notFound")}</Typography>}</>
+        <>{playlist !== false && <h3>{t("notFound")}</h3>}</>
       )}
     </>
   );
