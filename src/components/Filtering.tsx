@@ -33,10 +33,9 @@ const Filtering: React.FC<FilteringProps> = (props) => {
   };
 
   const filterComponents = newFilters.map((f) => (
-    <div>
-      <FilterComponent filter={f} onValueChange={onValueChange} />
-    </div>
+    <FilterComponent key={f.id} filter={f} onValueChange={onValueChange} />
   ));
+
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">

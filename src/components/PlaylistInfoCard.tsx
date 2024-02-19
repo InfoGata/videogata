@@ -1,15 +1,14 @@
-import { Box, Card, CardContent, Chip, Typography } from "@mui/material";
+import { cn } from "@/lib/utils";
 import DOMPurify from "dompurify";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
 import PlaylistImage from "./PlaylistImage";
+import { buttonVariants } from "./ui/button";
 
 interface PlaylistInfoCardProps {
   name: string;
-  subtitle?: string;
-  subtitleLink?: string;
   images?: ImageInfo[];
   isLive?: boolean;
   pluginId?: string;
@@ -17,55 +16,35 @@ interface PlaylistInfoCardProps {
 }
 
 const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
-  const {
-    name,
-    subtitle,
-    images,
-    subtitleLink,
-    pluginId,
-    channelApiId,
-    isLive,
-  } = props;
+  const { name, images, pluginId, channelApiId, isLive } = props;
   const { t } = useTranslation();
   const sanitizer = DOMPurify.sanitize;
 
   return (
-    <Card sx={{ display: "flex" }}>
-      <Box>
+    <div className="flex">
+      <div>
         <PlaylistImage images={images} />
-      </Box>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography
-            component="div"
-            variant="h5"
-            dangerouslySetInnerHTML={{
-              __html: sanitizer(name),
-            }}
-          />
-          {isLive && (
-            <Chip
-              label={t("live")}
-              color="error"
-              component={Link}
-              to={`/plugins/${pluginId}/channels/${channelApiId}/live`}
-              clickable
-            />
-          )}
-          {subtitle && (
-            <Typography
-              component={subtitleLink ? Link : "div"}
-              to={subtitleLink}
-              variant="subtitle1"
-              color="text.secondary"
-              dangerouslySetInnerHTML={{
-                __html: sanitizer(subtitle || ""),
-              }}
-            />
-          )}
-        </CardContent>
-      </Box>
-    </Card>
+      </div>
+      <div>
+        <h3
+          className="text-2xl"
+          dangerouslySetInnerHTML={{
+            __html: sanitizer(name),
+          }}
+        />
+        {isLive && (
+          <Link
+            className={cn(
+              buttonVariants({ variant: "destructive" }),
+              "rounded-full"
+            )}
+            to={`/plugins/${pluginId}/channels/${channelApiId}/live`}
+          >
+            {t("live")}
+          </Link>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -25,7 +25,6 @@ const Playlists: React.FC = () => {
   const { t } = useTranslation();
   const [openImportDialog, setOpenImportDialog] = React.useState(false);
   const onOpenImportDialog = () => setOpenImportDialog(true);
-  const onCloseImportDialog = () => setOpenImportDialog(false);
 
   const pluginPlaylists = playlistPlugins.map((p) => (
     <Link
@@ -65,11 +64,15 @@ const Playlists: React.FC = () => {
 
   return (
     <>
-      <h2 className="text-2xl font-bold">{t("playlists")}</h2>
-      <Button variant="outline" onClick={onOpenImportDialog}>
-        {t("importPlaylistByUrl")}
-      </Button>
-      <div>{pluginPlaylists}</div>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-2xl font-bold">{t("playlists")}</h2>
+        <div>{pluginPlaylists}</div>
+        <div>
+          <Button variant="outline" onClick={onOpenImportDialog}>
+            {t("importPlaylistByUrl")}
+          </Button>
+        </div>
+      </div>
       <div>
         {playlists.map((p) => (
           <PlaylistListItem

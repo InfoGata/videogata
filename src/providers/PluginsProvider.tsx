@@ -350,6 +350,14 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         onGetUserChannels: (result: SearchChannelResult) => {
           result.items.forEach((i) => {
             i.id = nanoid();
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetUserPlaylists: (result: SearchPlaylistResult) => {
+          result.items.forEach((i) => {
+            i.id = nanoid();
+            i.pluginId = plugin.id;
           });
           return result;
         },

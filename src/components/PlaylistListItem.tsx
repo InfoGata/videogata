@@ -11,13 +11,20 @@ type Props = {
   playlist: PlaylistInfo;
   dropdownItems?: DropdownItemProps[];
   noFavorite?: boolean;
+  isUserPlaylist?: boolean;
 };
 
 const PlaylistListItem: React.FC<Props> = (props) => {
-  const { playlist, dropdownItems, noFavorite } = props;
+  const { playlist, dropdownItems, noFavorite, isUserPlaylist } = props;
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   const itemType: ItemMenuType = { type: "playlist", item: playlist };
-  const playlistPath = `/playlists/${props.playlist.id}`;
+  let playlistPath = playlist.pluginId
+    ? `/plugins/${playlist.pluginId}/playlists/${playlist.apiId}`
+    : `/playlists/${playlist.id}`;
+
+  if (isUserPlaylist) {
+    playlistPath = `${playlistPath}?isuserplaylist`;
+  }
 
   return (
     <Link
