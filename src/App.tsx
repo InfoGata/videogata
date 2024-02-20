@@ -59,7 +59,7 @@ const App: React.FC = () => {
   const onClickDismiss = (key: SnackbarKey) => {
     notistackRef?.current?.closeSnackbar(key);
   };
-  useUpdateServiceWorker(notistackRef.current?.enqueueSnackbar, onClickDismiss);
+  useUpdateServiceWorker();
   useOffline(notistackRef.current?.enqueueSnackbar, onClickDismiss);
 
   React.useEffect(() => {
