@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface UiState {
   navbarOpen: boolean;
@@ -18,8 +18,11 @@ const uiSlice = createSlice({
         navbarOpen: !state.navbarOpen,
       };
     },
+    setNavbarOpen: (state, action: PayloadAction<boolean>) => {
+      state.navbarOpen = action.payload;
+    },
   },
 });
 
-export const { toggleNavbar } = uiSlice.actions;
+export const { toggleNavbar, setNavbarOpen } = uiSlice.actions;
 export default uiSlice.reducer;

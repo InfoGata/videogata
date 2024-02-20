@@ -48,7 +48,7 @@ const Donate: React.FC = () => {
   return (
     <div>
       {links.map((l) => (
-        <AboutLink {...l} key={l.title} />
+        <AboutLink {...l} key={`${l.title}-${l.description}`} />
       ))}
     </div>
   );

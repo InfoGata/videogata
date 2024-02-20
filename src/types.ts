@@ -100,6 +100,7 @@ export interface LoginInfo {
 
 export interface NavigationLinkItem {
   title: string;
-  link: string;
+  link?: string;
+  action?: () => void;
   icon: React.JSX.Element;
 }
