@@ -1,12 +1,11 @@
 import { Channel } from "@/plugintypes";
+import { ItemMenuType } from "@/types";
 import { getThumbnailImage, searchThumbnailSize } from "@/utils";
 import React from "react";
-import { AvatarImage, Avatar } from "./ui/avatar";
-import ItemMenu from "./ItemMenu";
-import { ItemMenuType } from "@/types";
-import { Link, useNavigate } from "react-router-dom";
-import { Chip } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import ItemMenu from "./ItemMenu";
+import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 
 type Props = {

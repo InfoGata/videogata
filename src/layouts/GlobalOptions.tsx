@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHoriz, OpenInNew } from "@mui/icons-material";
+import { ArrowUpRightFromSquareIcon, MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ const GlobalOptions: React.FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
-            <MoreHoriz />
+            <MoreHorizontalIcon />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -40,7 +40,7 @@ const GlobalOptions: React.FC = () => {
             onClick={openImportDialog}
             className="cursor-pointer"
           >
-            <OpenInNew />
+            <ArrowUpRightFromSquareIcon />
             {t("openVideoUrl")}
           </DropdownMenuItem>
         </DropdownMenuContent>

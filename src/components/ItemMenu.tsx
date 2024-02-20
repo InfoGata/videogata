@@ -7,9 +7,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { db } from "@/database";
 import { ItemMenuType } from "@/types";
-import { Link as LinkIcon } from "@mui/icons-material";
 import Dexie from "dexie";
-import { MoreHorizontal, StarIcon, StarOffIcon } from "lucide-react";
+import {
+  ExternalLink,
+  MoreHorizontal,
+  StarIcon,
+  StarOffIcon,
+} from "lucide-react";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -31,7 +35,7 @@ const getTable = (item: ItemMenuType): Dexie.Table => {
   }
 };
 
-const VideoMenu: React.FC<Props> = (props) => {
+const ItemMenu: React.FC<Props> = (props) => {
   const { itemType, dropdownItems, noFavorite } = props;
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
@@ -80,7 +84,7 @@ const VideoMenu: React.FC<Props> = (props) => {
     itemType.item.originalUrl
       ? {
           title: t("originalUrl"),
-          icon: <LinkIcon />,
+          icon: <ExternalLink />,
           url: itemType.item.originalUrl,
         }
       : undefined,
@@ -106,4 +110,4 @@ const VideoMenu: React.FC<Props> = (props) => {
   );
 };
 
-export default VideoMenu;
+export default ItemMenu;

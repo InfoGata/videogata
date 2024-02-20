@@ -16,15 +16,16 @@ const TopBar: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-auto right-0 w-full shadow-lg z-40 bg-background border-b">
-      <div className="flex items-center px-6 min-h-16">
-        <Button variant="ghost" size="icon" onClick={onToggleNavbar}>
-          <MenuIcon />
-        </Button>
-        <h1 className="whitespace-nowrap hidden sm:block pr-2 text-xl font-semibold">
-          <Link to="/">VideoGata</Link>
-        </h1>
+      <div className="flex items-center min-h-16 gap-3 lg:gap-16">
+        <div className="flex items-center">
+          <Button variant="ghost" size="icon" onClick={onToggleNavbar}>
+            <MenuIcon />
+          </Button>
+          <h1 className="whitespace-nowrap hidden sm:block pr-2 text-xl font-semibold">
+            <Link to="/">VideoGata</Link>
+          </h1>
+        </div>
         <SearchBar />
-        <div className="flex-grow" />
         <div className="hidden sm:flex">
           <GlobalOptions />
           <Link

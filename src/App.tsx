@@ -4,12 +4,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
+import { Toaster } from "./components/ui/sonner";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import MainContainer from "./layouts/MainContriner";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
-import ItemMenuProvider from "./providers/ItemMenuProvider";
 import PluginsProvider from "./providers/PluginsProvider";
 import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { useAppDispatch } from "./store/hooks";
@@ -78,14 +78,13 @@ const App: React.FC = () => {
         <MatomoRouterProvider>
           <PluginsProvider>
             <VideoMenuProvider>
-              <ItemMenuProvider>
-                <Box sx={{ display: "flex" }}>
-                  <CssBaseline />
-                  <TopBar />
-                  <SideBar />
-                  <MainContainer />
-                </Box>
-              </ItemMenuProvider>
+              <Box sx={{ display: "flex" }}>
+                <Toaster closeButton />
+                <CssBaseline />
+                <TopBar />
+                <SideBar />
+                <MainContainer />
+              </Box>
             </VideoMenuProvider>
           </PluginsProvider>
         </MatomoRouterProvider>
