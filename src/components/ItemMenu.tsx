@@ -14,9 +14,9 @@ import {
   StarIcon,
   StarOffIcon,
 } from "lucide-react";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 interface Props {
   itemType: ItemMenuType;
@@ -39,19 +39,18 @@ const ItemMenu: React.FC<Props> = (props) => {
   const { itemType, dropdownItems, noFavorite } = props;
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const onFavorite = async () => {
     const table = getTable(itemType);
     await table.add(itemType.item);
-    enqueueSnackbar(t("addedToFavorites"));
+    toast(t("addedToFavorites"));
   };
 
   const removeFavorite = async () => {
     if (itemType.item?.id) {
       const table = getTable(itemType);
       await table.delete(itemType.item.id);
-      enqueueSnackbar(t("removedFromFavorites"));
+      toast(t("removedFromFavorites"));
     }
   };
 

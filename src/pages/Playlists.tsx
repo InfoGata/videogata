@@ -1,7 +1,6 @@
 import PlaylistListItem from "@/components/PlaylistListItem";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Trash } from "lucide-react";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -13,11 +12,11 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
 import { ItemMenuType } from "@/types";
+import { toast } from "sonner";
 
 const Playlists: React.FC = () => {
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const { enqueueSnackbar } = useSnackbar();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -58,7 +57,7 @@ const Playlists: React.FC = () => {
   const onImport = (item: Playlist | Video[]) => {
     if ("videos" in item) {
       dispatch(addPlaylist(item));
-      enqueueSnackbar(t("playlistImported", { playlistName: item.name }));
+      toast(t("playlistImported", { playlistName: item.name }));
     }
   };
 

@@ -1,4 +1,3 @@
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Playlist, Video } from "../plugintypes";
@@ -14,6 +13,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 interface AddPlaylistDialogProps {
   open: boolean;
@@ -26,7 +26,6 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const [name, setName] = React.useState("");
   const formId = React.useId();
   const dispatch = useAppDispatch();
-  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
 
   const onSubmit = (e: React.FormEvent) => {
@@ -37,7 +36,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
       videos: videos,
     };
     dispatch(addPlaylist(playlist));
-    enqueueSnackbar(t("playlistCreated"));
+    toast(t("playlistCreated"));
     setOpen(false);
   };
 

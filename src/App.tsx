@@ -1,4 +1,3 @@
-import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -54,38 +53,26 @@ messageChannel.port1.onmessage = async (event) => {
 const App: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const notistackRef = React.useRef<SnackbarProvider>(null);
-  const onClickDismiss = (key: SnackbarKey) => {
-    notistackRef?.current?.closeSnackbar(key);
-  };
   useUpdateServiceWorker();
-  useOffline(notistackRef.current?.enqueueSnackbar, onClickDismiss);
+  useOffline();
 
   React.useEffect(() => {
     dispatch(initializePlaylists());
   }, [dispatch]);
 
   return (
-    <SnackbarProvider
-      maxSnack={3}
-      ref={notistackRef}
-      action={(key) => (
-        <Button onClick={() => onClickDismiss(key)}>{t("dismiss")}</Button>
-      )}
-    >
-      <QueryClientProvider client={queryClient}>
-        <MatomoRouterProvider>
-          <PluginsProvider>
-            <div className="flex">
-              <Toaster closeButton />
-              <TopBar />
-              <SideBar />
-              <MainContainer />
-            </div>
-          </PluginsProvider>
-        </MatomoRouterProvider>
-      </QueryClientProvider>
-    </SnackbarProvider>
+    <QueryClientProvider client={queryClient}>
+      <MatomoRouterProvider>
+        <PluginsProvider>
+          <div className="flex">
+            <Toaster closeButton />
+            <TopBar />
+            <SideBar />
+            <MainContainer />
+          </div>
+        </PluginsProvider>
+      </MatomoRouterProvider>
+    </QueryClientProvider>
   );
 };
 

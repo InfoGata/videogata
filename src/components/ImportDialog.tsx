@@ -1,4 +1,3 @@
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
@@ -14,6 +13,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 interface ImportDialogProps {
   open: boolean;
@@ -50,7 +50,6 @@ const lookupUrl = async (
 
 const ImportDialog: React.FC<ImportDialogProps> = (props) => {
   const { open, parseType, onSuccess, title, setOpen } = props;
-  const { enqueueSnackbar } = useSnackbar();
   const { plugins } = usePlugins();
   const [url, setUrl] = React.useState("");
   const formId = React.useId();
@@ -83,7 +82,7 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
       const item = await lookupUrl(parser, parseType, url);
       onSuccess(item);
     } else {
-      enqueueSnackbar(t("noImporters"), { variant: "error" });
+      toast.error(t("noImporters"));
     }
     setUrl("");
     setOpen(false);

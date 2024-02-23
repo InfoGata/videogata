@@ -18,11 +18,11 @@ import {
   ListPlusIcon,
   ExternalLink,
 } from "lucide-react";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { MdSubscriptions } from "react-icons/md";
 import PlaylistSubMenu from "./PlaylistSubMenu";
+import { toast } from "sonner";
 
 interface Props {
   video: Video;
@@ -35,7 +35,6 @@ const VideoMenu: React.FC<Props> = (props) => {
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const addVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
@@ -45,14 +44,14 @@ const VideoMenu: React.FC<Props> = (props) => {
   const favoriteTrack = async () => {
     if (video) {
       await db.favoriteVideos.add(video);
-      enqueueSnackbar(t("addedToFavorites"));
+      toast(t("addedToFavorites"));
     }
   };
 
   const removeFavorite = async () => {
     if (video.id) {
       await db.favoriteVideos.delete(video.id);
-      enqueueSnackbar(t("removedFromFavorites"));
+      toast(t("removedFromFavorites"));
     }
   };
 
