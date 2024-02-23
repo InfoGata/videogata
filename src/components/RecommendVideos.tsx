@@ -1,8 +1,6 @@
-import { Grid } from "@mui/material";
 import React from "react";
-import useVideoMenu from "../hooks/useVideoMenu";
 import { Video } from "../plugintypes";
-import VideoCard from "./VideoCard";
+import RecommendedVideoCard from "./RecommendedVideoCard";
 
 interface RecommendedVideosProps {
   videos: Video[];
@@ -10,23 +8,13 @@ interface RecommendedVideosProps {
 }
 
 const RecommendedVideos: React.FC<RecommendedVideosProps> = (props) => {
-  const { videos, pluginId } = props;
-  const { openMenu } = useVideoMenu();
+  const { videos } = props;
 
   const recommendations = videos.map((v) => (
-    <VideoCard
-      key={v.apiId}
-      pluginId={pluginId}
-      video={v}
-      openMenu={openMenu}
-    />
+    <RecommendedVideoCard key={v.apiId} video={v} />
   ));
 
-  return (
-    <Grid item xs={3}>
-      {recommendations}
-    </Grid>
-  );
+  return <div className="space-y-3">{recommendations}</div>;
 };
 
 export default RecommendedVideos;

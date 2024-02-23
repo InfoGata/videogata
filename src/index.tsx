@@ -2,11 +2,6 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import {
-  createTheme,
-  StyledEngineProvider,
-  ThemeProvider,
-} from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -24,12 +19,6 @@ Sentry.init({
   dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
 });
 
-const theme = createTheme({
-  palette: {
-    mode: "light",
-  },
-});
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
@@ -38,13 +27,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Helmet>
             <title>VideoGata</title>
           </Helmet>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <IconContext.Provider value={{ className: "w-5 h-5" }}>
-                <RouterProvider router={router} />
-              </IconContext.Provider>
-            </ThemeProvider>
-          </StyledEngineProvider>
+          <IconContext.Provider value={{ className: "w-5 h-5" }}>
+            <RouterProvider router={router} />
+          </IconContext.Provider>
         </HelmetProvider>
       </PersistGate>
     </Provider>

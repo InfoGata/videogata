@@ -304,6 +304,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         onGetVideo: (video: Video) => {
           video.pluginId = plugin.id;
           video.id = nanoid();
+          video.recommendedVideos?.forEach((i) => {
+            i.id = nanoid();
+            i.pluginId = plugin.id;
+          });
           return video;
         },
         onGetLiveVideo: (video: Video) => {

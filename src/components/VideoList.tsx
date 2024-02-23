@@ -21,12 +21,13 @@ interface VideoListProps {
   dragDisabled?: boolean;
   onDragOver?: (newVideoList: Video[]) => void;
   playlistId?: string;
-  selected: Set<string>;
-  onSelect: (e: React.MouseEvent, id: string, index: number) => void;
-  onSelectAll: (state: CheckedState) => void;
-  isSelected: (id: string) => boolean;
+  selected?: Set<string>;
+  onSelect?: (e: React.MouseEvent, id: string, index: number) => void;
+  onSelectAll?: (state: CheckedState) => void;
+  isSelected?: (id: string) => boolean;
   onDelete?: (video: Video) => void;
   menuItems?: DropdownItemProps[];
+  currentVideoId?: string;
 }
 
 const VideoList: React.FC<VideoListProps> = (props) => {
@@ -40,6 +41,7 @@ const VideoList: React.FC<VideoListProps> = (props) => {
     onSelect,
     isSelected,
     menuItems,
+    currentVideoId,
   } = props;
   const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(null);
   const { t } = useTranslation();
@@ -70,18 +72,20 @@ const VideoList: React.FC<VideoListProps> = (props) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
-              <Checkbox
-                onCheckedChange={onSelectAll}
-                checked={
-                  (selected.size > 0 && selected.size === videos.length) ||
-                  (selected.size > 0 &&
-                    selected.size < videos.length &&
-                    "indeterminate")
-                }
-                aria-label="select all videos"
-              />
-            </TableHead>
+            {selected && (
+              <TableHead>
+                <Checkbox
+                  onCheckedChange={onSelectAll}
+                  checked={
+                    (selected.size > 0 && selected.size === videos.length) ||
+                    (selected.size > 0 &&
+                      selected.size < videos.length &&
+                      "indeterminate")
+                  }
+                  aria-label="select all videos"
+                />
+              </TableHead>
+            )}
             <TableHead>{t("title")}</TableHead>
             <TableHead className="hidden md:table-cell">
               {t("duration")}
@@ -95,6 +99,7 @@ const VideoList: React.FC<VideoListProps> = (props) => {
               id={video.id || ""}
               key={video.id || video.apiId}
               disabled={dragDisabled}
+              currentItem={video.id === currentVideoId}
             >
               <PlaylistItem
                 video={video}

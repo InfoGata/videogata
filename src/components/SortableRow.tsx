@@ -2,16 +2,18 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React from "react";
 import { TableRow } from "./ui/table";
+import { cn } from "@/lib/utils";
 
 interface SortableItemProps {
   id: string;
   disabled?: boolean;
   onClick?: (...args: any) => void;
+  currentItem?: boolean;
 }
 const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
   props
 ) => {
-  const { id, onClick, disabled } = props;
+  const { id, onClick, disabled, currentItem } = props;
   const {
     isDragging,
     attributes,
@@ -32,6 +34,7 @@ const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
         touchAction: "none",
         opacity: isDragging ? 0.3 : 1,
       }}
+      className={cn(currentItem && "bg-muted")}
       ref={setNodeRef}
       {...listeners}
       {...attributes}

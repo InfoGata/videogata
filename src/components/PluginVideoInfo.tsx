@@ -1,12 +1,13 @@
-import { MoreHoriz, ThumbDown, ThumbUp } from "@mui/icons-material";
-import { Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
+import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import useVideoMenu from "../hooks/useVideoMenu";
 import { Video } from "../plugintypes";
 import VideoDescrption from "./VideoDescrption";
+import VideoMenu from "./VideoMenu";
+import { buttonVariants } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -17,7 +18,6 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { t } = useTranslation();
   const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
-  const { openMenu } = useVideoMenu();
   const uploadDate =
     video.uploadDate &&
     new Date(video.uploadDate).toLocaleDateString("en-US", {
@@ -28,78 +28,60 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
 
   const sanitizer = DOMPurify.sanitize;
 
-  const onMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    openMenu(event, video);
-  };
-
   return (
-    <Grid>
-      <Typography
-        component="div"
-        variant="h5"
+    <div>
+      <h3
+        className="text-2xl"
         dangerouslySetInnerHTML={{
           __html: sanitizer(video.title),
         }}
       />
-      <Grid container justifyContent="space-between">
-        <Grid item>
-          {video.views && (
-            <Grid container>
-              <Typography variant="body1">
-                {t("numberOfViews", {
-                  viewCount: numberFormatter.format(video.views),
-                })}
-              </Typography>
-            </Grid>
-          )}
-          {uploadDate ? (
-            <Grid container>
-              <Typography variant="body1">{uploadDate}</Typography>
-            </Grid>
-          ) : null}
-        </Grid>
-        <Grid item>
+      <div className="flex justify-between">
+        <div>
+          {video.views &&
+            t("numberOfViews", {
+              viewCount: numberFormatter.format(video.views),
+            })}
+          {<div>{uploadDate}</div>}
+        </div>
+        <div>
           {video.likes ? (
-            <Grid container>
-              <ThumbUp />
-              <Typography variant="body1">
-                {numberFormatter.format(video.likes)}
-              </Typography>
-            </Grid>
+            <div>
+              <ThumbsUpIcon />
+              {numberFormatter.format(video.likes)}
+            </div>
           ) : null}
           {video.dislikes ? (
-            <Grid container>
-              <ThumbDown />
-              <Typography variant="body1">
-                {numberFormatter.format(video.dislikes)}
-              </Typography>
-            </Grid>
+            <div>
+              <ThumbsDownIcon />
+              {numberFormatter.format(video.dislikes)}
+            </div>
           ) : null}
           {video.originalUrl ? (
-            <Grid container>
-              <Button component="a" href={video.originalUrl} target="_blank">
-                {t("linkToOriginal")}
-              </Button>
-            </Grid>
+            <a
+              className={buttonVariants({ variant: "link" })}
+              href={video.originalUrl}
+              target="_blank"
+            >
+              {t("linkToOriginal")}
+            </a>
           ) : null}
-        </Grid>
-      </Grid>
-      <Grid container>
-        <IconButton onClick={onMenuClick}>
-          <MoreHoriz />
-        </IconButton>
-      </Grid>
+        </div>
+      </div>
+      <div>
+        <VideoMenu video={video} notCardVideo />
+      </div>
       {video.channelName ? (
-        <Button component={Link} to={channelUrl} disabled={!video.channelApiId}>
+        <Link className={buttonVariants({ variant: "ghost" })} to={channelUrl}>
           {video.channelName}
-        </Button>
+        </Link>
       ) : null}
-      <Divider />
+      <Separator />
       {video.description ? (
         <VideoDescrption description={video.description} />
       ) : null}
-      <Divider />
-    </Grid>
+      <Separator />
+    </div>
   );
 };
 

@@ -43,14 +43,16 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
 
   return (
     <>
-      <TableCell>
-        {isSelected && (
-          <Checkbox
-            checked={isSelected(video.id || "")}
-            onClick={onCheckboxClick}
-          />
-        )}
-      </TableCell>
+      {isSelected && (
+        <TableCell>
+          {
+            <Checkbox
+              checked={isSelected(video.id || "")}
+              onClick={onCheckboxClick}
+            />
+          }
+        </TableCell>
+      )}
       <TableCell>
         <div className="flex">
           <Avatar className="rounded-none">
@@ -86,7 +88,11 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
         {formatSeconds(video.duration)}
       </TableCell>
       <TableCell align="right">
-        <VideoMenu video={video} isListVideo={true} dropdownItems={menuItems} />
+        <VideoMenu
+          video={video}
+          notCardVideo={true}
+          dropdownItems={menuItems}
+        />
       </TableCell>
     </>
   );

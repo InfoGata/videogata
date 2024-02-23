@@ -1,4 +1,3 @@
-import { Link, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 import * as linkify from "linkifyjs";
 import React from "react";
@@ -8,7 +7,9 @@ import parse, {
   DOMNode,
 } from "html-react-parser";
 import linkifyHtml from "linkify-html";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { buttonVariants } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 interface VideoDescrptionProps {
   description: string;
@@ -75,25 +76,34 @@ const VideoDescrption: React.FC<VideoDescrptionProps> = (props) => {
           const urlSearchParams = new URLSearchParams(href);
           if (urlSearchParams.has("t")) {
             return (
-              <Link component={RouterLink} to={{ search: href }}>
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "link", size: "sm" }),
+                  "h-6 p-0"
+                )}
+                to={{ search: href }}
+              >
                 {domToReact(domNode.children as DOMNode[])}
               </Link>
             );
           }
         }
         return (
-          <Link href={domNode.attribs.href} target="_blank">
+          <a
+            className={cn(
+              buttonVariants({ variant: "link", size: "sm" }),
+              "h-6 p-0"
+            )}
+            href={domNode.attribs.href}
+            target="_blank"
+          >
             {domToReact(domNode.children as DOMNode[])}
-          </Link>
+          </a>
         );
       }
     },
   };
 
-  return (
-    <Typography sx={{ whiteSpace: "pre-line" }}>
-      {parse(clean, options)}
-    </Typography>
-  );
+  return <p className="whitespace-pre-line">{parse(clean, options)}</p>;
 };
 export default React.memo(VideoDescrption);

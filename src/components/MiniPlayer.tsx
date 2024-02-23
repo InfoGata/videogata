@@ -1,28 +1,20 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  IconButton,
-  CardActionArea,
-  Typography,
-} from "@mui/material";
+import { cn } from "@/lib/utils";
+import { XCircleIcon } from "lucide-react";
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { closePlayer } from "../store/reducers/playerReducer";
 import PluginPlayer from "./PluginPlayer";
 import VideoPlayer from "./VideoPlayer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import usePlugins from "../hooks/usePlugins";
-import { useLocation, Link } from "react-router-dom";
-import CancelIcon from "@mui/icons-material/Cancel";
-import { closePlayer } from "../store/reducers/playerReducer";
+import { Button } from "./ui/button";
 
 const MiniPlayer: React.FC = () => {
   const playerState = useAppSelector((state) => state.player);
   const [usePlayer, setUsePlayer] = React.useState(false);
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === playerState.pluginId);
-  const height = 164;
-  const width = 274;
   const [video, setVideo] = React.useState<Video>();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -91,29 +83,21 @@ const MiniPlayer: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={
-        useDefaultPlayer
-          ? undefined
-          : {
-              position: "fixed",
-              bottom: "64px",
-              right: "16px",
-              width: `${width}px`,
-              height: `${height}px`,
-              zIndex: 100,
-              transition: "height 200ms ease-in-out, width 200ms ease-in-out",
-            }
-      }
+    <div
+      className={cn(
+        !useDefaultPlayer &&
+          "fixed right-4 bottom-16 w-64 h-40 z-50 transition duraion-200 ease-in-out"
+      )}
     >
       {!useDefaultPlayer && (
-        <IconButton
-          aria-label="close"
-          sx={{ position: "absolute", right: -10, top: -15, zIndex: 100 }}
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
+          className="absolute -right-3 -top-4 z-50"
         >
-          <CancelIcon />
-        </IconButton>
+          <XCircleIcon />
+        </Button>
       )}
       {video && !usePlayer ? (
         <VideoPlayer
@@ -133,15 +117,11 @@ const MiniPlayer: React.FC = () => {
         />
       )}
       {!useDefaultPlayer && video && (
-        <Card>
-          <CardActionArea component={Link} to={url}>
-            <CardContent>
-              <Typography variant="body2">{video.title}</Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
+        <Link to={url}>
+          <p className="text-sm">{video.title}</p>
+        </Link>
       )}
-    </Box>
+    </div>
   );
 };
 

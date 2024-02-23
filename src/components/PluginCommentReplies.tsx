@@ -1,10 +1,10 @@
-import { Box, Button } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
 import { PluginFrameContainer } from "../PluginsContext";
 import { PageInfo, VideoComment } from "../plugintypes";
 import Comment from "./Comment";
+import { Button } from "./ui/button";
 
 interface PluginCommentRepliesProps {
   plugin: PluginFrameContainer | undefined;
@@ -61,9 +61,9 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
 
   return (
     <>
-      <Box sx={{ pl: 5 }}>{comments}</Box>
+      <div className="pl-5">{comments}</div>
       {query.hasNextPage && (
-        <Button onClick={onLoadMore} sx={{ pl: 7 }} size="small">
+        <Button variant="ghost" className="pl-5" onClick={onLoadMore}>
           {t("loadMoreReplies")}
         </Button>
       )}

@@ -1,20 +1,19 @@
-import { Grid } from "@mui/material";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
-import { db } from "../database";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePlugins from "../hooks/usePlugins";
-import { Video } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
-import { setPlayerInfo } from "../store/reducers/playerReducer";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import PluginVideoComments from "../components/PluginVideoComments";
 import PluginVideoInfo from "../components/PluginVideoInfo";
 import PluginVideoPlaylist from "../components/PluginVideoPlaylist";
 import RecommendedVideos from "../components/RecommendVideos";
 import Spinner from "../components/Spinner";
+import { db } from "../database";
+import useFindPlugin from "../hooks/useFindPlugin";
+import usePlugins from "../hooks/usePlugins";
+import { Video } from "../plugintypes";
+import { useAppDispatch } from "../store/hooks";
+import { setPlayerInfo } from "../store/reducers/playerReducer";
 
 const PluginVideo: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -78,18 +77,18 @@ const PluginVideo: React.FC = () => {
           videoId={videoId}
         />
       )}
-      <Grid container>
-        <Grid item xs={9}>
+      <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex-1">
           <PluginVideoComments
             apiId={apiId || ""}
             pluginId={query.data?.pluginId || ""}
           />
-        </Grid>
+        </div>
         <RecommendedVideos
           pluginId={query.data?.pluginId || ""}
           videos={query.data?.recommendedVideos || []}
         />
-      </Grid>
+      </div>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}

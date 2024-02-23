@@ -1,9 +1,9 @@
-import { Box, Button, CssBaseline } from "@mui/material";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
+import { Button } from "./components/ui/button";
 import { Toaster } from "./components/ui/sonner";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
@@ -11,7 +11,6 @@ import MainContainer from "./layouts/MainContriner";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
 import PluginsProvider from "./providers/PluginsProvider";
-import VideoMenuProvider from "./providers/VideoMenuProvider";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import { hasExtension } from "./utils";
@@ -77,15 +76,12 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <MatomoRouterProvider>
           <PluginsProvider>
-            <VideoMenuProvider>
-              <Box sx={{ display: "flex" }}>
-                <Toaster closeButton />
-                <CssBaseline />
-                <TopBar />
-                <SideBar />
-                <MainContainer />
-              </Box>
-            </VideoMenuProvider>
+            <div className="flex">
+              <Toaster closeButton />
+              <TopBar />
+              <SideBar />
+              <MainContainer />
+            </div>
           </PluginsProvider>
         </MatomoRouterProvider>
       </QueryClientProvider>

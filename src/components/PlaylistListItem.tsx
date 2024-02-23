@@ -12,6 +12,7 @@ type Props = {
   dropdownItems?: DropdownItemProps[];
   noFavorite?: boolean;
   isUserPlaylist?: boolean;
+  selected?: boolean;
 };
 
 const PlaylistListItem: React.FC<Props> = (props) => {

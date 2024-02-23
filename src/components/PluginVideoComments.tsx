@@ -1,10 +1,10 @@
-import { Box, Button, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
 import usePlugins from "../hooks/usePlugins";
 import { PageInfo } from "../plugintypes";
 import Comment from "./Comment";
+import { Button } from "./ui/button";
 
 interface PluginVideoCommentsProps {
   pluginId: string;
@@ -55,12 +55,14 @@ const PluginVideoComments: React.FC<PluginVideoCommentsProps> = (props) => {
     query.fetchNextPage();
   };
   return (
-    <Grid>
-      <Box>{comments}</Box>
+    <div>
+      <div>{comments}</div>
       {query.hasNextPage && (
-        <Button onClick={onLoadMore}>{t("loadMore")}</Button>
+        <Button variant="ghost" onClick={onLoadMore}>
+          {t("loadMore")}
+        </Button>
       )}
-    </Grid>
+    </div>
   );
 };
 

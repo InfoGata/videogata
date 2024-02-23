@@ -1,22 +1,12 @@
-import { SkipNext, SkipPrevious } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  Typography,
-} from "@mui/material";
-import DOMPurify from "dompurify";
+import { cn } from "@/lib/utils";
+import { SkipBackIcon, SkipForwardIcon } from "lucide-react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setCurrentVideo } from "../store/reducers/queueReducer";
-import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import VideoList from "./VideoList";
+import { buttonVariants } from "./ui/button";
 
 interface PluginVideoPlaylistProps {
   videos: Video[];
@@ -32,7 +22,6 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
   const { videos, playlistId, videoId } = props;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const sanitizer = DOMPurify.sanitize;
   const videoIndex = videos.findIndex((v) => v.id === videoId);
   const currentVideo = videos[videoIndex];
   const prevDisabled = videoIndex <= 0;
@@ -57,51 +46,34 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
     return () => document.removeEventListener("nextVideo", onNextVideo);
   }, [navigate, nextVideoUrl]);
 
-  const videoList = videos.map((v) => {
-    const image = getThumbnailImage(v.images, searchThumbnailSize);
-    const videoUrl = getVideoUrl(v, playlistId);
-    return (
-      <ListItem key={v.id} disablePadding>
-        <ListItemButton
-          component={Link}
-          to={videoUrl}
-          selected={videoId === v.id}
-        >
-          <ListItemAvatar>
-            <Avatar alt={v.title} src={image} style={{ borderRadius: 0 }} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <Typography
-                dangerouslySetInnerHTML={{ __html: sanitizer(v.title) }}
-              />
-            }
-          />
-        </ListItemButton>
-      </ListItem>
-    );
-  });
-
   return (
-    <Box>
-      <IconButton
-        aria-label="previous"
-        disabled={prevDisabled}
-        component={Link}
+    <div>
+      <Link
         to={prevVideoUrl}
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "icon" }),
+          prevDisabled && "pointer-events-none opacity-50"
+        )}
       >
-        <SkipPrevious />
-      </IconButton>
-      <IconButton
-        aria-label="next"
-        disabled={nextDisabled}
-        component={Link}
+        <SkipBackIcon />
+      </Link>
+      <Link
         to={nextVideoUrl}
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "icon" }),
+          nextDisabled && "pointer-events-none opacity-50"
+        )}
       >
-        <SkipNext />
-      </IconButton>
-      <List>{videoList}</List>
-    </Box>
+        <SkipForwardIcon />
+      </Link>
+      <div>
+        <VideoList
+          videos={videos}
+          playlistId={playlistId}
+          currentVideoId={videoId}
+        />
+      </div>
+    </div>
   );
 };
 

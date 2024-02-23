@@ -26,12 +26,12 @@ import PlaylistSubMenu from "./PlaylistSubMenu";
 
 interface Props {
   video: Video;
-  isListVideo?: boolean;
+  notCardVideo?: boolean;
   dropdownItems?: DropdownItemProps[];
 }
 
 const VideoMenu: React.FC<Props> = (props) => {
-  const { video, isListVideo, dropdownItems } = props;
+  const { video, notCardVideo, dropdownItems } = props;
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -111,11 +111,11 @@ const VideoMenu: React.FC<Props> = (props) => {
             variant="ghost"
             size="icon"
             className={cn(
-              !isListVideo && "invisible group-hover:visible",
+              !notCardVideo && "invisible group-hover:visible",
               open && "visible"
             )}
           >
-            {isListVideo ? (
+            {notCardVideo ? (
               <MoreHorizontal className="h-4 w-4" />
             ) : (
               <MoreVertical className="h-4 w-4" />
