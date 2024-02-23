@@ -42,6 +42,7 @@
     "@types/video.js": "^7.3.42",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "cmdk": "^0.2.1",
     "cordova-plugin-cookies": "^0.0.2",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "dexie": "^3.2.2",
