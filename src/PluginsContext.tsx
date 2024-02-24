@@ -17,6 +17,7 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
+  Theme,
   UserChannelRequest,
   UserPlaylistRequest,
   Video,
@@ -58,6 +59,7 @@ export interface PluginMethodInterface {
   ): Promise<string[]>;
   onPostLogin(): Promise<void>;
   onPostLogout(): Promise<void>;
+  onChangeTheme(theme: Theme): Promise<void>;
 }
 
 export interface PluginMessage {

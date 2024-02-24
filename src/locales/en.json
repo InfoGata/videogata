@@ -122,6 +122,9 @@
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
     "useMiniPlayer": "Use Mini Player",
-    "corsProxy": "Cors Proxy Url"
+    "corsProxy": "Cors Proxy Url",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }

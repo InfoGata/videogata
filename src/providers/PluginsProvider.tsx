@@ -4,6 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import semverGt from "semver/functions/gt";
 import semverValid from "semver/functions/parse";
+import { toast } from "sonner";
 import PluginsContext, {
   PluginContextInterface,
   PluginFrameContainer,
@@ -26,6 +27,7 @@ import {
   SearchChannelResult,
   SearchPlaylistResult,
   SearchVideoResult,
+  Theme,
   Video,
 } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -45,7 +47,7 @@ import {
   isAuthorizedDomain,
   mapAsync,
 } from "../utils";
-import { toast } from "sonner";
+import { useTheme } from "./ThemeProvider";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(input: string, init?: RequestInit): Promise<NetworkRequest>;
@@ -61,6 +63,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   addPlaylists(playlists: Playlist[]): Promise<void>;
   addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
   isLoggedIn(): Promise<boolean>;
+  getTheme(): Promise<Theme>;
 }
 
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
@@ -96,6 +99,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const disableAutoUpdatePlugins = useAppSelector(
     (state) => state.settings.disableAutoUpdatePlugins
   );
+  const theme = useTheme();
+  const themeRef = React.useRef(theme.theme);
+  themeRef.current = theme.theme;
 
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
@@ -252,6 +258,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             return !!pluginAuth;
           }
           return false;
+        },
+        getTheme: async () => {
+          return themeRef.current;
         },
       };
 
