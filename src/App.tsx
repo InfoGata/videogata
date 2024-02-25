@@ -1,12 +1,11 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Outlet } from "react-router-dom";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import { Button } from "./components/ui/button";
+import MiniPlayer from "./components/MiniPlayer";
 import { Toaster } from "./components/ui/sonner";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
-import MainContainer from "./layouts/MainContriner";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
 import PluginsProvider from "./providers/PluginsProvider";
@@ -51,7 +50,6 @@ messageChannel.port1.onmessage = async (event) => {
 };
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   useUpdateServiceWorker();
   useOffline();
@@ -64,11 +62,14 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <MatomoRouterProvider>
         <PluginsProvider>
-          <div className="flex">
+          <TopBar />
+          <div className="flex h-screen overflow-hidden">
             <Toaster closeButton />
-            <TopBar />
             <SideBar />
-            <MainContainer />
+            <main className="pt-20 flex-1 pl-6 overflow-auto pb-1">
+              <MiniPlayer />
+              <Outlet />
+            </main>
           </div>
         </PluginsProvider>
       </MatomoRouterProvider>
