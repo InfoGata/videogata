@@ -77,17 +77,19 @@ const PluginVideo: React.FC = () => {
           videoId={videoId}
         />
       )}
-      <div className="flex flex-col md:flex-row gap-10">
-        <div className="flex-1">
+      <div className="grid grid-cols-12 gap-10">
+        <div className="col-span-12 lg:col-span-8">
           <PluginVideoComments
             apiId={apiId || ""}
             pluginId={query.data?.pluginId || ""}
           />
         </div>
-        <RecommendedVideos
-          pluginId={query.data?.pluginId || ""}
-          videos={query.data?.recommendedVideos || []}
-        />
+        <div className="col-span-12 lg:col-span-4">
+          <RecommendedVideos
+            pluginId={query.data?.pluginId || ""}
+            videos={query.data?.recommendedVideos || []}
+          />
+        </div>
       </div>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
