@@ -17,6 +17,7 @@ import { defaultPlugins } from "../default-plugins";
 import i18n from "../i18n";
 import {
   ChannelVideosResult,
+  EnvironmentInfo,
   Manifest,
   NotificationMessage,
   Playlist,
@@ -64,6 +65,8 @@ interface ApplicationPluginInterface extends PluginInterface {
   addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
   isLoggedIn(): Promise<boolean>;
   getTheme(): Promise<Theme>;
+  getEnvironmentInfo(): Promise<EnvironmentInfo>;
+  isNetworkRequestCorsDisabled(): Promise<boolean>;
 }
 
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
@@ -261,6 +264,14 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         getTheme: async () => {
           return themeRef.current;
+        },
+        getEnvironmentInfo: async () => {
+          const info: EnvironmentInfo = {};
+          if (hasExtension() && window.InfoGata.getVersion) {
+            info.extensionVerion = await window.InfoGata.getVersion();
+          }
+
+          return info;
         },
       };
 
