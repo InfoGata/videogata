@@ -66,7 +66,7 @@ const App: React.FC = () => {
           <div className="flex h-screen overflow-hidden">
             <Toaster closeButton />
             <SideBar />
-            <main className="pt-20 flex-1 pl-6 overflow-auto pb-1">
+            <main className="pt-20 flex-1 pl-2 overflow-auto pb-1">
               <MiniPlayer />
               <Outlet />
             </main>
