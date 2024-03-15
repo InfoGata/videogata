@@ -83,7 +83,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
           allow="autoplay; fullscreen; picture-in-picture"
           frameBorder="0"
           allowFullScreen
-          style={{ width: "100%", height: isMiniPlayer ? undefined : "75vh" }}
+          style={{ width: "100%", height: isMiniPlayer ? undefined : "480px" }}
         />
       )}
     </>
