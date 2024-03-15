@@ -1,4 +1,3 @@
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { ThumbsUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -6,7 +5,7 @@ import { PluginFrameContainer } from "../PluginsContext";
 import { VideoComment } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import PluginCommentReplies from "./PluginCommentReplies";
-import { Avatar } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 
 interface CommentProps {
@@ -41,23 +40,27 @@ const Comment: React.FC<CommentProps> = (props) => {
     });
 
   return (
-    <div className="flex">
+    <div className="flex gap-4">
       <div>
         <Avatar>
           <AvatarImage alt={comment.author} src={image} />
           <AvatarFallback>{comment.author.slice(0, 2)}</AvatarFallback>
         </Avatar>
       </div>
-      <div>
-        <div className="m-0 text-left">{comment.author}</div>
-        <div className="text-muted-foreground text-sm">{createdDate}</div>
-        <div>{comment.content}</div>
-        {comment.likes ? (
-          <div className="flex">
-            <ThumbsUpIcon fontSize="small" />
-            {numberFormatter.format(comment.likes)}
-          </div>
-        ) : null}
+      <div className="space-y-2">
+        <div className="flex items-baseline">
+          <div className="mr-2">{comment.author}</div>
+          <div className="text-muted-foreground text-xs">{createdDate}</div>
+        </div>
+        <p>{comment.content}</p>
+        <div className="flex items-center gap-5">
+          {comment.likes ? (
+            <div className="flex">
+              <ThumbsUpIcon fontSize="small" />
+              {numberFormatter.format(comment.likes)}
+            </div>
+          ) : null}
+        </div>
         <div>{comment.replyCount && replyElement}</div>
       </div>
     </div>
