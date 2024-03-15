@@ -140,21 +140,23 @@ const SearchBar: React.FC = () => {
         {open && (
           <div className="absolute top-1 z-50 w-full rounded-xl bg-stone-50 outline-none animate-in fade-in-0 zoom-in-95">
             <CommandList className="ring-1 ring-slate-200 rounded-lg">
-              <CommandGroup>
-                {options.map((result) => (
-                  <CommandItem
-                    key={result}
-                    value={result}
-                    onSelect={handleSelect}
-                    onMouseDown={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-                    }}
-                  >
-                    {result}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              {options.length > 0 && (
+                <CommandGroup>
+                  {options.map((result) => (
+                    <CommandItem
+                      key={result}
+                      value={result}
+                      onSelect={handleSelect}
+                      onMouseDown={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                      }}
+                    >
+                      {result}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
             </CommandList>
           </div>
         )}
