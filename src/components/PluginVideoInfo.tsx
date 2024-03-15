@@ -8,6 +8,7 @@ import VideoMenu from "./VideoMenu";
 import { Button } from "./ui/button";
 import TimeAgo from "timeago-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -17,15 +18,8 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
   const { t } = useTranslation();
   const [showMore, setShowMore] = React.useState(false);
-  // const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
+  const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
-  // const uploadDate =
-  //   video.uploadDate &&
-  //   new Date(video.uploadDate).toLocaleDateString("en-US", {
-  //     month: "long",
-  //     day: "numeric",
-  //     year: "numeric",
-  //   });
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
@@ -43,16 +37,9 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
       />
       <div className="flex gap-4">
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-baseline">
-            <h3 className="mr-2">{video.channelName}</h3>
-            <span className="text-sm text-muted-foreground">
-              {video.uploadDate && (
-                <span>
-                  <TimeAgo datetime={video.uploadDate} />
-                </span>
-              )}
-            </span>
-          </div>
+          <Link to={channelUrl} className="text-muted-foreground">
+            {video.channelName}
+          </Link>
           {video.likes ? (
             <div>
               <ThumbsUpIcon />
@@ -66,24 +53,27 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
             </div>
           ) : null}
         </div>
-
-        <div>
-          <VideoMenu video={video} notCardVideo />
-        </div>
+        <VideoMenu video={video} notCardVideo />
       </div>
-
-      {/* <div>
-          {video.views &&
-            t("numberOfViews", {
-              viewCount: numberFormatter.format(video.views),
-            })}
-        </div> */}
       <div
         className={cn(
           "mb-5 bg-muted relative overflow-hidden text-sm rounded-lg p-3",
           !showMore && "h-20"
         )}
       >
+        <div className="space-x-2">
+          <span>
+            {video.views &&
+              t("numberOfViews", {
+                viewCount: numberFormatter.format(video.views),
+              })}
+          </span>
+          {video.uploadDate && (
+            <span>
+              <TimeAgo datetime={video.uploadDate} />
+            </span>
+          )}
+        </div>
         {video.description ? (
           <VideoDescrption description={video.description} />
         ) : null}
