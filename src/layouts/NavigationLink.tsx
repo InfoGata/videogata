@@ -28,6 +28,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
           cn(props.className, isActive && "bg-muted")
         }
         to={item.link}
+        end
       >
         {props.children}
       </NavLink>
