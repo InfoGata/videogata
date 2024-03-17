@@ -62,7 +62,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   getPlaylists(): Promise<Playlist[]>;
   getPlaylistsInfo(): Promise<PlaylistInfo[]>;
   addPlaylists(playlists: Playlist[]): Promise<void>;
-  addVideosToPlaylist(playlistId: string, tracks: Video[]): Promise<void>;
+  addVideosToPlaylist(playlistId: string, videos: Video[]): Promise<void>;
   isLoggedIn(): Promise<boolean>;
   getTheme(): Promise<Theme>;
   getEnvironmentInfo(): Promise<EnvironmentInfo>;

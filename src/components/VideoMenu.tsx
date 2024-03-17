@@ -41,7 +41,7 @@ const VideoMenu: React.FC<Props> = (props) => {
   };
   const playlists = useAppSelector((state) => state.playlist.playlists);
 
-  const favoriteTrack = async () => {
+  const favoriteVideo = async () => {
     if (video) {
       await db.favoriteVideos.add(video);
       toast(t("addedToFavorites"));
@@ -59,7 +59,7 @@ const VideoMenu: React.FC<Props> = (props) => {
     {
       title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
       icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
-      action: isFavorited ? removeFavorite : favoriteTrack,
+      action: isFavorited ? removeFavorite : favoriteVideo,
     },
     video.channelApiId
       ? {

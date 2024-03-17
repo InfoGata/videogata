@@ -76,7 +76,7 @@ export type NotifyLoginMessage = {
   domainHeaders: Record<string, Record<string, string>>;
 };
 
-export type TrackItemType = {
+export type VideoItemType = {
   type: "video";
   item: Video;
 };
@@ -89,7 +89,7 @@ export type ChannelItemType = {
   item: Channel;
 };
 
-export type ItemMenuType = TrackItemType | PlaylistItemType | ChannelItemType;
+export type ItemMenuType = VideoItemType | PlaylistItemType | ChannelItemType;
 
 export interface LoginInfo {
   foundCookies: boolean;
