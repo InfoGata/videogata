@@ -25,7 +25,6 @@ interface VideoListProps {
   onSelect?: (e: React.MouseEvent, id: string, index: number) => void;
   onSelectAll?: (state: CheckedState) => void;
   isSelected?: (id: string) => boolean;
-  onDelete?: (video: Video) => void;
   menuItems?: DropdownItemProps[];
   currentVideoId?: string;
 }
