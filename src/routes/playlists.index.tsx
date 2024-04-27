@@ -1,9 +1,9 @@
+import { Link, createFileRoute } from "@tanstack/react-router";
 import PlaylistListItem from "@/components/PlaylistListItem";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { PluginFrameContainer } from "../PluginsContext";
 import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
@@ -27,9 +27,11 @@ const Playlists: React.FC = () => {
 
   const pluginPlaylists = playlistPlugins.map((p) => (
     <Link
-      className={buttonVariants({ variant: "outline" })}
-      to={`/plugins/${p.id}/playlists?isuserplaylist`}
       key={p.id}
+      className={buttonVariants({ variant: "outline" })}
+      to="/plugins/$pluginId/playlists"
+      params={{ pluginId: p.id || "" }}
+      search={{ isUserPlaylist: true }}
     >
       {p.name}
     </Link>
@@ -98,4 +100,6 @@ const Playlists: React.FC = () => {
   );
 };
 
-export default Playlists;
+export const Route = createFileRoute("/playlists/")({
+  component: Playlists,
+});

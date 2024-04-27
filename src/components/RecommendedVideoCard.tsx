@@ -1,8 +1,8 @@
 import { Video } from "@/plugintypes";
 import { getThumbnailImage, playlistThumbnailSize } from "@/utils";
+import { Link } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import TimeAgo from "timeago-react";
 
 interface Props {
@@ -12,12 +12,15 @@ interface Props {
 const RecommendedVideoCard: React.FC<Props> = (props) => {
   const { video } = props;
   const image = getThumbnailImage(video.images, playlistThumbnailSize);
-  const url = `/plugins/${video.pluginId}/videos/${video.apiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const { t } = useTranslation();
 
   return (
-    <Link to={url} className="flex gap-2">
+    <Link
+      to="/plugins/$pluginId/videos/$apiId"
+      params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
+      className="flex gap-2"
+    >
       <img src={image} className="h-32 rounded-lg" />
       <div className="text-xs">
         <h3 className="font-medium text-sm mb-1.5">{video.title}</h3>

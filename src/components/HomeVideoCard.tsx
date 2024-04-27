@@ -6,10 +6,10 @@ import {
 } from "@/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import TimeAgo from "timeago-react";
 import DOMPurify from "dompurify";
 import VideoMenu from "./VideoMenu";
+import { Link } from "@tanstack/react-router";
 
 interface Props {
   video: Video;
@@ -22,12 +22,13 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const sanitizer = DOMPurify.sanitize;
 
-  const url = `/plugins/${video.pluginId}/videos/${video.apiId}`;
-  const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
-
   return (
     <div className="group">
-      <Link to={url} className="relative block">
+      <Link
+        to="/plugins/$pluginId/videos/$apiId"
+        params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
+        className="relative block"
+      >
         <img
           src={image}
           className="rounded-2xl bg-gray-200 w-full h-64 object-cover"
@@ -39,7 +40,13 @@ const HomeVideoCard: React.FC<Props> = (props) => {
       <div className="mt-3">
         <div>
           <div className="flex justify-between">
-            <Link to={url}>
+            <Link
+              to="/plugins/$pluginId/videos/$apiId"
+              params={{
+                pluginId: video.pluginId || "",
+                apiId: video.apiId || "",
+              }}
+            >
               <h3
                 className="font-medium"
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
@@ -47,7 +54,14 @@ const HomeVideoCard: React.FC<Props> = (props) => {
             </Link>
             <VideoMenu video={video} />
           </div>
-          <Link to={channelUrl} className="text-muted-foreground text-sm">
+          <Link
+            to="/plugins/$pluginId/channels/$apiId"
+            params={{
+              pluginId: video.pluginId || "",
+              apiId: video.channelApiId || "",
+            }}
+            className="text-muted-foreground text-sm"
+          >
             {video.channelName}
           </Link>
           <p className="text-muted-foreground text-xs">

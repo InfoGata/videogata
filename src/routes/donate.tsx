@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -54,4 +55,6 @@ const Donate: React.FC = () => {
   );
 };
 
-export default Donate;
+export const Route = createFileRoute("/donate")({
+  component: Donate,
+});

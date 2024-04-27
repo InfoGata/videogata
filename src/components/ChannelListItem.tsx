@@ -3,10 +3,10 @@ import { ItemMenuType } from "@/types";
 import { getThumbnailImage, searchThumbnailSize } from "@/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
 import ItemMenu from "./ItemMenu";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 type Props = {
   channel: Channel;
@@ -22,14 +22,18 @@ const ChannelListItem: React.FC<Props> = (props) => {
   const onLiveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const url = `/plugins/${channel.pluginId}/channels/${channel.apiId}/live`;
-    navigate(url);
+    navigate({
+      to: "/plugins/$pluginId/channels/$apiId/live",
+      params: { pluginId: channel.pluginId || "", apiId: channel.apiId || "" },
+    });
   };
 
   return (
     <Link
-      to={`/plugins/${channel.pluginId}/channels/${channel.apiId}`}
-      state={channel}
+      // to={`/plugins/${channel.pluginId}/channels/${channel.apiId}`}
+      to="/plugins/$pluginId/channels/$apiId"
+      params={{ pluginId: channel.pluginId || "", apiId: channel.apiId || "" }}
+      state={{ channel }}
       className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"
     >
       <Avatar className="h-10 w-10">

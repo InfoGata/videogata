@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import AddPluginUrlDialog from "@/components/Plugins/AddPluginUrlDialog";
 import PluginContainer from "@/components/Plugins/PluginContainer";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -103,4 +104,6 @@ const Plugins: React.FC = () => {
   );
 };
 
-export default Plugins;
+export const Route = createFileRoute("/plugins/")({
+  component: Plugins,
+});

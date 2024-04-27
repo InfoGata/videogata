@@ -3,9 +3,9 @@ import React from "react";
 import { AvatarImage, Avatar } from "./ui/avatar";
 import ItemMenu from "./ItemMenu";
 import { ItemMenuType } from "@/types";
-import { Link } from "react-router-dom";
 import { PlaylistInfo } from "@/plugintypes";
 import { DropdownItemProps } from "./DropdownItem";
+import { Link } from "@tanstack/react-router";
 
 type Props = {
   playlist: PlaylistInfo;
@@ -18,17 +18,14 @@ const PlaylistListItem: React.FC<Props> = (props) => {
   const { playlist, dropdownItems, noFavorite, isUserPlaylist } = props;
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   const itemType: ItemMenuType = { type: "playlist", item: playlist };
-  let playlistPath = playlist.pluginId
+  const playlistPath = playlist.pluginId
     ? `/plugins/${playlist.pluginId}/playlists/${playlist.apiId}`
     : `/playlists/${playlist.id}`;
-
-  if (isUserPlaylist) {
-    playlistPath = `${playlistPath}?isuserplaylist`;
-  }
 
   return (
     <Link
       to={playlistPath}
+      search={{ isUserPlaylist: isUserPlaylist }}
       className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"
     >
       <Avatar className="h-10 w-10 rounded-none">

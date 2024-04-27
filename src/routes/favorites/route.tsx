@@ -1,7 +1,7 @@
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import FavoriteLink from "@/components/Favorites/FavoriteLink";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Outlet } from "react-router-dom";
 
 const Favorites: React.FC = () => {
   const { t } = useTranslation();
@@ -33,4 +33,6 @@ const Favorites: React.FC = () => {
   );
 };
 
-export default Favorites;
+export const Route = createFileRoute("/favorites")({
+  component: Favorites,
+});

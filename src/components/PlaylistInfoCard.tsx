@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import DOMPurify from "dompurify";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
 import PlaylistImage from "./PlaylistImage";
 import { buttonVariants } from "./ui/button";
+import { Link } from "@tanstack/react-router";
 
 interface PlaylistInfoCardProps {
   name: string;
@@ -38,7 +38,8 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
               buttonVariants({ variant: "destructive" }),
               "rounded-full"
             )}
-            to={`/plugins/${pluginId}/channels/${channelApiId}/live`}
+            to="/plugins/$pluginId/channels/$apiId/live"
+            params={{ pluginId: pluginId || "", apiId: channelApiId || "" }}
           >
             {t("live")}
           </Link>

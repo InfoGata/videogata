@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import { SkipBackIcon, SkipForwardIcon } from "lucide-react";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { Video } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setCurrentVideo } from "../store/reducers/queueReducer";
 import VideoList from "./VideoList";
 import { buttonVariants } from "./ui/button";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 interface PluginVideoPlaylistProps {
   videos: Video[];
@@ -38,7 +38,7 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
   React.useEffect(() => {
     const onNextVideo = () => {
       if (nextVideoUrl) {
-        navigate(nextVideoUrl);
+        navigate({ to: nextVideoUrl });
       }
     };
 

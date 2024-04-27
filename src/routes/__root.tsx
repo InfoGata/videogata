@@ -1,17 +1,17 @@
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Outlet } from "react-router-dom";
-import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import MiniPlayer from "./components/MiniPlayer";
-import { Toaster } from "./components/ui/sonner";
-import useOffline from "./hooks/useOffline";
-import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
-import SideBar from "./layouts/SideBar";
-import TopBar from "./layouts/TopBar";
-import PluginsProvider from "./providers/PluginsProvider";
-import { useAppDispatch } from "./store/hooks";
-import { initializePlaylists } from "./store/reducers/playlistReducer";
-import { hasExtension } from "./utils";
+import MiniPlayer from "../components/MiniPlayer";
+import { Toaster } from "../components/ui/sonner";
+import useOffline from "../hooks/useOffline";
+import useUpdateServiceWorker from "../hooks/useUpdateServiceWorker";
+import SideBar from "../layouts/SideBar";
+import TopBar from "../layouts/TopBar";
+import PluginsProvider from "../providers/PluginsProvider";
+import { useAppDispatch } from "../store/hooks";
+import { initializePlaylists } from "../store/reducers/playlistReducer";
+import { hasExtension } from "../utils";
+import { z } from "zod";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,7 +49,7 @@ messageChannel.port1.onmessage = async (event) => {
   }
 };
 
-const App: React.FC = () => {
+export const Root: React.FC = () => {
   const dispatch = useAppDispatch();
   useUpdateServiceWorker();
   useOffline();
@@ -60,21 +60,26 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MatomoRouterProvider>
-        <PluginsProvider>
-          <TopBar />
-          <div className="flex h-screen overflow-hidden">
-            <Toaster closeButton />
-            <SideBar />
-            <main className="pt-20 flex-1 pl-2 overflow-auto pb-1">
-              <MiniPlayer />
-              <Outlet />
-            </main>
-          </div>
-        </PluginsProvider>
-      </MatomoRouterProvider>
+      <PluginsProvider>
+        <TopBar />
+        <div className="flex min-h-screen overflow-hidden">
+          <Toaster closeButton />
+          <SideBar />
+          <main className="pt-20 flex-1 pl-2 overflow-auto pb-1">
+            <MiniPlayer />
+            <Outlet />
+          </main>
+        </div>
+      </PluginsProvider>
     </QueryClientProvider>
   );
 };
 
-export default App;
+const rootSearchSchema = z.object({
+  time: z.number().optional().catch(undefined),
+});
+
+export const Route = createRootRoute({
+  component: Root,
+  validateSearch: rootSearchSchema,
+});

@@ -8,9 +8,9 @@ import {
 import { ArrowUpRightFromSquareIcon, MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import ImportDialog from "../components/ImportDialog";
 import { Playlist, Video } from "../plugintypes";
+import { useNavigate } from "@tanstack/react-router";
 
 const GlobalOptions: React.FC = () => {
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
@@ -23,8 +23,10 @@ const GlobalOptions: React.FC = () => {
   const onImport = (item: Video[] | Playlist) => {
     if (Array.isArray(item) && item.length > 0) {
       const video = item[0];
-      const url = `/plugins/${video.pluginId}/videos/${video.apiId}`;
-      navigate(url);
+      navigate({
+        to: "/plugins/$pluginId/videos/$apiId",
+        params: { pluginId: video.pluginId || "", apiId: video.apiId || "" },
+      });
     }
   };
   return (

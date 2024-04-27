@@ -1,8 +1,9 @@
+import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import PluginCards from "../components/PluginCards/PluginCards";
 import TopItemCards from "../components/TopItemCards";
 
-const Home: React.FC = () => {
+export const Index: React.FC = () => {
   return (
     <>
       <TopItemCards />
@@ -11,4 +12,6 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export const Route = createFileRoute("/")({
+  component: Index,
+});

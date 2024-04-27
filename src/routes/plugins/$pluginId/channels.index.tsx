@@ -1,16 +1,16 @@
+import { createFileRoute } from "@tanstack/react-router";
 import ChannelListItem from "@/components/ChannelListItem";
 import React from "react";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
-import Pager from "../components/Pager";
-import Spinner from "../components/Spinner";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import { PageInfo, UserChannelRequest } from "../plugintypes";
+import Pager from "@/components/Pager";
+import Spinner from "@/components/Spinner";
+import usePagination from "@/hooks/usePagination";
+import usePlugins from "@/hooks/usePlugins";
+import { PageInfo, UserChannelRequest } from "@/plugintypes";
 
 const UserPluginChannels: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
-  const { pluginId } = useParams<"pluginId">();
+  const { pluginId } = Route.useParams();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
@@ -47,4 +47,7 @@ const UserPluginChannels: React.FC = () => {
     </>
   );
 };
-export default UserPluginChannels;
+
+export const Route = createFileRoute("/plugins/$pluginId/channels/")({
+  component: UserPluginChannels,
+});

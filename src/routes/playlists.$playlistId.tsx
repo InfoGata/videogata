@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { DropdownItemProps } from "@/components/DropdownItem";
 import { Button } from "@/components/ui/button";
 import { ItemMenuType } from "@/types";
@@ -5,7 +6,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { FileUpIcon, PencilIcon, Trash, TrashIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import EditPlaylistDialog from "../components/EditPlaylistDialog";
 import ImportDialog from "../components/ImportDialog";
 import PlaylistMenu from "../components/PlaylistMenu";
@@ -22,7 +22,7 @@ import {
 } from "../store/reducers/playlistReducer";
 
 const PlaylistVideos: React.FC = () => {
-  const { playlistId } = useParams<"playlistId">();
+  const { playlistId } = Route.useParams();
 
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
@@ -148,4 +148,6 @@ const PlaylistVideos: React.FC = () => {
   );
 };
 
-export default PlaylistVideos;
+export const Route = createFileRoute("/playlists/$playlistId")({
+  component: PlaylistVideos,
+});

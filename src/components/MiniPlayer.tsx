@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { XCircleIcon } from "lucide-react";
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import { Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -9,6 +8,7 @@ import { closePlayer } from "../store/reducers/playerReducer";
 import PluginPlayer from "./PluginPlayer";
 import VideoPlayer from "./VideoPlayer";
 import { Button } from "./ui/button";
+import { Link, useRouterState, useSearch } from "@tanstack/react-router";
 
 const MiniPlayer: React.FC = () => {
   const playerState = useAppSelector((state) => state.player);
@@ -16,23 +16,21 @@ const MiniPlayer: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === playerState.pluginId);
   const [video, setVideo] = React.useState<Video>();
-  const location = useLocation();
   const dispatch = useAppDispatch();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
   const useDefaultPlayer =
-    location.pathname.endsWith("/live") ||
-    location.pathname.endsWith(`/videos/${playerState.apiId}`);
-  const params = new URLSearchParams(location.search);
-  const timeInSeconds = params.has("t")
-    ? parseInt(params.get("t") ?? "0", 10)
-    : undefined;
+    pathname.endsWith("/live") ||
+    pathname.endsWith(`/videos/${playerState.apiId}`);
   const useMiniPlayer = useAppSelector((state) => state.settings.useMiniPlayer);
-  const url = `/plugins/${video?.pluginId}/videos/${video?.apiId}`;
+  const { time } = useSearch({ strict: false });
 
   React.useEffect(() => {
-    if (timeInSeconds) {
+    if (time) {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
-  }, [timeInSeconds]);
+  }, [time]);
 
   React.useEffect(() => {
     const getVideo = async () => {
@@ -103,7 +101,7 @@ const MiniPlayer: React.FC = () => {
         <VideoPlayer
           video={video}
           isMiniPlayer={!useDefaultPlayer}
-          timeInSeconds={timeInSeconds}
+          timeInSeconds={time}
         />
       ) : null}
       {usePlayer && (
@@ -113,11 +111,14 @@ const MiniPlayer: React.FC = () => {
           plugin={plugin}
           isLive={playerState.isLive}
           isMiniPlayer={!useDefaultPlayer}
-          timeInSeconds={timeInSeconds}
+          timeInSeconds={time}
         />
       )}
       {!useDefaultPlayer && video && (
-        <Link to={url}>
+        <Link
+          to="/plugins/$pluginId/videos/$apiId"
+          params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
+        >
           <p className="text-sm">{video.title}</p>
         </Link>
       )}

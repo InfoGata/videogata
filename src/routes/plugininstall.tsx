@@ -1,23 +1,20 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { generatePluginId, getPlugin } from "../utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Spinner from "../components/Spinner";
+import { z } from "zod";
 
 const PluginInstall: React.FC = () => {
   const [isInstalling, setIsInstalling] = React.useState(true);
-  const location = useLocation();
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-  const manifestUrl = params.get("manifestUrl") || "";
-  const headerKey = params.get("headerKey") || "";
-  const headerValue = params.get("headerValue") || "";
+  const { manifestUrl, headerKey, headerValue } = Route.useSearch();
   const [isLoading, setIsLoading] = React.useState(true);
   const { t } = useTranslation("plugins");
 
@@ -61,11 +58,11 @@ const PluginInstall: React.FC = () => {
   };
 
   const onAfterConfirm = () => {
-    navigate("/plugins");
+    navigate({ to: "/plugins" });
   };
 
   const onAfterCancel = () => {
-    navigate("/plugins");
+    navigate({ to: "/plugins" });
   };
 
   return (
@@ -88,4 +85,13 @@ const PluginInstall: React.FC = () => {
   );
 };
 
-export default PluginInstall;
+const pluginInstallSchema = z.object({
+  manifestUrl: z.string().optional().catch(undefined),
+  headerKey: z.string().optional().catch(undefined),
+  headerValue: z.string().optional().catch(undefined),
+});
+
+export const Route = createFileRoute("/plugininstall")({
+  component: PluginInstall,
+  validateSearch: pluginInstallSchema,
+});

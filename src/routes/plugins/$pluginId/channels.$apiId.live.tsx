@@ -1,18 +1,17 @@
+import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePlugins from "../hooks/usePlugins";
-import { setPlayerInfo } from "../store/reducers/playerReducer";
-import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
-import PluginVideoInfo from "../components/PluginVideoInfo";
-import Spinner from "../components/Spinner";
+import useFindPlugin from "@/hooks/useFindPlugin";
+import usePlugins from "@/hooks/usePlugins";
+import { setPlayerInfo } from "@/store/reducers/playerReducer";
+import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
+import PluginVideoInfo from "@/components/PluginVideoInfo";
+import Spinner from "@/components/Spinner";
 
 const PluginVideo: React.FC = () => {
-  const { pluginId } = useParams<"pluginId">();
   const dispatch = useDispatch();
-  const { apiId } = useParams<"apiId">();
+  const { pluginId, apiId } = Route.useParams();
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
@@ -53,4 +52,8 @@ const PluginVideo: React.FC = () => {
   );
 };
 
-export default PluginVideo;
+export const Route = createFileRoute("/plugins/$pluginId/channels/$apiId/live")(
+  {
+    component: PluginVideo,
+  }
+);

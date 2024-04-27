@@ -1,29 +1,29 @@
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import HomeVideoCard from "@/components/HomeVideoCard";
 import VideoContainer from "@/components/VideoContainer";
 import React from "react";
 import { useQuery } from "react-query";
-import { useLocation, useParams } from "react-router-dom";
-import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
-import Pager from "../components/Pager";
-import PlaylistInfoCard from "../components/PlaylistInfoCard";
-import Spinner from "../components/Spinner";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import { Channel, PageInfo } from "../plugintypes";
+import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
+import Pager from "@/components/Pager";
+import PlaylistInfoCard from "@/components/PlaylistInfoCard";
+import Spinner from "@/components/Spinner";
+import useFindPlugin from "@/hooks/useFindPlugin";
+import usePagination from "@/hooks/usePagination";
+import usePlugins from "@/hooks/usePlugins";
+import { Channel, PageInfo } from "@/plugintypes";
 
 const ChannelPage: React.FC = () => {
-  const { pluginId } = useParams<"pluginId">();
-  const { apiId } = useParams<"apiId">();
+  const { pluginId, apiId } = Route.useParams();
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
-  const location = useLocation();
-  const state = location.state as Channel | null;
+  const state = useRouterState({ select: (s) => s.location.state });
   const [isLive, setIsLive] = React.useState<boolean>();
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
-  const [channel, setChannel] = React.useState<Channel | null>(state);
+  const [channel, setChannel] = React.useState<Channel | undefined>(
+    state.channel
+  );
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
     pluginId,
@@ -87,4 +87,6 @@ const ChannelPage: React.FC = () => {
   );
 };
 
-export default ChannelPage;
+export const Route = createFileRoute("/plugins/$pluginId/channels/$apiId/")({
+  component: ChannelPage,
+});

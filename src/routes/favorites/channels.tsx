@@ -1,12 +1,12 @@
+import { Link, createFileRoute } from "@tanstack/react-router";
 import ChannelListItem from "@/components/ChannelListItem";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { PluginFrameContainer } from "../PluginsContext";
-import { db } from "../database";
-import usePlugins from "../hooks/usePlugins";
-import { filterAsync } from "../utils";
+import { PluginFrameContainer } from "@/PluginsContext";
+import { db } from "@/database";
+import usePlugins from "@/hooks/usePlugins";
+import { filterAsync } from "@/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 const FavoriteChannels: React.FC = () => {
@@ -45,7 +45,8 @@ const FavoriteChannels: React.FC = () => {
         {channelPlugins.map((p) => (
           <Link
             className={buttonVariants({ variant: "outline" })}
-            to={`/plugins/${p.id}/channels`}
+            to="/plugins/$pluginId/channels"
+            params={{ pluginId: p.id || "" }}
             key={p.id}
           >
             {p.name}
@@ -57,4 +58,6 @@ const FavoriteChannels: React.FC = () => {
   );
 };
 
-export default FavoriteChannels;
+export const Route = createFileRoute("/favorites/channels")({
+  component: FavoriteChannels,
+});

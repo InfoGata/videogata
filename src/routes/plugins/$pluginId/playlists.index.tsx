@@ -1,17 +1,17 @@
+import { createFileRoute } from "@tanstack/react-router";
 import PlaylistListItem from "@/components/PlaylistListItem";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { useParams } from "react-router";
-import Pager from "../components/Pager";
-import Spinner from "../components/Spinner";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import { PageInfo, UserPlaylistRequest } from "../plugintypes";
+import Pager from "@/components/Pager";
+import Spinner from "@/components/Spinner";
+import usePagination from "@/hooks/usePagination";
+import usePlugins from "@/hooks/usePlugins";
+import { PageInfo, UserPlaylistRequest } from "@/plugintypes";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
-  const { pluginId } = useParams<"pluginId">();
+  const { pluginId } = Route.useParams();
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const plugin = plugins.find((p) => p.id === pluginId);
@@ -58,4 +58,6 @@ const PluginPlaylists: React.FC = () => {
   );
 };
 
-export default PluginPlaylists;
+export const Route = createFileRoute("/plugins/$pluginId/playlists/")({
+  component: PluginPlaylists,
+});

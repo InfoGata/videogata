@@ -1,6 +1,5 @@
 import DOMPurify from "dompurify";
 import React from "react";
-import { Link } from "react-router-dom";
 import { Video } from "../plugintypes";
 import {
   formatSeconds,
@@ -12,6 +11,7 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Checkbox } from "./ui/checkbox";
 import { TableCell } from "./ui/table";
 import { DropdownItemProps } from "./DropdownItem";
+import { Link } from "@tanstack/react-router";
 
 interface PlaylistItemsProps {
   video: Video;
@@ -59,7 +59,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             <AvatarImage src={image} />
           </Avatar>
           <div className="min-w-0">
-            <Link to={videoUrl} onClick={onCheckboxClick}>
+            <Link to={videoUrl}>
               <p
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
                 title={video.title}
@@ -68,8 +68,11 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             </Link>
             {video.channelApiId ? (
               <Link
-                to={`/plugins/${video.pluginId}/channels/${video.channelApiId}`}
-                onClick={onCheckboxClick}
+                to="/plugins/$pluginId/channels/$apiId"
+                params={{
+                  pluginId: video.pluginId || "",
+                  apiId: video.channelApiId || "",
+                }}
               >
                 {video.channelName}
               </Link>

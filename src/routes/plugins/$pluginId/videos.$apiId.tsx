@@ -1,28 +1,25 @@
+import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "react-query";
-import { useLocation, useParams } from "react-router-dom";
-import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
-import PluginVideoComments from "../components/PluginVideoComments";
-import PluginVideoInfo from "../components/PluginVideoInfo";
-import PluginVideoPlaylist from "../components/PluginVideoPlaylist";
-import RecommendedVideos from "../components/RecommendVideos";
-import Spinner from "../components/Spinner";
-import { db } from "../database";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePlugins from "../hooks/usePlugins";
-import { Video } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
-import { setPlayerInfo } from "../store/reducers/playerReducer";
+import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
+import PluginVideoComments from "@/components/PluginVideoComments";
+import PluginVideoInfo from "@/components/PluginVideoInfo";
+import PluginVideoPlaylist from "@/components/PluginVideoPlaylist";
+import RecommendedVideos from "@/components/RecommendVideos";
+import Spinner from "@/components/Spinner";
+import { db } from "@/database";
+import useFindPlugin from "@/hooks/useFindPlugin";
+import usePlugins from "@/hooks/usePlugins";
+import { Video } from "@/plugintypes";
+import { useAppDispatch } from "@/store/hooks";
+import { setPlayerInfo } from "@/store/reducers/playerReducer";
+import { z } from "zod";
 
 const PluginVideo: React.FC = () => {
-  const { pluginId } = useParams<"pluginId">();
+  const { pluginId, apiId } = Route.useParams();
   const dispatch = useAppDispatch();
-  const { apiId } = useParams<"apiId">();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const playlistId = params.get("playlistId") || "";
-  const videoId = params.get("videoId") || "";
+  const { videoId, playlistId } = Route.useSearch();
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [playlistVideos, setPlaylistVideos] = React.useState<Video[]>();
@@ -73,7 +70,7 @@ const PluginVideo: React.FC = () => {
       {playlistVideos && (
         <PluginVideoPlaylist
           videos={playlistVideos}
-          playlistId={playlistId}
+          playlistId={playlistId || ""}
           videoId={videoId}
         />
       )}
@@ -100,4 +97,12 @@ const PluginVideo: React.FC = () => {
   );
 };
 
-export default PluginVideo;
+const pluginVideoSchema = z.object({
+  playlistId: z.string().optional().catch(undefined),
+  videoId: z.string().optional().catch(undefined),
+});
+
+export const Route = createFileRoute("/plugins/$pluginId/videos/$apiId")({
+  component: PluginVideo,
+  validateSearch: pluginVideoSchema,
+});

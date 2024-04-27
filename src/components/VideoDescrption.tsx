@@ -7,9 +7,9 @@ import parse, {
   DOMNode,
 } from "html-react-parser";
 import linkifyHtml from "linkify-html";
-import { Link } from "react-router-dom";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 
 interface VideoDescrptionProps {
   description: string;
@@ -75,13 +75,16 @@ const VideoDescrption: React.FC<VideoDescrptionProps> = (props) => {
         if (href.indexOf("?") === 0) {
           const urlSearchParams = new URLSearchParams(href);
           if (urlSearchParams.has("t")) {
+            const t = parseInt(urlSearchParams.get("t") || "0", 10);
+            const time = isNaN(t) ? undefined : t;
+
             return (
               <Link
                 className={cn(
                   buttonVariants({ variant: "link", size: "sm" }),
                   "h-6 p-0"
                 )}
-                to={{ search: href }}
+                search={{ time }}
               >
                 {domToReact(domNode.children as DOMNode[])}
               </Link>

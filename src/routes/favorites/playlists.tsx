@@ -1,10 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router";
 import PlaylistListItem from "@/components/PlaylistListItem";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { db } from "../database";
+import { db } from "@/database";
 
-const FavoriteChannels: React.FC = () => {
+const FavoritePlaylists: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
   const { t } = useTranslation();
 
@@ -23,4 +24,6 @@ const FavoriteChannels: React.FC = () => {
   return <div>{playlistList}</div>;
 };
 
-export default FavoriteChannels;
+export const Route = createFileRoute("/favorites/playlists")({
+  component: FavoritePlaylists,
+});

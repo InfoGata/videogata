@@ -1,8 +1,8 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
-import { useLocation } from "react-router-dom";
 import ChannelSearchResults from "../components/ChannelSearchResults";
 import PlaylistSearchResults from "../components/PlaylistSearchResults";
 import SelectPlugin from "../components/SelectPlugin";
@@ -11,22 +11,21 @@ import VideoSearchResults from "../components/VideoSearchResults";
 import usePlugins from "../hooks/usePlugins";
 import { Channel, PlaylistInfo, SearchAllResult, Video } from "../plugintypes";
 import { SearchResultType } from "../types";
+import { z } from "zod";
 
 const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const [tabValue, setTabValue] = React.useState("videos");
   const { plugins } = usePlugins();
   const { t } = useTranslation();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const searchQuery = params.get("q") || "";
+  const { q } = Route.useSearch();
   const queryClient = useQueryClient();
 
   const onSearch = async () => {
     let searchAll: SearchAllResult | undefined;
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
-      searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
+      searchAll = await plugin.remote.onSearchAll({ query: q });
     }
 
     if (searchAll?.videos) {
@@ -38,22 +37,22 @@ const Search: React.FC = () => {
     }
 
     queryClient.setQueryData<Video[] | undefined>(
-      ["searchVideos", pluginId, searchQuery, undefined, undefined],
+      ["searchVideos", pluginId, q, undefined, undefined],
       searchAll?.videos?.items
     );
     queryClient.setQueryData<Channel[] | undefined>(
-      ["searchChannels", pluginId, searchQuery, undefined, undefined],
+      ["searchChannels", pluginId, q, undefined, undefined],
       searchAll?.channels?.items
     );
     queryClient.setQueryData<PlaylistInfo[] | undefined>(
-      ["searchPlaylists", pluginId, searchQuery, undefined, undefined],
+      ["searchPlaylists", pluginId, q, undefined, undefined],
       searchAll?.playlists?.items
     );
 
     return searchAll;
   };
 
-  const query = useQuery(["search", pluginId, searchQuery], onSearch);
+  const query = useQuery(["search", pluginId, q], onSearch);
   const videoList = query?.data?.videos?.items || [];
   const channelList = query?.data?.channels?.items || [];
   const playlistList = query?.data?.playlists?.items || [];
@@ -92,7 +91,7 @@ const Search: React.FC = () => {
           {!!query.data?.videos && (
             <VideoSearchResults
               pluginId={pluginId}
-              searchQuery={searchQuery}
+              searchQuery={q}
               initialPage={query.data?.videos?.pageInfo}
               initialFilter={query.data?.videos?.filterInfo}
             />
@@ -102,7 +101,7 @@ const Search: React.FC = () => {
           {!!query.data?.channels && (
             <ChannelSearchResults
               pluginId={pluginId}
-              searchQuery={searchQuery}
+              searchQuery={q}
               initialPage={query.data?.channels?.pageInfo}
               initialFilter={query.data?.channels?.filterInfo}
             />
@@ -112,7 +111,7 @@ const Search: React.FC = () => {
           {!!query.data?.playlists && (
             <PlaylistSearchResults
               pluginId={pluginId}
-              searchQuery={searchQuery}
+              searchQuery={q}
               initialPage={query.data?.playlists?.pageInfo}
               initialFilter={query.data?.playlists?.filterInfo}
             />
@@ -123,4 +122,11 @@ const Search: React.FC = () => {
   );
 };
 
-export default Search;
+const searchSchema = z.object({
+  q: z.string().catch(""),
+});
+
+export const Route = createFileRoute("/search")({
+  component: Search,
+  validateSearch: searchSchema,
+});

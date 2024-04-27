@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { DropdownItemProps } from "@/components/DropdownItem";
 import HomeVideoCard from "@/components/HomeVideoCard";
 import VideoContainer from "@/components/VideoContainer";
@@ -5,11 +6,11 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { FileUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import ImportDialog from "../components/ImportDialog";
-import PlaylistMenu from "../components/PlaylistMenu";
-import { db } from "../database";
-import { Playlist, Video } from "../plugintypes";
-import { useAppSelector } from "../store/hooks";
+import ImportDialog from "@/components/ImportDialog";
+import PlaylistMenu from "@/components/PlaylistMenu";
+import { db } from "@/database";
+import { Playlist, Video } from "@/plugintypes";
+import { useAppSelector } from "@/store/hooks";
 
 const FavoriteVideos: React.FC = () => {
   const videos = useLiveQuery(() => db.favoriteVideos.toArray());
@@ -69,4 +70,6 @@ const FavoriteVideos: React.FC = () => {
   );
 };
 
-export default FavoriteVideos;
+export const Route = createFileRoute("/favorites/videos")({
+  component: FavoriteVideos,
+});

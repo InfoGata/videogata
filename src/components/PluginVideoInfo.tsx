@@ -8,7 +8,7 @@ import VideoMenu from "./VideoMenu";
 import { Button } from "./ui/button";
 import TimeAgo from "timeago-react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 interface PluginVideoInfoProps {
   video: Video;
@@ -58,7 +58,7 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
       <div
         className={cn(
           "mb-5 bg-muted relative overflow-hidden text-sm rounded-lg p-3",
-          !showMore && "h-20"
+          !showMore && "h-16"
         )}
       >
         <div className="space-x-2">
