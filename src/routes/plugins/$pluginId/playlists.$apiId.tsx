@@ -102,7 +102,7 @@ const PluginPlaylist: React.FC = () => {
 };
 
 const pluginPlaylistSearchSchema = z.object({
-  isUserPlaylist: z.boolean().default(false),
+  isUserPlaylist: z.boolean().catch(false),
 });
 
 export const Route = createFileRoute("/plugins/$pluginId/playlists/$apiId")({
