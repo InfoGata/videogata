@@ -50,7 +50,8 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
           )}
           <Link
             className={cn(buttonVariants({ variant: "outline" }))}
-            to={`/plugins/${plugin.id}`}
+            to="/plugins/$pluginId"
+            params={{ pluginId: plugin.id || "" }}
           >
             {t("pluginDetails")}
           </Link>
