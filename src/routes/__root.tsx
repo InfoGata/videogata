@@ -62,7 +62,7 @@ export const Root: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <PluginsProvider>
         <TopBar />
-        <div className="flex min-h-screen overflow-hidden">
+        <div className="flex h-screen overflow-hidden">
           <Toaster closeButton />
           <SideBar />
           <main className="pt-20 flex-1 pl-2 overflow-auto pb-1">
