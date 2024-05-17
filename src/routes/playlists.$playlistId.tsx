@@ -20,6 +20,8 @@ import {
   addPlaylistVideos,
   setPlaylistVideos,
 } from "../store/reducers/playlistReducer";
+import { createSelector } from "@reduxjs/toolkit";
+import { AppState } from "@/store/store";
 
 const PlaylistVideos: React.FC = () => {
   const { playlistId } = Route.useParams();
@@ -27,9 +29,12 @@ const PlaylistVideos: React.FC = () => {
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
-  const playlists = useAppSelector((state) =>
-    state.playlist.playlists.filter((p) => p.id !== playlistId)
+  const playlistsSelector = createSelector(
+    [(state: AppState) => state.playlist.playlists],
+    (playlists) => playlists.filter((p) => p.id !== playlistId)
   );
+  const playlists = useAppSelector(playlistsSelector);
+
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const playlist = useLiveQuery(
     () => db.playlists.get(playlistId || ""),
