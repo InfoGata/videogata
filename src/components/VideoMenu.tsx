@@ -83,28 +83,30 @@ const VideoMenu: React.FC<Props> = (props) => {
     },
   ];
 
-  const onOpenChange = async (open: boolean) => {
-    setOpen(open);
-    if (open) {
-      if (video.pluginId && video.apiId) {
-        const hasFavorite = await db.favoriteVideos.get({
-          pluginId: video.pluginId,
-          apiId: video.apiId,
-        });
-        setIsFavorited(!!hasFavorite);
-      } else if (video.id) {
-        const hasFavorite = await db.favoriteVideos.get(video.id);
-        setIsFavorited(!!hasFavorite);
-      } else {
-        setIsFavorited(false);
+  React.useEffect(() => {
+    const checkFavorite = async () => {
+      if (open) {
+        if (video.pluginId && video.apiId) {
+          const hasFavorite = await db.favoriteVideos.get({
+            pluginId: video.pluginId,
+            apiId: video.apiId,
+          });
+          setIsFavorited(!!hasFavorite);
+        } else if (video.id) {
+          const hasFavorite = await db.favoriteVideos.get(video.id);
+          setIsFavorited(!!hasFavorite);
+        } else {
+          setIsFavorited(false);
+        }
       }
-    }
-  };
+    };
+    checkFavorite();
+  }, [open, video]);
 
   const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (
     <>
-      <DropdownMenu onOpenChange={onOpenChange}>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"

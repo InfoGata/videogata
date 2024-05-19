@@ -17,11 +17,11 @@ const UseMiniPlayerSetting: React.FC = () => {
   return (
     <div className="flex items-center space-x-2">
       <Switch
-        id="auto-update"
+        id="mini-player"
         checked={useMiniPlayer}
         onChange={onToggleUseMiniPlayer}
       />
-      <Label htmlFor="auto-update">{t("disableAutoUpdatePlugins")}</Label>
+      <Label htmlFor="mini-player">{t("useMiniPlayer")}</Label>
     </div>
   );
 };
