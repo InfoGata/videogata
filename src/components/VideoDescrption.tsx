@@ -99,6 +99,7 @@ const VideoDescrption: React.FC<VideoDescrptionProps> = (props) => {
             )}
             href={domNode.attribs.href}
             target="_blank"
+            rel="noreferrer"
           >
             {domToReact(domNode.children as DOMNode[])}
           </a>

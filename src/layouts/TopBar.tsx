@@ -55,6 +55,7 @@ const TopBar: React.FC = () => {
                   href="https://github.com/InfoGata/videogata"
                   target="_blank"
                   className={buttonVariants({ variant: "ghost", size: "icon" })}
+                  rel="noreferrer"
                 >
                   <FaGithub />
                 </a>

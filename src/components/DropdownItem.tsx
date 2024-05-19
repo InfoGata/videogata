@@ -24,7 +24,12 @@ const DropdownItem: React.FC<DropdownItemProps> = (props) => {
     }
     if (url) {
       return (
-        <a href={url} target="_blank" className="flex items-center">
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center"
+        >
           {props.children}
         </a>
       );
