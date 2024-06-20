@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "",
   "type": "module",
-  "main": "./out/main/index.js",
+  "main": "./out/main/index.cjs",
   "dependencies": {
     "@awesome-cordova-plugins/in-app-browser": "^6.4.0",
     "@capacitor/android": "^5.5.1",

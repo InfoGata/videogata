@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
@@ -7,7 +8,9 @@ export default defineConfig({
   main: {
     build: {
       rollupOptions: {
-        input: {},
+        input: {
+          index: resolve(__dirname, "electron/main/index.ts"),
+        },
       },
     },
   },
@@ -23,7 +26,7 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        "hls.js": "hls.js/dist/hls.min.js",
+        "@": path.resolve(__dirname, "./src"),
       },
     },
     root: ".",
