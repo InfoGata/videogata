@@ -31,7 +31,6 @@ const Playlists: React.FC = () => {
       className={buttonVariants({ variant: "outline" })}
       to="/plugins/$pluginId/playlists"
       params={{ pluginId: p.id || "" }}
-      search={{ isUserPlaylist: true }}
     >
       {p.name}
     </Link>
