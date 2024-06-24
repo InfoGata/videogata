@@ -1,9 +1,6 @@
 import {
-  AnyRoute,
   LinkOptions,
-  LinkProps,
-  RegisteredRouter,
-  ToPathOption,
+  LinkProps
 } from "@tanstack/react-router";
 import {
   Channel,
@@ -11,6 +8,7 @@ import {
   PlaylistInfo,
   Video,
 } from "./plugintypes";
+import { router } from "./router";
 
 export interface NetworkRequest {
   body: Blob | ArrayBuffer | null;
@@ -105,19 +103,11 @@ export interface LoginInfo {
   headers: Record<string, string>;
 }
 
-export type LinkToPathProps<
-  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
-  TTo extends string = "",
-> = ToPathOption<TRouteTree, "/", TTo>;
-
-export type LinkRouterProps<
-  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
-  TTo extends string = "",
-> = LinkOptions<TRouteTree, "/", TTo> & LinkProps;
+export type LinkRouterProps = LinkOptions<typeof router> & LinkProps;
 
 export interface NavigationLinkItem {
   title: string;
-  link?: LinkToPathProps;
+  link?: LinkRouterProps;
   action?: () => void;
   icon: React.JSX.Element;
 }

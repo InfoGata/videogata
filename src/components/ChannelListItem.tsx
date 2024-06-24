@@ -30,7 +30,6 @@ const ChannelListItem: React.FC<Props> = (props) => {
 
   return (
     <Link
-      // to={`/plugins/${channel.pluginId}/channels/${channel.apiId}`}
       to="/plugins/$pluginId/channels/$apiId"
       params={{ pluginId: channel.pluginId || "", apiId: channel.apiId || "" }}
       state={{ channel }}

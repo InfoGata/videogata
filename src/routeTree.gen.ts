@@ -158,90 +158,156 @@ const PluginsPluginIdChannelsApiIdLiveRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
       preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRoute
     }
     '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
     '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
       preLoaderRoute: typeof DonateImport
       parentRoute: typeof rootRoute
     }
     '/plugininstall': {
+      id: '/plugininstall'
+      path: '/plugininstall'
+      fullPath: '/plugininstall'
       preLoaderRoute: typeof PlugininstallImport
       parentRoute: typeof rootRoute
     }
     '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyImport
       parentRoute: typeof rootRoute
     }
     '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
       preLoaderRoute: typeof SearchImport
       parentRoute: typeof rootRoute
     }
     '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
     '/favorites/channels': {
+      id: '/favorites/channels'
+      path: '/channels'
+      fullPath: '/favorites/channels'
       preLoaderRoute: typeof FavoritesChannelsImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/favorites/playlists': {
+      id: '/favorites/playlists'
+      path: '/playlists'
+      fullPath: '/favorites/playlists'
       preLoaderRoute: typeof FavoritesPlaylistsImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/favorites/videos': {
+      id: '/favorites/videos'
+      path: '/videos'
+      fullPath: '/favorites/videos'
       preLoaderRoute: typeof FavoritesVideosImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/playlists/$playlistId': {
+      id: '/playlists/$playlistId'
+      path: '/playlists/$playlistId'
+      fullPath: '/playlists/$playlistId'
       preLoaderRoute: typeof PlaylistsPlaylistIdImport
       parentRoute: typeof rootRoute
     }
     '/playlists/': {
+      id: '/playlists/'
+      path: '/playlists'
+      fullPath: '/playlists'
       preLoaderRoute: typeof PlaylistsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/': {
+      id: '/plugins/'
+      path: '/plugins'
+      fullPath: '/plugins'
       preLoaderRoute: typeof PluginsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/options': {
+      id: '/plugins/$pluginId/options'
+      path: '/plugins/$pluginId/options'
+      fullPath: '/plugins/$pluginId/options'
       preLoaderRoute: typeof PluginsPluginIdOptionsImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/': {
+      id: '/plugins/$pluginId/'
+      path: '/plugins/$pluginId'
+      fullPath: '/plugins/$pluginId'
       preLoaderRoute: typeof PluginsPluginIdIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/playlists/$apiId': {
+      id: '/plugins/$pluginId/playlists/$apiId'
+      path: '/plugins/$pluginId/playlists/$apiId'
+      fullPath: '/plugins/$pluginId/playlists/$apiId'
       preLoaderRoute: typeof PluginsPluginIdPlaylistsApiIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/videos/$apiId': {
+      id: '/plugins/$pluginId/videos/$apiId'
+      path: '/plugins/$pluginId/videos/$apiId'
+      fullPath: '/plugins/$pluginId/videos/$apiId'
       preLoaderRoute: typeof PluginsPluginIdVideosApiIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/channels/': {
+      id: '/plugins/$pluginId/channels/'
+      path: '/plugins/$pluginId/channels'
+      fullPath: '/plugins/$pluginId/channels'
       preLoaderRoute: typeof PluginsPluginIdChannelsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/playlists/': {
+      id: '/plugins/$pluginId/playlists/'
+      path: '/plugins/$pluginId/playlists'
+      fullPath: '/plugins/$pluginId/playlists'
       preLoaderRoute: typeof PluginsPluginIdPlaylistsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/channels/$apiId/live': {
+      id: '/plugins/$pluginId/channels/$apiId/live'
+      path: '/plugins/$pluginId/channels/$apiId/live'
+      fullPath: '/plugins/$pluginId/channels/$apiId/live'
       preLoaderRoute: typeof PluginsPluginIdChannelsApiIdLiveImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/channels/$apiId/': {
+      id: '/plugins/$pluginId/channels/$apiId/'
+      path: '/plugins/$pluginId/channels/$apiId'
+      fullPath: '/plugins/$pluginId/channels/$apiId'
       preLoaderRoute: typeof PluginsPluginIdChannelsApiIdIndexImport
       parentRoute: typeof rootRoute
     }
@@ -250,13 +316,13 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  FavoritesRouteRoute.addChildren([
+  FavoritesRouteRoute: FavoritesRouteRoute.addChildren({
     FavoritesChannelsRoute,
     FavoritesPlaylistsRoute,
     FavoritesVideosRoute,
-  ]),
+  }),
   AboutRoute,
   DonateRoute,
   PlugininstallRoute,
@@ -274,6 +340,111 @@ export const routeTree = rootRoute.addChildren([
   PluginsPluginIdPlaylistsIndexRoute,
   PluginsPluginIdChannelsApiIdLiveRoute,
   PluginsPluginIdChannelsApiIdIndexRoute,
-])
+})
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/favorites",
+        "/about",
+        "/donate",
+        "/plugininstall",
+        "/privacy",
+        "/search",
+        "/settings",
+        "/playlists/$playlistId",
+        "/playlists/",
+        "/plugins/",
+        "/plugins/$pluginId/options",
+        "/plugins/$pluginId/",
+        "/plugins/$pluginId/playlists/$apiId",
+        "/plugins/$pluginId/videos/$apiId",
+        "/plugins/$pluginId/channels/",
+        "/plugins/$pluginId/playlists/",
+        "/plugins/$pluginId/channels/$apiId/live",
+        "/plugins/$pluginId/channels/$apiId/"
+      ]
+    },
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/favorites": {
+      "filePath": "favorites/route.tsx",
+      "children": [
+        "/favorites/channels",
+        "/favorites/playlists",
+        "/favorites/videos"
+      ]
+    },
+    "/about": {
+      "filePath": "about.tsx"
+    },
+    "/donate": {
+      "filePath": "donate.tsx"
+    },
+    "/plugininstall": {
+      "filePath": "plugininstall.tsx"
+    },
+    "/privacy": {
+      "filePath": "privacy.tsx"
+    },
+    "/search": {
+      "filePath": "search.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
+    },
+    "/favorites/channels": {
+      "filePath": "favorites/channels.tsx",
+      "parent": "/favorites"
+    },
+    "/favorites/playlists": {
+      "filePath": "favorites/playlists.tsx",
+      "parent": "/favorites"
+    },
+    "/favorites/videos": {
+      "filePath": "favorites/videos.tsx",
+      "parent": "/favorites"
+    },
+    "/playlists/$playlistId": {
+      "filePath": "playlists.$playlistId.tsx"
+    },
+    "/playlists/": {
+      "filePath": "playlists.index.tsx"
+    },
+    "/plugins/": {
+      "filePath": "plugins.index.tsx"
+    },
+    "/plugins/$pluginId/options": {
+      "filePath": "plugins/$pluginId/options.tsx"
+    },
+    "/plugins/$pluginId/": {
+      "filePath": "plugins/$pluginId.index.tsx"
+    },
+    "/plugins/$pluginId/playlists/$apiId": {
+      "filePath": "plugins/$pluginId/playlists.$apiId.tsx"
+    },
+    "/plugins/$pluginId/videos/$apiId": {
+      "filePath": "plugins/$pluginId/videos.$apiId.tsx"
+    },
+    "/plugins/$pluginId/channels/": {
+      "filePath": "plugins/$pluginId/channels.index.tsx"
+    },
+    "/plugins/$pluginId/playlists/": {
+      "filePath": "plugins/$pluginId/playlists.index.tsx"
+    },
+    "/plugins/$pluginId/channels/$apiId/live": {
+      "filePath": "plugins/$pluginId/channels.$apiId.live.tsx"
+    },
+    "/plugins/$pluginId/channels/$apiId/": {
+      "filePath": "plugins/$pluginId/channels.$apiId.index.tsx"
+    }
+  }
+}
+ROUTE_MANIFEST_END */
