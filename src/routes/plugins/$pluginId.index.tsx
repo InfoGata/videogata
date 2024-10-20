@@ -115,7 +115,7 @@ const PluginDetails: React.FC = () => {
 
   const onLogin = () => {
     if (pluginInfo?.manifest?.authentication?.loginUrl) {
-      if (window.InfoGata.openLoginWindow) {
+      if (window.InfoGata?.openLoginWindow) {
         window.InfoGata.openLoginWindow(
           pluginInfo.manifest.authentication,
           pluginInfo.id || ""

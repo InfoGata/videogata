@@ -41,7 +41,7 @@ interface CookiePlugins {
 
 declare global {
   interface Window {
-    InfoGata: InfoGataExtension;
+    InfoGata?: InfoGataExtension;
   }
   interface CordovaPlugins {
     CookiesPlugin: CookiePlugins;

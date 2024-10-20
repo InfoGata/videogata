@@ -24,7 +24,7 @@ navigator.serviceWorker?.ready.then((registration) => {
 messageChannel.port1.onmessage = async (event) => {
   if (event.data && event.data.type === "NETWORK_REQUEST") {
     const port = event.ports[0];
-    if (hasExtension()) {
+    if (hasExtension() && window.InfoGata?.networkRequest) {
       try {
         const input = event.data.input;
         const response = await window.InfoGata.networkRequest(input);

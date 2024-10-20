@@ -159,7 +159,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             }
           }
 
-          if (hasExtension()) {
+          if (hasExtension() && window.InfoGata?.networkRequest) {
             return await window.InfoGata.networkRequest(input, newInit, {
               auth: plugin.manifest?.authentication,
             });
@@ -267,7 +267,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         getEnvironmentInfo: async () => {
           const info: EnvironmentInfo = {};
-          if (hasExtension() && window.InfoGata.getVersion) {
+          if (hasExtension() && window.InfoGata?.getVersion) {
             info.extensionVerion = await window.InfoGata.getVersion();
           }
 
