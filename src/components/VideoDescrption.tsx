@@ -84,6 +84,7 @@ const VideoDescrption: React.FC<VideoDescrptionProps> = (props) => {
                   buttonVariants({ variant: "link", size: "sm" }),
                   "h-6 p-0"
                 )}
+                to="."
                 search={{ time }}
               >
                 {domToReact(domNode.children as DOMNode[])}
