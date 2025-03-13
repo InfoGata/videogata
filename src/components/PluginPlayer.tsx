@@ -2,7 +2,7 @@ import React from "react";
 import { PluginFrameContainer } from "../PluginsContext";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
-import { getPluginSubdomain } from "../utils";
+import { getPluginUrl } from "../utils";
 
 interface PluginPlayerProps {
   apiId?: string;
@@ -63,12 +63,11 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     }
   };
 
-  let srcUrl = `${getPluginSubdomain(
-    plugin?.id
-  )}/ui.html?apiId=${apiId}&isLive=${
-    isLive === true
-  }&channelApiId=${channelApiId}`;
-  srcUrl = timeInSeconds ? `${srcUrl}#t=${timeInSeconds}` : `${srcUrl}#`;
+  let path = `/ui.html?apiId=${apiId}&isLive=${isLive}&channelApiId=${channelApiId}`;
+  if (timeInSeconds) {
+    path = `${path}#t=${timeInSeconds}`;
+  }
+  const srcUrl = getPluginUrl(plugin?.id || "", path);
 
   return (
     <>
@@ -78,7 +77,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
           name={plugin?.id}
           title={plugin?.name}
           sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-presentation"
-          src={srcUrl}
+          src={srcUrl.toString()}
           onLoad={iframeOnload}
           allow="autoplay; fullscreen; picture-in-picture"
           frameBorder="0"

@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Capacitor } from "@capacitor/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
 import Spinner from "@/components/Spinner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
-import { getPluginSubdomain } from "@/utils";
+import { getPluginUrl } from "@/utils";
+import { Capacitor } from "@capacitor/core";
+import { createFileRoute } from "@tanstack/react-router";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -72,7 +72,8 @@ const PluginOptions: React.FC = () => {
   // window.open needs allow-top-navigation-by-user-activiation
   if (Capacitor.isNativePlatform())
     sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
-  const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
+
+  const srcUrl = getPluginUrl(plugin.id || "", "/ui.html");
   return (
     <div>
       <h2 className="text-3xl font-bold">
@@ -84,7 +85,7 @@ const PluginOptions: React.FC = () => {
           name={plugin.id}
           title={plugin.name}
           sandbox={sandbox}
-          src={srcUrl}
+          src={srcUrl.toString()}
           onLoad={iframeOnload}
           width="100%"
           frameBorder="0"

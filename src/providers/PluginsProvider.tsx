@@ -43,7 +43,7 @@ import {
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
-  getPluginSubdomain,
+  getPluginUrl,
   hasExtension,
   isAuthorizedDomain,
   mapAsync,
@@ -275,7 +275,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
       };
 
-      const srcUrl = `${getPluginSubdomain(plugin.id)}/pluginframe.html`;
+      const srcUrl = getPluginUrl(plugin.id || "", "/pluginframe.html");
 
       const completeMethods: {
         [key in keyof PluginMethodInterface]?: (
@@ -402,7 +402,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       };
 
       const host = new PluginFrameContainer(api, {
-        frameSrc: new URL(srcUrl),
+        frameSrc: srcUrl,
         sandboxAttributes: ["allow-scripts", "allow-same-origin"],
         completeMethods: completeMethods,
       });

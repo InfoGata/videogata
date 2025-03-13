@@ -17,6 +17,7 @@ import {
   getFileTypeFromPluginUrl,
   getPlugin,
   hasAuthentication,
+  hasExtension,
 } from "@/utils";
 
 const PluginDetails: React.FC = () => {
@@ -115,7 +116,7 @@ const PluginDetails: React.FC = () => {
 
   const onLogin = () => {
     if (pluginInfo?.manifest?.authentication?.loginUrl) {
-      if (window.InfoGata?.openLoginWindow) {
+      if (hasExtension() && window.InfoGata?.openLoginWindow) {
         window.InfoGata.openLoginWindow(
           pluginInfo.manifest.authentication,
           pluginInfo.id || ""
