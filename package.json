@@ -7,12 +7,12 @@
   "main": "./out/main/index.cjs",
   "dependencies": {
     "@awesome-cordova-plugins/in-app-browser": "^6.4.0",
-    "@capacitor/android": "^5.5.1",
-    "@capacitor/app": "5.0.6",
-    "@capacitor/core": "5.5.1",
-    "@capacitor/haptics": "5.0.6",
-    "@capacitor/keyboard": "5.0.6",
-    "@capacitor/status-bar": "5.0.6",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/haptics": "^7.0.0",
+    "@capacitor/keyboard": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0",
     "@dnd-kit/core": "^6.0.5",
     "@dnd-kit/sortable": "^7.0.1",
     "@dnd-kit/utilities": "^3.2.0",
@@ -106,7 +106,7 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "5.5.1",
+    "@capacitor/cli": "^7.0.0",
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
     "@tanstack/router-devtools": "^1.114.17",
