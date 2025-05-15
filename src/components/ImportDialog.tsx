@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { ParseUrlType, Playlist, Video } from "../plugintypes";
-import { filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
 import { Button } from "./ui/button";
 import {
   Dialog,

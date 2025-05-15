@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "@/PluginsContext";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
-import { filterAsync } from "@/utils";
+import { filterAsync } from "@infogata/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 const FavoriteChannels: React.FC = () => {

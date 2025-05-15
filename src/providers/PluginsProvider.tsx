@@ -38,6 +38,7 @@ import {
 } from "../store/reducers/playlistReducer";
 import { setPluginsPreInstalled } from "../store/reducers/settingsReducer";
 import { NetworkRequest } from "../types";
+import { mapAsync } from "@infogata/utils";
 import {
   corsIsDisabled,
   getFileText,
@@ -46,7 +47,6 @@ import {
   getPluginUrl,
   hasExtension,
   isAuthorizedDomain,
-  mapAsync,
 } from "../utils";
 import { useTheme } from "./ThemeProvider";
 

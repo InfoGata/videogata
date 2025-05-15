@@ -1,7 +1,7 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../database";
 import { Playlist, PlaylistInfo, Video } from "../../plugintypes";
-import { mergeVideos } from "../../utils";
+import { mergeItems } from "@infogata/utils";
 import { AppThunk } from "../store";
 
 interface PlaylistState {
@@ -102,7 +102,7 @@ export const addPlaylistVideos =
     });
     const playlist = await db.playlists.get(playlistInfo.id || "");
     if (playlist) {
-      const newVideos = mergeVideos(playlist.videos, videos);
+      const newVideos = mergeItems(playlist.videos, videos);
       playlist.videos = newVideos;
       await db.playlists.put(playlist);
     }

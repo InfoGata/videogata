@@ -4,7 +4,7 @@ import { PluginMethodInterface } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
-import { filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
 import { Label } from "./ui/label";
 import {
   Select,

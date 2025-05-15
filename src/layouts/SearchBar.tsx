@@ -9,7 +9,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import { useAppSelector } from "@/store/hooks";
 import usePlugins from "@/hooks/usePlugins";
 import { PluginFrameContainer } from "@/PluginsContext";
-import { filterAsync } from "@/utils";
+import { filterAsync } from "@infogata/utils";
 import { debounce } from "lodash";
 import { useNavigate } from "@tanstack/react-router";
 

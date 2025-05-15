@@ -1,11 +1,8 @@
 import DOMPurify from "dompurify";
 import React from "react";
 import { Video } from "../plugintypes";
-import {
-  formatSeconds,
-  getThumbnailImage,
-  searchThumbnailSize,
-} from "../utils";
+import { formatSeconds, getThumbnailImage } from "@infogata/utils";
+import { searchThumbnailSize } from "../utils";
 import VideoMenu from "./VideoMenu";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Checkbox } from "./ui/checkbox";

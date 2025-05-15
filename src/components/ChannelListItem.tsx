@@ -1,6 +1,7 @@
 import { Channel } from "@/plugintypes";
 import { ItemMenuType } from "@/types";
-import { getThumbnailImage, searchThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { searchThumbnailSize } from "@/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ItemMenu from "./ItemMenu";

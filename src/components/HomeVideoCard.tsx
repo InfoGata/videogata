@@ -1,9 +1,6 @@
 import { Video } from "@/plugintypes";
-import {
-  formatSeconds,
-  getThumbnailImage,
-  playlistThumbnailSize,
-} from "@/utils";
+import { formatSeconds, getThumbnailImage } from "@infogata/utils";
+import { playlistThumbnailSize } from "@/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import TimeAgo from "timeago-react";

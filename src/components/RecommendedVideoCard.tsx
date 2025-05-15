@@ -1,5 +1,6 @@
 import { Video } from "@/plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { playlistThumbnailSize } from "@/utils";
 import { Link } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";

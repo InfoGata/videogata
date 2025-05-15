@@ -10,7 +10,7 @@ import usePlugins from "../hooks/usePlugins";
 import { Playlist, Video } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
-import { filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
 import { ItemMenuType } from "@/types";
 import { toast } from "sonner";
 
