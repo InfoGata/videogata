@@ -2,10 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import PluginCards from "../components/PluginCards/PluginCards";
 import TopItemCards from "../components/TopItemCards";
+import { ExtensionBanner } from "@/components/ExtensionBanner";
 
 export const Index: React.FC = () => {
   return (
     <>
+      <ExtensionBanner />
       <TopItemCards />
       <PluginCards />
     </>
