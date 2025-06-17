@@ -146,7 +146,7 @@ export const hasExtension = () => {
   return typeof window.InfoGata !== "undefined";
 };
 
-export const corsIsDisabled = () => {
+export const isCorsDisabled = () => {
   return hasExtension() || isElectron() || Capacitor.isNativePlatform();
 };
 
