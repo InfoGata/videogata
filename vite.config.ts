@@ -19,6 +19,14 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       registerType: "prompt",
+      workbox: {
+        navigateFallback: "/",
+        navigateFallbackDenylist: [
+          /\.html$/,
+          /\.html\?/,
+          /login_popup\.html/,
+        ],
+      },
       manifest: {
         short_name: "VideoGata",
         name: "VideoGata",
