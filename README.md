@@ -29,6 +29,6 @@ The plugin scripts are run in sandboxed iframes using [plugin-frame](https://git
 
 ## Plugin Development
 
-[Docs](https://infogata.github.io/videogata-plugin-typings/plugins/plugin-manifest/)
+[Docs](https://infogata.github.io/videogata-plugin-typings/plugins/plugin-manifest)
 
 [Types](https://github.com/InfoGata/videogata-plugin-typings)
