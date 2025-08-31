@@ -117,9 +117,9 @@ const VideoMenu: React.FC<Props> = (props) => {
             )}
           >
             {notCardVideo ? (
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             ) : (
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="size-4" />
             )}
           </Button>
         </DropdownMenuTrigger>

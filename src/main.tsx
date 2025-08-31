@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <title>VideoGata</title>
           </Helmet>
           <ThemeProvider defaultTheme="system">
-            <IconContext.Provider value={{ className: "w-5 h-5" }}>
+            <IconContext.Provider value={{ className: "size-5" }}>
               <QueryClientProvider client={queryClient}>
                 <PluginsProvider>
                   <Router />

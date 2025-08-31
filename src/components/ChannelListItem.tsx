@@ -36,7 +36,7 @@ const ChannelListItem: React.FC<Props> = (props) => {
       state={{ channel }}
       className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"
     >
-      <Avatar className="h-10 w-10">
+      <Avatar className="size-10">
         <AvatarImage src={image} />
       </Avatar>
       <div className="ml-4 space-y-1">
