@@ -16,8 +16,7 @@ export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
     query: `(min-width: ${breakpoints[breakpointKey]})`,
   });
   const capitalizedKey =
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    breakpointKey[0]!.toUpperCase() + breakpointKey.substring(1);
+    breakpointKey[0].charAt(0).toUpperCase() + breakpointKey.substring(1);
   type Key = `is${Capitalize<K>}`;
   return {
     [`is${capitalizedKey}`]: bool,
