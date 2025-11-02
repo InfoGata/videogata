@@ -48,7 +48,7 @@ import {
   hasExtension,
   isAuthorizedDomain,
 } from "../utils";
-import { useTheme } from "./ThemeProvider";
+import { useTheme } from "@/hooks/useTheme";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(input: string, init?: RequestInit): Promise<NetworkRequest>;
