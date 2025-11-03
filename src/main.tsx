@@ -12,6 +12,7 @@ import Router from "./router";
 import store, { persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PluginsProvider from "./providers/PluginsProvider";
+import { ExtensionProvider } from "./contexts/ExtensionContext";
 
 Sentry.init({
   dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
@@ -35,13 +36,15 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <title>VideoGata</title>
           </Helmet>
           <ThemeProvider defaultTheme="system">
-            <IconContext.Provider value={{ className: "size-5" }}>
-              <QueryClientProvider client={queryClient}>
-                <PluginsProvider>
-                  <Router />
-                </PluginsProvider>
-              </QueryClientProvider>
-            </IconContext.Provider>
+            <ExtensionProvider>
+              <IconContext.Provider value={{ className: "size-5" }}>
+                <QueryClientProvider client={queryClient}>
+                  <PluginsProvider>
+                    <Router />
+                  </PluginsProvider>
+                </QueryClientProvider>
+              </IconContext.Provider>
+            </ExtensionProvider>
           </ThemeProvider>
         </HelmetProvider>
       </PersistGate>
