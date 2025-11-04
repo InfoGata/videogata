@@ -9,8 +9,6 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "resolvePackageJsonExports": true,
-    "resolvePackageJsonImports": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
