@@ -5,9 +5,6 @@
   "homepage": "",
   "type": "module",
   "main": "./out/main/index.cjs",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "dependencies": {
     "@awesome-cordova-plugins/in-app-browser": "^6.4.0",
     "@capacitor/android": "^7.0.0",
