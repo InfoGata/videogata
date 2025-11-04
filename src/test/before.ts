@@ -12,3 +12,9 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+
+// Mock window.alert to prevent jsdom "Not implemented" errors
+Object.defineProperty(window, "alert", {
+  writable: true,
+  value: () => {},
+});
