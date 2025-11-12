@@ -8,7 +8,7 @@ import {
   PlaylistInfo,
   Video,
 } from "./plugintypes";
-import { router } from "./router";
+import { RouterType } from "./router";
 
 export interface NetworkRequest {
   body: Blob | ArrayBuffer | null;
@@ -103,7 +103,7 @@ export interface LoginInfo {
   headers: Record<string, string>;
 }
 
-export type LinkRouterProps = LinkOptions<typeof router> & LinkProps;
+export type LinkRouterProps = LinkOptions<RouterType> & LinkProps;
 
 export interface NavigationLinkItem {
   title: string;
