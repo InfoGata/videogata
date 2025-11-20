@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -14,10 +13,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import PluginsProvider from "./providers/PluginsProvider";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 import { PostHogProvider } from "posthog-js/react";
-
-Sentry.init({
-  dsn: "https://df4f8d9465464a48b323e5cf90bc9e4f@app.glitchtip.com/4799",
-});
 
 const queryClient = new QueryClient({
   defaultOptions: {
