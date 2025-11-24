@@ -10,7 +10,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Router from "./router";
 import store, { persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from "react-query";
-import PluginsProvider from "./providers/PluginsProvider";
+import { PluginsProvider } from "./contexts/PluginsContext";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 import { PostHogProvider } from "posthog-js/react";
 
