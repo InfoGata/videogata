@@ -3,7 +3,7 @@ import ChannelListItem from "@/components/ChannelListItem";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer } from "@/PluginsContext";
+import { PluginFrameContainer } from "@/contexts/PluginsContext";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
 import { filterAsync } from "@infogata/utils";

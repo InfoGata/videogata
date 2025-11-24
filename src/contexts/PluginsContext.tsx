@@ -23,7 +23,7 @@ import {
   Video,
   VideoCommentsRequest,
   VideoCommentsResult,
-} from "./plugintypes";
+} from "../plugintypes";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;

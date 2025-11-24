@@ -1,7 +1,7 @@
 import { ThumbsUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import { VideoComment } from "../plugintypes";
 import { getThumbnailImage } from "@infogata/utils";
 import { searchThumbnailSize } from "../utils";

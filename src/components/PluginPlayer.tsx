@@ -1,5 +1,5 @@
 import React from "react";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { getPluginUrl } from "../utils";

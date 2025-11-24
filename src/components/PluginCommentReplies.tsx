@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "react-query";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import { PageInfo, VideoComment } from "../plugintypes";
 import Comment from "./Comment";
 import { Button } from "./ui/button";
