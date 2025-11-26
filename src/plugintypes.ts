@@ -230,4 +230,3 @@ export interface EnvironmentInfo {
   extensionVerion?: string;
 }
 
-export type Theme = "dark" | "light" | "system";

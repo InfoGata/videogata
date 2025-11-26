@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import "./i18n";
 import "./index.css";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from "react-query";

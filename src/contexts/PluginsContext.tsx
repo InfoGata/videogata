@@ -30,7 +30,6 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
-  Theme,
   UserChannelRequest,
   UserPlaylistRequest,
   Video,
@@ -54,7 +53,7 @@ import {
   hasExtension,
   isAuthorizedDomain,
 } from "../utils";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme, Theme } from "@infogata/shadcn-vite-theme-provider";
 
 export interface PluginMethodInterface {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
