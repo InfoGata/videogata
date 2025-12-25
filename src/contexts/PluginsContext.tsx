@@ -52,6 +52,7 @@ import {
   getPluginUrl,
   hasExtension,
   isAuthorizedDomain,
+  hasAuthentication,
 } from "../utils";
 import { useTheme, Theme } from "@infogata/shadcn-vite-theme-provider";
 
@@ -333,7 +334,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return i18n.language;
         },
         isLoggedIn: async () => {
-          if (plugin.manifest?.authentication && plugin.id) {
+          if (await hasAuthentication() &&plugin.manifest?.authentication && plugin.id) {
             const pluginAuth = await db.pluginAuths.get(plugin.id);
             return !!pluginAuth;
           }
