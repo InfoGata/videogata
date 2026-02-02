@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
@@ -55,17 +55,18 @@ const VideoSearchResults: React.FC<VideoSearchResultsProps> = (props) => {
       setCurrentPage(searchVideos.pageInfo);
       return searchVideos.items;
     }
+    return [];
   };
 
   const filteredKey = filters?.filters.map((f) => ({
     id: f.id,
     value: f.value,
   }));
-  const query = useQuery(
-    ["searchVideos", pluginId, searchQuery, page, filteredKey],
-    search,
-    { staleTime: 60 * 1000 }
-  );
+  const query = useQuery({
+    queryKey: ["searchVideos", pluginId, searchQuery, page, filteredKey],
+    queryFn: search,
+    staleTime: 60 * 1000,
+  });
 
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);

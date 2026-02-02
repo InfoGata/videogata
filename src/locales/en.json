@@ -82,7 +82,8 @@
     "noFavoriteVideos": "No videos have been added to favorites.",
     "noFavoritePlaylists": "No playlists have been added to favorites.",
     "noFavoriteChannels": "No channels have been added to favorites.",
-    "github": "GitHub"
+    "github": "GitHub",
+    "navigation": "Navigation"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

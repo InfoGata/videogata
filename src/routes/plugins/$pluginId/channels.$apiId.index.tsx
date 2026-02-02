@@ -2,7 +2,7 @@ import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import HomeVideoCard from "@/components/HomeVideoCard";
 import VideoContainer from "@/components/VideoContainer";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
 import PlaylistInfoCard from "@/components/PlaylistInfoCard";
@@ -47,13 +47,11 @@ const ChannelPage: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(
-    ["pluginplaylist", pluginId, apiId, page],
-    getChannelVideos,
-    {
-      enabled: pluginsLoaded && !!plugin,
-    }
-  );
+  const query = useQuery({
+    queryKey: ["pluginplaylist", pluginId, apiId, page],
+    queryFn: getChannelVideos,
+    enabled: pluginsLoaded && !!plugin,
+  });
 
   const videoCards = query.data?.map((v) => {
     return <HomeVideoCard key={v.apiId} video={v} />;

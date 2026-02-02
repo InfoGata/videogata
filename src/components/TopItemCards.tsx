@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import usePlugins from "../hooks/usePlugins";
 import HomeVideoCard from "./HomeVideoCard";
 import SelectPlugin from "./SelectPlugin";
@@ -17,11 +17,15 @@ const TopItemCards: React.FC = () => {
       const results = await plugin.remote.onGetTopItems();
       return results;
     }
+    return null;
   };
 
-  const query = useQuery(["topitems", pluginId], getTopItems, {
+  const query = useQuery({
+    queryKey: ["topitems", pluginId],
+    queryFn: getTopItems,
     // Keep query for 5 minutes
     staleTime: 1000 * 60 * 5,
+    enabled: !!pluginId,
   });
 
   const videoCards = query.data?.videos?.items.map((v) => {

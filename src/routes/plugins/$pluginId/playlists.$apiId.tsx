@@ -1,6 +1,6 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
 import PlaylistInfoCard from "@/components/PlaylistInfoCard";
@@ -53,13 +53,11 @@ const PluginPlaylist: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(
-    ["pluginplaylist", pluginId, apiId, page],
-    getPlaylistVideos,
-    {
-      enabled: pluginsLoaded && !!plugin,
-    }
-  );
+  const query = useQuery({
+    queryKey: ["pluginplaylist", pluginId, apiId, page],
+    queryFn: getPlaylistVideos,
+    enabled: pluginsLoaded && !!plugin,
+  });
   const videoList = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
     useSelected(videoList);

@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { PluginFrameContainer } from "../contexts/PluginsContext";
 import { PageInfo, VideoComment } from "../plugintypes";
 import Comment from "./Comment";
@@ -38,17 +38,16 @@ const PluginCommentReplies: React.FC<PluginCommentRepliesProps> = (props) => {
       });
       return comments;
     }
-    return;
+    return { comments: [], pageInfo: undefined };
   };
 
-  const query = useInfiniteQuery(
-    ["pluginvideocomments", plugin?.id, comment.apiId],
-    ({ pageParam }) => onGetCommentReplies(pageParam),
-    {
-      getNextPageParam: (lastPage) =>
-        lastPage?.pageInfo?.nextPage && lastPage.pageInfo,
-    }
-  );
+  const query = useInfiniteQuery({
+    queryKey: ["pluginvideocomments", plugin?.id, comment.apiId],
+    queryFn: ({ pageParam }) => onGetCommentReplies(pageParam),
+    initialPageParam: undefined as PageInfo | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage?.pageInfo?.nextPage ? lastPage.pageInfo : undefined,
+  });
 
   const comments = query?.data?.pages?.map((p) =>
     p?.comments.map((c) => (

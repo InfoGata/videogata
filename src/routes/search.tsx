@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ChannelSearchResults from "../components/ChannelSearchResults";
 import PlaylistSearchResults from "../components/PlaylistSearchResults";
 import SelectPlugin from "../components/SelectPlugin";
@@ -49,10 +49,13 @@ const Search: React.FC = () => {
       searchAll?.playlists?.items
     );
 
-    return searchAll;
+    return searchAll ?? null;
   };
 
-  const query = useQuery(["search", pluginId, q], onSearch);
+  const query = useQuery({
+    queryKey: ["search", pluginId, q],
+    queryFn: onSearch,
+  });
   const videoList = query?.data?.videos?.items || [];
   const channelList = query?.data?.channels?.items || [];
   const playlistList = query?.data?.playlists?.items || [];

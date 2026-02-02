@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ChannelListItem from "@/components/ChannelListItem";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import Pager from "@/components/Pager";
 import Spinner from "@/components/Spinner";
 import usePagination from "@/hooks/usePagination";
@@ -26,7 +26,9 @@ const UserPluginChannels: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["userchannels", pluginId, page], getUserChannels, {
+  const query = useQuery({
+    queryKey: ["userchannels", pluginId, page],
+    queryFn: getUserChannels,
     enabled: pluginsLoaded && !!plugin,
   });
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
@@ -54,17 +54,18 @@ const ChannelSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       setCurrentPage(searchChannels.pageInfo);
       return searchChannels.items;
     }
+    return [];
   };
 
   const filteredKey = filters?.filters.map((f) => ({
     id: f.id,
     value: f.value,
   }));
-  const query = useQuery(
-    ["searchChannels", pluginId, searchQuery, page, filteredKey],
-    search,
-    { staleTime: 60 * 1000 }
-  );
+  const query = useQuery({
+    queryKey: ["searchChannels", pluginId, searchQuery, page, filteredKey],
+    queryFn: search,
+    staleTime: 60 * 1000,
+  });
 
   const channelCards = query.data?.map((c) => {
     return <ChannelListItem channel={c} key={c.apiId} />;

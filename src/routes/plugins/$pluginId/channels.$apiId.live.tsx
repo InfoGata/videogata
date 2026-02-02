@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import useFindPlugin from "@/hooks/useFindPlugin";
 import usePlugins from "@/hooks/usePlugins";
@@ -33,9 +33,12 @@ const PluginVideo: React.FC = () => {
         return video;
       }
     }
+    return null;
   };
 
-  const query = useQuery(["pluginLive", pluginId, apiId], getVideo, {
+  const query = useQuery({
+    queryKey: ["pluginLive", pluginId, apiId],
+    queryFn: getVideo,
     enabled: pluginsLoaded,
   });
 

@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 import { IconContext } from "react-icons";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -9,7 +8,7 @@ import "./index.css";
 import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PluginsProvider } from "./contexts/PluginsContext";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 import { PostHogProvider } from "posthog-js/react";
@@ -36,22 +35,18 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <HelmetProvider>
-            <Helmet>
-              <title>VideoGata</title>
-            </Helmet>
-            <ThemeProvider defaultTheme="system">
-              <ExtensionProvider>
-                <IconContext.Provider value={{ className: "size-5" }}>
-                  <QueryClientProvider client={queryClient}>
-                    <PluginsProvider>
-                      <Router />
-                    </PluginsProvider>
-                  </QueryClientProvider>
-                </IconContext.Provider>
-              </ExtensionProvider>
-            </ThemeProvider>
-          </HelmetProvider>
+          <title>VideoGata</title>
+          <ThemeProvider defaultTheme="system">
+            <ExtensionProvider>
+              <IconContext.Provider value={{ className: "size-5" }}>
+                <QueryClientProvider client={queryClient}>
+                  <PluginsProvider>
+                    <Router />
+                  </PluginsProvider>
+                </QueryClientProvider>
+              </IconContext.Provider>
+            </ExtensionProvider>
+          </ThemeProvider>
         </PersistGate>
       </Provider>
     </PostHogProvider>

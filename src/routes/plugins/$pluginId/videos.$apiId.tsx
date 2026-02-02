@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
-import { Helmet } from "react-helmet-async";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import PluginVideoComments from "@/components/PluginVideoComments";
 import PluginVideoInfo from "@/components/PluginVideoInfo";
@@ -40,9 +39,12 @@ const PluginVideo: React.FC = () => {
         return video;
       }
     }
+    return null;
   };
 
-  const query = useQuery(["pluginVideo", pluginId, apiId], getVideo, {
+  const query = useQuery({
+    queryKey: ["pluginVideo", pluginId, apiId],
+    queryFn: getVideo,
     enabled: pluginsLoaded,
   });
 
@@ -60,11 +62,7 @@ const PluginVideo: React.FC = () => {
 
   return (
     <>
-      {query.data && (
-        <Helmet>
-          <title>{query.data.title}</title>
-        </Helmet>
-      )}
+      {query.data && <title>{query.data.title}</title>}
       <Spinner open={isLoading} />
       {query.data && <PluginVideoInfo video={query.data} />}
       {playlistVideos && (
