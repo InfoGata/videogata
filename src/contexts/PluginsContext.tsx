@@ -508,7 +508,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       const framePromises = plugs.map((p) => loadPlugin(p));
       const frames = await Promise.all(framePromises);
       setPluginFrames(frames);
-    } catch {
+    } catch (e) {
+      // Log why loading failed
+      console.error("Failed to load plugins:", e);
       toast.error(t("failedPlugins"));
       setPluginsFailed(true);
     } finally {
