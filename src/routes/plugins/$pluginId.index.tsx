@@ -9,6 +9,12 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import {
+  usePluginInfo,
+  usePluginScriptSize,
+  usePluginOptionsSize,
+  usePluginPlayerSize,
+} from "@/hooks/usePluginInfo";
 import { Manifest } from "@/plugintypes";
 import { FileType, NotifyLoginMessage } from "@/types";
 import {
@@ -63,21 +69,10 @@ const PluginDetails: React.FC = () => {
     setLoading(false);
   };
 
-  const pluginInfo = useLiveQuery(() => db.plugins.get(pluginId || ""));
-  const scriptSize = React.useMemo(() => {
-    const scriptBlob = new Blob([pluginInfo?.script || ""]);
-    return scriptBlob.size;
-  }, [pluginInfo]);
-  const optionSize = React.useMemo(() => {
-    return pluginInfo?.optionsHtml
-      ? new Blob([pluginInfo?.optionsHtml || ""]).size
-      : 0;
-  }, [pluginInfo]);
-  const playerSize = React.useMemo(() => {
-    return pluginInfo?.playerHtml
-      ? new Blob([pluginInfo?.playerHtml || ""]).size
-      : 0;
-  }, [pluginInfo]);
+  const pluginInfo = usePluginInfo(pluginId || "");
+  const scriptSize = usePluginScriptSize(pluginId || "");
+  const optionSize = usePluginOptionsSize(pluginId || "");
+  const playerSize = usePluginPlayerSize(pluginId || "");
 
   React.useEffect(() => {
     const getHasAuth = async () => {
@@ -210,7 +205,7 @@ const PluginDetails: React.FC = () => {
         </h1>
         <h2 className="text-2xl font-semibold">{pluginInfo.name}</h2>
         <div className="flex gap-2 flex-wrap">
-          {pluginInfo.optionsHtml && (
+          {(pluginInfo.optionsHtml || optionSize > 0) && (
             <Link
               className={cn(buttonVariants({ variant: "outline" }))}
               to="/plugins/$pluginId/options"

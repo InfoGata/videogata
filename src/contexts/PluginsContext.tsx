@@ -8,6 +8,12 @@ import { toast } from "sonner";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
+import { usePluginMigration } from "../hooks/usePluginMigration";
+import {
+  deletePlugin as deletePluginStorage,
+  loadAllPlugins,
+  savePlugin,
+} from "../storage/pluginStorage";
 import i18n from "../i18n";
 import {
   ChannelVideosRequest,
@@ -188,6 +194,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     PluginInfo[] | null
   >(null);
 
+  const { migrationComplete } = usePluginMigration();
+
   const loadPlugin = React.useCallback(
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
@@ -291,7 +299,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return corsProxyUrlRef.current;
         },
         getPlugins: async () => {
-          const plugs = await db.plugins.toArray();
+          const plugs = await loadAllPlugins();
           return plugs;
         },
         installPlugins: async (plugins: PluginInfo[]) => {
@@ -503,7 +511,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const loadPlugins = React.useCallback(async () => {
     setPluginsFailed(false);
     try {
-      const plugs = await db.plugins.toArray();
+      const plugs = await loadAllPlugins();
 
       const framePromises = plugs.map((p) => loadPlugin(p));
       const frames = await Promise.all(framePromises);
@@ -519,15 +527,15 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   }, [loadPlugin, t]);
 
   React.useEffect(() => {
-    if (loadingPlugin.current) return;
+    if (!migrationComplete || loadingPlugin.current) return;
     loadingPlugin.current = true;
     loadPlugins();
-  }, [loadPlugins]);
+  }, [loadPlugins, migrationComplete]);
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
     setPluginFrames(newPlugins);
-    await db.plugins.delete(pluginFrame.id || "");
+    await deletePluginStorage(pluginFrame.id || "");
     await db.pluginAuths.delete(pluginFrame.id || "");
   };
 
@@ -543,7 +551,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo) => {
       const pluginFrame = await loadPlugin(plugin);
       setPluginFrames((prev) => [...prev, pluginFrame]);
-      await db.plugins.put(plugin);
+      await savePlugin(plugin);
     },
     [loadPlugin]
   );
@@ -554,7 +562,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       oldPlugin?.destroy();
       const pluginFrame = await loadPlugin(plugin, pluginFiles);
       setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
-      await db.plugins.put(plugin);
+      await savePlugin(plugin);
     },
     [loadPlugin, pluginFrames]
   );
@@ -567,7 +575,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           const presinstallPlugins = defaultPlugins.filter(
             (dp) => !!dp.preinstall
           );
-          const plugs = await db.plugins.toArray();
+          const plugs = await loadAllPlugins();
           const newPlugins = presinstallPlugins.filter(
             (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
           );

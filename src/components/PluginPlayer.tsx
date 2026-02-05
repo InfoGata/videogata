@@ -1,7 +1,7 @@
 import React from "react";
 import { PluginFrameContainer } from "../contexts/PluginsContext";
-import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
+import { loadPluginField } from "../storage/pluginStorage";
 import { getPluginUrl } from "../utils";
 
 interface PluginPlayerProps {
@@ -22,8 +22,8 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
 
   React.useEffect(() => {
     const getPlayerHtml = async () => {
-      const pluginData = await db.plugins.get(plugin?.id || "");
-      setPlayerHtml(pluginData?.playerHtml);
+      const html = await loadPluginField(plugin?.id || "", "playerHtml");
+      setPlayerHtml(html);
     };
     getPlayerHtml();
   }, [plugin?.id]);
@@ -51,12 +51,12 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
   }, [pluginMessage, plugin?.id]);
 
   const iframeOnload = async () => {
-    const pluginData = await db.plugins.get(plugin?.id || "");
-    if (pluginData) {
+    const html = await loadPluginField(plugin?.id || "", "playerHtml");
+    if (html) {
       ref.current?.contentWindow?.postMessage(
         {
           type: "init",
-          srcdoc: pluginData?.playerHtml,
+          srcdoc: html,
         },
         "*"
       );
