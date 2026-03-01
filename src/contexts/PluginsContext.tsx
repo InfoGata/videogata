@@ -6,6 +6,7 @@ import semverGt from "semver/functions/gt";
 import semverValid from "semver/functions/parse";
 import { toast } from "sonner";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import ConfirmUpdatePluginDialog from "../components/ConfirmUpdatePluginDialog";
 import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
 import { usePluginMigration } from "../hooks/usePluginMigration";
@@ -193,6 +194,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
   >(null);
+  const [pendingUpdatePlugin, setPendingUpdatePlugin] =
+    React.useState<PluginInfo | null>(null);
 
   const { migrationComplete } = usePluginMigration();
 
@@ -539,7 +542,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addPlugin = async (plugin: PluginInfo) => {
     if (pluginFrames.some((p) => p.id === plugin.id)) {
-      toast(`A plugin with Id ${plugin.id} is already installed`);
+      setPendingUpdatePlugin(plugin);
       return;
     }
     await loadAndAddPlugin(plugin);
@@ -647,6 +650,17 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     setPendingPlugins(null);
   };
 
+  const handleConfirmUpdate = async () => {
+    if (pendingUpdatePlugin?.id) {
+      await updatePlugin(pendingUpdatePlugin, pendingUpdatePlugin.id);
+    }
+    setPendingUpdatePlugin(null);
+  };
+
+  const handleCloseUpdate = () => {
+    setPendingUpdatePlugin(null);
+  };
+
   return (
     <PluginsContext.Provider value={defaultContext}>
       {props.children}
@@ -654,6 +668,12 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         open={Boolean(pendingPlugins)}
         plugins={pendingPlugins || []}
         handleClose={handleClose}
+      />
+      <ConfirmUpdatePluginDialog
+        open={Boolean(pendingUpdatePlugin)}
+        plugin={pendingUpdatePlugin}
+        onConfirm={handleConfirmUpdate}
+        onClose={handleCloseUpdate}
       />
     </PluginsContext.Provider>
   );

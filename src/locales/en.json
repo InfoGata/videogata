@@ -124,7 +124,9 @@
     "logout": "Logout",
     "openMenu": "Open Menu",
     "updateFound": "Update Found",
-    "noUpdateFound": "No Update Found"
+    "noUpdateFound": "No Update Found",
+    "updatePluginTitle": "Update Plugin",
+    "confirmUpdatePlugin": "This plugin is already installed. Would you like to update it?"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
