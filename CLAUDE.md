@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Install dependencies
 npm install
 
-# Run development server with CORS proxy
+# Run development server
 npm run dev
 
 # Lint the codebase
@@ -25,8 +25,7 @@ npm run build
 # Preview production build
 npm run preview
 
-# Start CORS proxy server only
-npm run cors-server
+
 ```
 
 ### Platform-specific builds
