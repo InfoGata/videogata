@@ -509,28 +509,41 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     [dispatch]
   );
 
-  const loadPlugins = React.useCallback(async () => {
-    setPluginsFailed(false);
-    try {
-      const plugs = await loadAllPlugins();
+  const loadPlugins = React.useCallback(
+    async (signal: AbortSignal) => {
+      setPluginsFailed(false);
+      try {
+        const plugs = await loadAllPlugins();
 
-      const framePromises = plugs.map((p) => loadPlugin(p));
-      const frames = await Promise.all(framePromises);
-      setPluginFrames(frames);
-    } catch (e) {
-      // Log why loading failed
-      console.error("Failed to load plugins:", e);
-      toast.error(t("failedPlugins"));
-      setPluginsFailed(true);
-    } finally {
-      setPluginsLoaded(true);
-    }
-  }, [loadPlugin, t]);
+        const framePromises = plugs.map((p) => loadPlugin(p));
+        const frames = await Promise.all(framePromises);
+        if (!signal.aborted) {
+          setPluginFrames(frames);
+        }
+      } catch (e) {
+        if (!signal.aborted) {
+          // Log why loading failed
+          console.error("Failed to load plugins:", e);
+          toast.error(t("failedPlugins"));
+          setPluginsFailed(true);
+        }
+      } finally {
+        if (!signal.aborted) {
+          setPluginsLoaded(true);
+        }
+      }
+    },
+    [loadPlugin, t]
+  );
 
   React.useEffect(() => {
     if (!migrationComplete || loadingPlugin.current) return;
     loadingPlugin.current = true;
-    loadPlugins();
+    const controller = new AbortController();
+    loadPlugins(controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, [loadPlugins, migrationComplete]);
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
@@ -643,7 +656,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     pluginsLoaded,
     pluginsFailed,
     preinstallComplete: preinstallComplete ?? false,
-    reloadPlugins: loadPlugins,
+    reloadPlugins: () => loadPlugins(new AbortController().signal),
   };
 
   const handleClose = () => {
