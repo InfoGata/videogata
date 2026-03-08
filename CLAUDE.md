@@ -56,6 +56,11 @@ VideoGata is a plugin-based web application that plays videos from different pla
    - `PluginsProvider.tsx` implements the plugin lifecycle (loading, communication, updates)
    - Plugins are stored in IndexedDB using Dexie.js
 
+   **Dev Plugin Auto-Reload**:
+   - Plugins installed from `localhost` URLs are auto-polled every 3 seconds for changes
+   - To develop a plugin locally: serve its folder (`npx serve . -p 8080 --cors`), install via URL (`http://localhost:8080/manifest.json`), then run the plugin build in watch mode
+   - Changes are detected by comparing script content and auto-applied (logged to console as `[dev] Auto-updating plugin: ...`)
+
 2. **Data Flow**:
    - Redux is used for state management (see `src/store`)
    - Plugins communicate through a bridge defined in `ApplicationPluginInterface`
