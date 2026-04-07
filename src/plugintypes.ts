@@ -210,6 +210,7 @@ export interface Manifest {
   updateUrl?: string;
   homepage?: string;
   authentication?: ManifestAuthentication;
+  siteMatch?: string[];
 }
 
 export interface ManifestAuthentication {
