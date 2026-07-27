@@ -14,9 +14,14 @@ interface PluginVideoPlaylistProps {
   playlistId: string;
 }
 
-const getVideoUrl = (video?: Video, playlistId?: string) => {
-  return `/plugins/${video?.pluginId}/videos/${video?.apiId}?playlistId=${playlistId}&videoId=${video?.id}`;
-};
+// Params rather than a built path: the route renders `pluginId` as the plugin's
+// url alias.
+const videoLinkProps = (video: Video, playlistId: string) =>
+  ({
+    to: "/s/$pluginId/videos/$apiId",
+    params: { pluginId: video.pluginId || "", apiId: video.apiId || "" },
+    search: { playlistId, videoId: video.id },
+  }) as const;
 
 const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
   const { videos, playlistId, videoId } = props;
@@ -28,8 +33,6 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
   const nextDisabled = videoIndex >= videos.length - 1;
   const prevVideo = prevDisabled ? undefined : videos[videoIndex - 1];
   const nextVideo = nextDisabled ? undefined : videos[videoIndex + 1];
-  const prevVideoUrl = prevDisabled ? "" : getVideoUrl(prevVideo, playlistId);
-  const nextVideoUrl = nextDisabled ? "" : getVideoUrl(nextVideo, playlistId);
 
   React.useEffect(() => {
     dispatch(setCurrentVideo(currentVideo));
@@ -37,35 +40,46 @@ const PluginVideoPlaylist: React.FC<PluginVideoPlaylistProps> = (props) => {
 
   React.useEffect(() => {
     const onNextVideo = () => {
-      if (nextVideoUrl) {
-        navigate({ to: nextVideoUrl });
+      if (nextVideo) {
+        navigate(videoLinkProps(nextVideo, playlistId));
       }
     };
 
     document.addEventListener("nextVideo", onNextVideo);
     return () => document.removeEventListener("nextVideo", onNextVideo);
-  }, [navigate, nextVideoUrl]);
+  }, [navigate, nextVideo, playlistId]);
+
+  const skipClassName = cn(
+    buttonVariants({ variant: "ghost", size: "icon" }),
+    "pointer-events-none opacity-50"
+  );
 
   return (
     <div>
-      <Link
-        to={prevVideoUrl}
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          prevDisabled && "pointer-events-none opacity-50"
-        )}
-      >
-        <SkipBackIcon />
-      </Link>
-      <Link
-        to={nextVideoUrl}
-        className={cn(
-          buttonVariants({ variant: "ghost", size: "icon" }),
-          nextDisabled && "pointer-events-none opacity-50"
-        )}
-      >
-        <SkipForwardIcon />
-      </Link>
+      {prevVideo ? (
+        <Link
+          {...videoLinkProps(prevVideo, playlistId)}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+        >
+          <SkipBackIcon />
+        </Link>
+      ) : (
+        <span className={skipClassName}>
+          <SkipBackIcon />
+        </span>
+      )}
+      {nextVideo ? (
+        <Link
+          {...videoLinkProps(nextVideo, playlistId)}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
+        >
+          <SkipForwardIcon />
+        </Link>
+      ) : (
+        <span className={skipClassName}>
+          <SkipForwardIcon />
+        </span>
+      )}
       <div>
         <VideoList
           videos={videos}

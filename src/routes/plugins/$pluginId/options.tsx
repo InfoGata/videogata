@@ -4,6 +4,10 @@ import { loadPluginField } from "@/storage/pluginStorage";
 import { getPluginUrl } from "@/utils";
 import { Capacitor } from "@capacitor/core";
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -98,4 +102,6 @@ const PluginOptions: React.FC = () => {
 
 export const Route = createFileRoute("/plugins/$pluginId/options")({
   component: PluginOptions,
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
 });

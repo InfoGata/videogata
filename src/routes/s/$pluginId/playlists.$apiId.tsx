@@ -1,4 +1,9 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
@@ -62,6 +67,10 @@ const PluginPlaylist: React.FC = () => {
   const { onSelect, onSelectAll, isSelected, selected } =
     useSelected(videoList);
 
+  if (pluginsLoaded && !plugin && !pendingPlugin && !isLoading) {
+    return <PluginNotInstalled />;
+  }
+
   return (
     <>
       <Spinner open={query.isLoading || isLoading} />
@@ -103,7 +112,9 @@ const pluginPlaylistSearchSchema = z.object({
   isUserPlaylist: z.boolean().catch(false),
 });
 
-export const Route = createFileRoute("/plugins/$pluginId/playlists/$apiId")({
+export const Route = createFileRoute("/s/$pluginId/playlists/$apiId")({
   component: PluginPlaylist,
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
   validateSearch: pluginPlaylistSearchSchema,
 });

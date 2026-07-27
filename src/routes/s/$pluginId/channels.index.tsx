@@ -1,4 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import ChannelListItem from "@/components/ChannelListItem";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -36,6 +41,10 @@ const UserPluginChannels: React.FC = () => {
     return <ChannelListItem channel={c} key={c.id} />;
   });
 
+  if (pluginsLoaded && !plugin) {
+    return <PluginNotInstalled />;
+  }
+
   return (
     <>
       <Spinner open={query.isLoading} />
@@ -50,6 +59,8 @@ const UserPluginChannels: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/channels/")({
+export const Route = createFileRoute("/s/$pluginId/channels/")({
   component: UserPluginChannels,
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
 });

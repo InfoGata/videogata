@@ -18,7 +18,7 @@ const RecommendedVideoCard: React.FC<Props> = (props) => {
 
   return (
     <Link
-      to="/plugins/$pluginId/videos/$apiId"
+      to="/s/$pluginId/videos/$apiId"
       params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
       className="flex gap-2"
     >

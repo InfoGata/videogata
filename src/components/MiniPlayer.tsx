@@ -116,7 +116,7 @@ const MiniPlayer: React.FC = () => {
       )}
       {!useDefaultPlayer && video && (
         <Link
-          to="/plugins/$pluginId/videos/$apiId"
+          to="/s/$pluginId/videos/$apiId"
           params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
         >
           <p className="text-sm">{video.title}</p>

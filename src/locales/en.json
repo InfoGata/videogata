@@ -16,6 +16,8 @@
     "extensionMessage": "Get the InfoGata extension for enhanced plugin functionality",
     "installExtension": "Install Extension",
     "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
     "favorites": "Favorites",
     "addToFavorites": "Add to Favorites",
     "removeFromFavorites": "Remove from Favorites",
@@ -126,7 +128,17 @@
     "updateFound": "Update Found",
     "noUpdateFound": "No Update Found",
     "updatePluginTitle": "Update Plugin",
-    "confirmUpdatePlugin": "This plugin is already installed. Would you like to update it?"
+    "confirmUpdatePlugin": "This plugin is already installed. Would you like to update it?",
+    "urlAlias": "Url Alias",
+    "urlAliasDescription": "Used in this plugin's urls: /s/{{alias}}",
+    "renameAlias": "Rename url alias",
+    "aliasErrorInvalid": "Use lowercase letters, numbers and dashes only.",
+    "aliasErrorTooShort": "Must be at least 2 characters.",
+    "aliasErrorIsPluginId": "Another plugin already uses this as its id.",
+    "aliasErrorTaken": "Another plugin already uses this alias.",
+    "pluginNotInstalledTitle": "Plugin not installed",
+    "pluginNotInstalledDescription": "No installed plugin answers to \"{{alias}}\".",
+    "browsePlugins": "Browse plugins"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",

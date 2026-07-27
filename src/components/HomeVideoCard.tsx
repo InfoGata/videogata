@@ -22,7 +22,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   return (
     <div className="group">
       <Link
-        to="/plugins/$pluginId/videos/$apiId"
+        to="/s/$pluginId/videos/$apiId"
         params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
         className="relative block"
       >
@@ -38,7 +38,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
         <div>
           <div className="flex justify-between">
             <Link
-              to="/plugins/$pluginId/videos/$apiId"
+              to="/s/$pluginId/videos/$apiId"
               params={{
                 pluginId: video.pluginId || "",
                 apiId: video.apiId || "",
@@ -52,7 +52,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
             <VideoMenu video={video} />
           </div>
           <Link
-            to="/plugins/$pluginId/channels/$apiId"
+            to="/s/$pluginId/channels/$apiId"
             params={{
               pluginId: video.pluginId || "",
               apiId: video.channelApiId || "",

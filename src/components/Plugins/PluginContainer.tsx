@@ -24,6 +24,10 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   const [alertOpen, setAlertOpen] = React.useState(false);
   const { t } = useTranslation("plugins");
 
+  // Where this plugin's content lives, so the readable name in urls is
+  // discoverable from the list.
+  const contentPath = `/s/${plugin.alias}`;
+
   const onDelete = async () => {
     setAlertOpen(true);
   };
@@ -38,6 +42,11 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         <h3 className="text-lg font-semibold">
           {plugin.name} {plugin.version}
         </h3>
+        {plugin.alias && (
+          <p className="font-mono text-xs text-muted-foreground truncate max-w-50">
+            {contentPath}
+          </p>
+        )}
         <div className="flex gap-2 items-center">
           {plugin.hasOptions && (
             <Link

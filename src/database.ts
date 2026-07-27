@@ -7,6 +7,7 @@ import {
   Video,
 } from "./plugintypes";
 import { PluginAuthentication } from "./types";
+import { aliasFromName, assignAlias } from "./lib/plugin-alias";
 
 class VideoDatabase extends Dexie {
   plugins: Dexie.Table<PluginInfo, string>;
@@ -30,6 +31,28 @@ class VideoDatabase extends Dexie {
     this.version(3).stores({
       pluginAuths: "pluginId",
     });
+    // Aliases are indexed but not unique: they're optional, and uniqueness is
+    // enforced when one is assigned (see lib/plugin-alias).
+    this.version(4)
+      .stores({
+        plugins: "id, alias",
+      })
+      .upgrade(async (tx) => {
+        const table = tx.table<PluginInfo, string>("plugins");
+        const plugins = await table.toArray();
+        // Give plugins installed before aliases existed one now, deduped the
+        // same way a fresh install would be.
+        const assigned: PluginInfo[] = [];
+        for (const plugin of plugins) {
+          plugin.alias = assignAlias(
+            plugin.manifest?.alias ?? aliasFromName(plugin.name),
+            assigned,
+            plugin.id
+          );
+          assigned.push(plugin);
+          await table.put(plugin);
+        }
+      });
     this.plugins = this.table("plugins");
     this.playlists = this.table("playlists");
     this.favoriteVideos = this.table("favoriteVideos");

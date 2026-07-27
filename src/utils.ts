@@ -92,6 +92,9 @@ export async function getPlugin(
 
   const plugin: PluginInfo = {
     id: manifest.id,
+    // Only what the manifest asked for. The effective alias is assigned on
+    // install, where collisions with installed plugins are known.
+    alias: manifest.alias,
     name: manifest.name,
     script,
     description: manifest.description,

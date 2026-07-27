@@ -1,4 +1,9 @@
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import HomeVideoCard from "@/components/HomeVideoCard";
 import VideoContainer from "@/components/VideoContainer";
 import React from "react";
@@ -57,6 +62,10 @@ const ChannelPage: React.FC = () => {
     return <HomeVideoCard key={v.apiId} video={v} />;
   });
 
+  if (pluginsLoaded && !plugin && !pendingPlugin && !isLoading) {
+    return <PluginNotInstalled />;
+  }
+
   return (
     <>
       <Spinner open={query.isLoading || isLoading} />
@@ -85,6 +94,8 @@ const ChannelPage: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/channels/$apiId/")({
+export const Route = createFileRoute("/s/$pluginId/channels/$apiId/")({
   component: ChannelPage,
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
 });

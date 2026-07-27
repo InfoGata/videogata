@@ -65,7 +65,13 @@ const VideoMenu: React.FC<Props> = (props) => {
       ? {
           title: t("goToChannel"),
           icon: <MdSubscriptions />,
-          internalPath: `/plugins/${video.pluginId}/channels/${video.channelApiId}`,
+          internalLink: {
+            to: "/s/$pluginId/channels/$apiId",
+            params: {
+              pluginId: video.pluginId || "",
+              apiId: video.channelApiId,
+            },
+          },
         }
       : undefined,
     video.originalUrl

@@ -45,7 +45,7 @@ const FavoriteChannels: React.FC = () => {
         {channelPlugins.map((p) => (
           <Link
             className={buttonVariants({ variant: "outline" })}
-            to="/plugins/$pluginId/channels"
+            to="/s/$pluginId/channels"
             params={{ pluginId: p.id || "" }}
             key={p.id}
           >

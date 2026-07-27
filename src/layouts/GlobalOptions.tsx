@@ -24,7 +24,7 @@ const GlobalOptions: React.FC = () => {
     if (Array.isArray(item) && item.length > 0) {
       const video = item[0];
       navigate({
-        to: "/plugins/$pluginId/videos/$apiId",
+        to: "/s/$pluginId/videos/$apiId",
         params: { pluginId: video.pluginId || "", apiId: video.apiId || "" },
       });
     }

@@ -38,7 +38,7 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
               buttonVariants({ variant: "destructive" }),
               "rounded-full"
             )}
-            to="/plugins/$pluginId/channels/$apiId/live"
+            to="/s/$pluginId/channels/$apiId/live"
             params={{ pluginId: pluginId || "", apiId: channelApiId || "" }}
           >
             {t("live")}

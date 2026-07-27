@@ -1,4 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
@@ -42,6 +47,10 @@ const PluginVideo: React.FC = () => {
     enabled: pluginsLoaded,
   });
 
+  if (pluginsLoaded && !plugin && !pendingPlugin && !isLoading) {
+    return <PluginNotInstalled />;
+  }
+
   return (
     <>
       <Spinner open={isLoading} />
@@ -55,8 +64,8 @@ const PluginVideo: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/channels/$apiId/live")(
-  {
-    component: PluginVideo,
-  }
-);
+export const Route = createFileRoute("/s/$pluginId/channels/$apiId/live")({
+  component: PluginVideo,
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
+});

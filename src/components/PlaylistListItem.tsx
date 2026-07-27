@@ -19,16 +19,13 @@ const PlaylistListItem: React.FC<Props> = (props) => {
   const { playlist, dropdownItems, noFavorite, isUserPlaylist } = props;
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   const itemType: ItemMenuType = { type: "playlist", item: playlist };
-  const playlistPath = playlist.pluginId
-    ? `/plugins/${playlist.pluginId}/playlists/${playlist.apiId}`
-    : `/playlists/${playlist.id}`;
+  const className =
+    "flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2";
 
-  return (
-    <Link
-      to={playlistPath}
-      search={{ isUserPlaylist: isUserPlaylist }}
-      className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"
-    >
+  // Params rather than a built path: the plugin route renders its `pluginId`
+  // param as the plugin's url alias.
+  const contents = (
+    <>
       <Avatar className="size-10 rounded-none">
         <AvatarImage src={image} />
       </Avatar>
@@ -42,6 +39,28 @@ const PlaylistListItem: React.FC<Props> = (props) => {
           noFavorite={noFavorite}
         />
       </div>
+    </>
+  );
+
+  return playlist.pluginId ? (
+    <Link
+      to="/s/$pluginId/playlists/$apiId"
+      params={{
+        pluginId: playlist.pluginId,
+        apiId: playlist.apiId || "",
+      }}
+      search={{ isUserPlaylist: isUserPlaylist ?? false }}
+      className={className}
+    >
+      {contents}
+    </Link>
+  ) : (
+    <Link
+      to="/playlists/$playlistId"
+      params={{ playlistId: playlist.id || "" }}
+      className={className}
+    >
+      {contents}
     </Link>
   );
 };

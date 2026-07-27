@@ -1,4 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
@@ -60,6 +65,10 @@ const PluginVideo: React.FC = () => {
     getPlaylistVideos();
   }, [playlistId]);
 
+  if (pluginsLoaded && !plugin && !pendingPlugin && !isLoading) {
+    return <PluginNotInstalled />;
+  }
+
   return (
     <>
       {query.data && <title>{query.data.title}</title>}
@@ -100,7 +109,9 @@ const pluginVideoSchema = z.object({
   videoId: z.string().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/plugins/$pluginId/videos/$apiId")({
+export const Route = createFileRoute("/s/$pluginId/videos/$apiId")({
   component: PluginVideo,
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
   validateSearch: pluginVideoSchema,
 });

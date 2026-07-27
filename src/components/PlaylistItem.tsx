@@ -24,11 +24,6 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
     props;
   const sanitizer = DOMPurify.sanitize;
 
-  let videoUrl = `/plugins/${video.pluginId}/videos/${video.apiId}`;
-  videoUrl = playlistId
-    ? `${videoUrl}?playlistId=${playlistId}&videoId=${video.id}`
-    : videoUrl;
-
   const onCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onSelectClick && index !== undefined) {
@@ -56,7 +51,16 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             <AvatarImage src={image} />
           </Avatar>
           <div className="min-w-0">
-            <Link to={videoUrl}>
+            <Link
+              to="/s/$pluginId/videos/$apiId"
+              params={{
+                pluginId: video.pluginId || "",
+                apiId: video.apiId || "",
+              }}
+              search={
+                playlistId ? { playlistId, videoId: video.id } : undefined
+              }
+            >
               <p
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
                 title={video.title}
@@ -65,7 +69,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             </Link>
             {video.channelApiId ? (
               <Link
-                to="/plugins/$pluginId/channels/$apiId"
+                to="/s/$pluginId/channels/$apiId"
                 params={{
                   pluginId: video.pluginId || "",
                   apiId: video.channelApiId || "",

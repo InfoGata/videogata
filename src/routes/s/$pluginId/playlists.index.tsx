@@ -1,4 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
 import PlaylistListItem from "@/components/PlaylistListItem";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -56,10 +61,12 @@ const PluginPlaylists: React.FC = () => {
       />
     </>
   ) : (
-    <>{t("notFound")}</>
+    <PluginNotInstalled />
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/playlists/")({
+export const Route = createFileRoute("/s/$pluginId/playlists/")({
   component: PluginPlaylists,
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
 });

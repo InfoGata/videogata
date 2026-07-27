@@ -3,18 +3,27 @@ import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { ItemMenuType } from "@/types";
 import { Link } from "@tanstack/react-router";
 
+/**
+ * An in-app destination as route + params rather than a built path, so the
+ * plugin routes can render `pluginId` as the plugin's url alias.
+ */
+export interface InternalLink {
+  to: "/s/$pluginId/channels/$apiId";
+  params: { pluginId: string; apiId: string };
+}
+
 export interface DropdownItemProps {
   title: string;
   icon: React.ReactElement;
   action?: (item?: ItemMenuType) => void;
   item?: ItemMenuType;
   url?: string;
-  internalPath?: string;
+  internalLink?: InternalLink;
   setOpen?: (open: boolean) => void;
 }
 
 const DropdownItem: React.FC<DropdownItemProps> = (props) => {
-  const { title, icon, action, url, internalPath, item, setOpen } = props;
+  const { title, icon, action, url, internalLink, item, setOpen } = props;
 
   const onLinkClick = () => {
     if (setOpen) {
@@ -23,10 +32,10 @@ const DropdownItem: React.FC<DropdownItemProps> = (props) => {
   };
 
   const InnerComponent = (props: { children: React.ReactNode }) => {
-    if (internalPath) {
+    if (internalLink) {
       return (
         <Link
-          to={internalPath}
+          {...internalLink}
           className="flex items-center w-full"
           onClick={onLinkClick}
         >

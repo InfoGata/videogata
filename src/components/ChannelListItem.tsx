@@ -24,14 +24,14 @@ const ChannelListItem: React.FC<Props> = (props) => {
     event.stopPropagation();
     event.preventDefault();
     navigate({
-      to: "/plugins/$pluginId/channels/$apiId/live",
+      to: "/s/$pluginId/channels/$apiId/live",
       params: { pluginId: channel.pluginId || "", apiId: channel.apiId || "" },
     });
   };
 
   return (
     <Link
-      to="/plugins/$pluginId/channels/$apiId"
+      to="/s/$pluginId/channels/$apiId"
       params={{ pluginId: channel.pluginId || "", apiId: channel.apiId || "" }}
       state={{ channel }}
       className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"

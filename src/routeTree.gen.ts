@@ -23,14 +23,16 @@ import { Route as PlaylistsPlaylistIdRouteImport } from './routes/playlists.$pla
 import { Route as FavoritesVideosRouteImport } from './routes/favorites/videos'
 import { Route as FavoritesPlaylistsRouteImport } from './routes/favorites/playlists'
 import { Route as FavoritesChannelsRouteImport } from './routes/favorites/channels'
+import { Route as SPluginIdIndexRouteImport } from './routes/s/$pluginId/index'
 import { Route as PluginsPluginIdIndexRouteImport } from './routes/plugins/$pluginId.index'
 import { Route as PluginsPluginIdOptionsRouteImport } from './routes/plugins/$pluginId/options'
-import { Route as PluginsPluginIdPlaylistsIndexRouteImport } from './routes/plugins/$pluginId/playlists.index'
-import { Route as PluginsPluginIdChannelsIndexRouteImport } from './routes/plugins/$pluginId/channels.index'
-import { Route as PluginsPluginIdVideosApiIdRouteImport } from './routes/plugins/$pluginId/videos.$apiId'
-import { Route as PluginsPluginIdPlaylistsApiIdRouteImport } from './routes/plugins/$pluginId/playlists.$apiId'
-import { Route as PluginsPluginIdChannelsApiIdIndexRouteImport } from './routes/plugins/$pluginId/channels.$apiId.index'
-import { Route as PluginsPluginIdChannelsApiIdLiveRouteImport } from './routes/plugins/$pluginId/channels.$apiId.live'
+import { Route as PluginsPluginIdSplatRouteImport } from './routes/plugins/$pluginId/$'
+import { Route as SPluginIdPlaylistsIndexRouteImport } from './routes/s/$pluginId/playlists.index'
+import { Route as SPluginIdChannelsIndexRouteImport } from './routes/s/$pluginId/channels.index'
+import { Route as SPluginIdVideosApiIdRouteImport } from './routes/s/$pluginId/videos.$apiId'
+import { Route as SPluginIdPlaylistsApiIdRouteImport } from './routes/s/$pluginId/playlists.$apiId'
+import { Route as SPluginIdChannelsApiIdIndexRouteImport } from './routes/s/$pluginId/channels.$apiId.index'
+import { Route as SPluginIdChannelsApiIdLiveRouteImport } from './routes/s/$pluginId/channels.$apiId.live'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -102,6 +104,11 @@ const FavoritesChannelsRoute = FavoritesChannelsRouteImport.update({
   path: '/channels',
   getParentRoute: () => FavoritesRouteRoute,
 } as any)
+const SPluginIdIndexRoute = SPluginIdIndexRouteImport.update({
+  id: '/s/$pluginId/',
+  path: '/s/$pluginId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PluginsPluginIdIndexRoute = PluginsPluginIdIndexRouteImport.update({
   id: '/plugins/$pluginId/',
   path: '/plugins/$pluginId/',
@@ -112,40 +119,41 @@ const PluginsPluginIdOptionsRoute = PluginsPluginIdOptionsRouteImport.update({
   path: '/plugins/$pluginId/options',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PluginsPluginIdPlaylistsIndexRoute =
-  PluginsPluginIdPlaylistsIndexRouteImport.update({
-    id: '/plugins/$pluginId/playlists/',
-    path: '/plugins/$pluginId/playlists/',
+const PluginsPluginIdSplatRoute = PluginsPluginIdSplatRouteImport.update({
+  id: '/plugins/$pluginId/$',
+  path: '/plugins/$pluginId/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdPlaylistsIndexRoute = SPluginIdPlaylistsIndexRouteImport.update({
+  id: '/s/$pluginId/playlists/',
+  path: '/s/$pluginId/playlists/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdChannelsIndexRoute = SPluginIdChannelsIndexRouteImport.update({
+  id: '/s/$pluginId/channels/',
+  path: '/s/$pluginId/channels/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdVideosApiIdRoute = SPluginIdVideosApiIdRouteImport.update({
+  id: '/s/$pluginId/videos/$apiId',
+  path: '/s/$pluginId/videos/$apiId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdPlaylistsApiIdRoute = SPluginIdPlaylistsApiIdRouteImport.update({
+  id: '/s/$pluginId/playlists/$apiId',
+  path: '/s/$pluginId/playlists/$apiId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdChannelsApiIdIndexRoute =
+  SPluginIdChannelsApiIdIndexRouteImport.update({
+    id: '/s/$pluginId/channels/$apiId/',
+    path: '/s/$pluginId/channels/$apiId/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PluginsPluginIdChannelsIndexRoute =
-  PluginsPluginIdChannelsIndexRouteImport.update({
-    id: '/plugins/$pluginId/channels/',
-    path: '/plugins/$pluginId/channels/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdVideosApiIdRoute =
-  PluginsPluginIdVideosApiIdRouteImport.update({
-    id: '/plugins/$pluginId/videos/$apiId',
-    path: '/plugins/$pluginId/videos/$apiId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdPlaylistsApiIdRoute =
-  PluginsPluginIdPlaylistsApiIdRouteImport.update({
-    id: '/plugins/$pluginId/playlists/$apiId',
-    path: '/plugins/$pluginId/playlists/$apiId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdChannelsApiIdIndexRoute =
-  PluginsPluginIdChannelsApiIdIndexRouteImport.update({
-    id: '/plugins/$pluginId/channels/$apiId/',
-    path: '/plugins/$pluginId/channels/$apiId/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdChannelsApiIdLiveRoute =
-  PluginsPluginIdChannelsApiIdLiveRouteImport.update({
-    id: '/plugins/$pluginId/channels/$apiId/live',
-    path: '/plugins/$pluginId/channels/$apiId/live',
+const SPluginIdChannelsApiIdLiveRoute =
+  SPluginIdChannelsApiIdLiveRouteImport.update({
+    id: '/s/$pluginId/channels/$apiId/live',
+    path: '/s/$pluginId/channels/$apiId/live',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -164,14 +172,16 @@ export interface FileRoutesByFullPath {
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/plugins/': typeof PluginsIndexRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/videos/$apiId': typeof PluginsPluginIdVideosApiIdRoute
-  '/plugins/$pluginId/channels/': typeof PluginsPluginIdChannelsIndexRoute
-  '/plugins/$pluginId/playlists/': typeof PluginsPluginIdPlaylistsIndexRoute
-  '/plugins/$pluginId/channels/$apiId/live': typeof PluginsPluginIdChannelsApiIdLiveRoute
-  '/plugins/$pluginId/channels/$apiId/': typeof PluginsPluginIdChannelsApiIdIndexRoute
+  '/s/$pluginId/': typeof SPluginIdIndexRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/videos/$apiId': typeof SPluginIdVideosApiIdRoute
+  '/s/$pluginId/channels/': typeof SPluginIdChannelsIndexRoute
+  '/s/$pluginId/playlists/': typeof SPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/channels/$apiId/live': typeof SPluginIdChannelsApiIdLiveRoute
+  '/s/$pluginId/channels/$apiId/': typeof SPluginIdChannelsApiIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -188,14 +198,16 @@ export interface FileRoutesByTo {
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/plugins': typeof PluginsIndexRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/videos/$apiId': typeof PluginsPluginIdVideosApiIdRoute
-  '/plugins/$pluginId/channels': typeof PluginsPluginIdChannelsIndexRoute
-  '/plugins/$pluginId/playlists': typeof PluginsPluginIdPlaylistsIndexRoute
-  '/plugins/$pluginId/channels/$apiId/live': typeof PluginsPluginIdChannelsApiIdLiveRoute
-  '/plugins/$pluginId/channels/$apiId': typeof PluginsPluginIdChannelsApiIdIndexRoute
+  '/s/$pluginId': typeof SPluginIdIndexRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/videos/$apiId': typeof SPluginIdVideosApiIdRoute
+  '/s/$pluginId/channels': typeof SPluginIdChannelsIndexRoute
+  '/s/$pluginId/playlists': typeof SPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/channels/$apiId/live': typeof SPluginIdChannelsApiIdLiveRoute
+  '/s/$pluginId/channels/$apiId': typeof SPluginIdChannelsApiIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -213,14 +225,16 @@ export interface FileRoutesById {
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/plugins/': typeof PluginsIndexRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/videos/$apiId': typeof PluginsPluginIdVideosApiIdRoute
-  '/plugins/$pluginId/channels/': typeof PluginsPluginIdChannelsIndexRoute
-  '/plugins/$pluginId/playlists/': typeof PluginsPluginIdPlaylistsIndexRoute
-  '/plugins/$pluginId/channels/$apiId/live': typeof PluginsPluginIdChannelsApiIdLiveRoute
-  '/plugins/$pluginId/channels/$apiId/': typeof PluginsPluginIdChannelsApiIdIndexRoute
+  '/s/$pluginId/': typeof SPluginIdIndexRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/videos/$apiId': typeof SPluginIdVideosApiIdRoute
+  '/s/$pluginId/channels/': typeof SPluginIdChannelsIndexRoute
+  '/s/$pluginId/playlists/': typeof SPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/channels/$apiId/live': typeof SPluginIdChannelsApiIdLiveRoute
+  '/s/$pluginId/channels/$apiId/': typeof SPluginIdChannelsApiIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -239,14 +253,16 @@ export interface FileRouteTypes {
     | '/playlists/$playlistId'
     | '/playlists/'
     | '/plugins/'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
     | '/plugins/$pluginId/'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/videos/$apiId'
-    | '/plugins/$pluginId/channels/'
-    | '/plugins/$pluginId/playlists/'
-    | '/plugins/$pluginId/channels/$apiId/live'
-    | '/plugins/$pluginId/channels/$apiId/'
+    | '/s/$pluginId/'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/videos/$apiId'
+    | '/s/$pluginId/channels/'
+    | '/s/$pluginId/playlists/'
+    | '/s/$pluginId/channels/$apiId/live'
+    | '/s/$pluginId/channels/$apiId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -263,14 +279,16 @@ export interface FileRouteTypes {
     | '/playlists/$playlistId'
     | '/playlists'
     | '/plugins'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
     | '/plugins/$pluginId'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/videos/$apiId'
-    | '/plugins/$pluginId/channels'
-    | '/plugins/$pluginId/playlists'
-    | '/plugins/$pluginId/channels/$apiId/live'
-    | '/plugins/$pluginId/channels/$apiId'
+    | '/s/$pluginId'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/videos/$apiId'
+    | '/s/$pluginId/channels'
+    | '/s/$pluginId/playlists'
+    | '/s/$pluginId/channels/$apiId/live'
+    | '/s/$pluginId/channels/$apiId'
   id:
     | '__root__'
     | '/'
@@ -287,14 +305,16 @@ export interface FileRouteTypes {
     | '/playlists/$playlistId'
     | '/playlists/'
     | '/plugins/'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
     | '/plugins/$pluginId/'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/videos/$apiId'
-    | '/plugins/$pluginId/channels/'
-    | '/plugins/$pluginId/playlists/'
-    | '/plugins/$pluginId/channels/$apiId/live'
-    | '/plugins/$pluginId/channels/$apiId/'
+    | '/s/$pluginId/'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/videos/$apiId'
+    | '/s/$pluginId/channels/'
+    | '/s/$pluginId/playlists/'
+    | '/s/$pluginId/channels/$apiId/live'
+    | '/s/$pluginId/channels/$apiId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -309,14 +329,16 @@ export interface RootRouteChildren {
   PlaylistsPlaylistIdRoute: typeof PlaylistsPlaylistIdRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   PluginsIndexRoute: typeof PluginsIndexRoute
+  PluginsPluginIdSplatRoute: typeof PluginsPluginIdSplatRoute
   PluginsPluginIdOptionsRoute: typeof PluginsPluginIdOptionsRoute
   PluginsPluginIdIndexRoute: typeof PluginsPluginIdIndexRoute
-  PluginsPluginIdPlaylistsApiIdRoute: typeof PluginsPluginIdPlaylistsApiIdRoute
-  PluginsPluginIdVideosApiIdRoute: typeof PluginsPluginIdVideosApiIdRoute
-  PluginsPluginIdChannelsIndexRoute: typeof PluginsPluginIdChannelsIndexRoute
-  PluginsPluginIdPlaylistsIndexRoute: typeof PluginsPluginIdPlaylistsIndexRoute
-  PluginsPluginIdChannelsApiIdLiveRoute: typeof PluginsPluginIdChannelsApiIdLiveRoute
-  PluginsPluginIdChannelsApiIdIndexRoute: typeof PluginsPluginIdChannelsApiIdIndexRoute
+  SPluginIdIndexRoute: typeof SPluginIdIndexRoute
+  SPluginIdPlaylistsApiIdRoute: typeof SPluginIdPlaylistsApiIdRoute
+  SPluginIdVideosApiIdRoute: typeof SPluginIdVideosApiIdRoute
+  SPluginIdChannelsIndexRoute: typeof SPluginIdChannelsIndexRoute
+  SPluginIdPlaylistsIndexRoute: typeof SPluginIdPlaylistsIndexRoute
+  SPluginIdChannelsApiIdLiveRoute: typeof SPluginIdChannelsApiIdLiveRoute
+  SPluginIdChannelsApiIdIndexRoute: typeof SPluginIdChannelsApiIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,6 +441,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesChannelsRouteImport
       parentRoute: typeof FavoritesRouteRoute
     }
+    '/s/$pluginId/': {
+      id: '/s/$pluginId/'
+      path: '/s/$pluginId'
+      fullPath: '/s/$pluginId/'
+      preLoaderRoute: typeof SPluginIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plugins/$pluginId/': {
       id: '/plugins/$pluginId/'
       path: '/plugins/$pluginId'
@@ -433,46 +462,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsPluginIdOptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/playlists/': {
-      id: '/plugins/$pluginId/playlists/'
-      path: '/plugins/$pluginId/playlists'
-      fullPath: '/plugins/$pluginId/playlists/'
-      preLoaderRoute: typeof PluginsPluginIdPlaylistsIndexRouteImport
+    '/plugins/$pluginId/$': {
+      id: '/plugins/$pluginId/$'
+      path: '/plugins/$pluginId/$'
+      fullPath: '/plugins/$pluginId/$'
+      preLoaderRoute: typeof PluginsPluginIdSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/channels/': {
-      id: '/plugins/$pluginId/channels/'
-      path: '/plugins/$pluginId/channels'
-      fullPath: '/plugins/$pluginId/channels/'
-      preLoaderRoute: typeof PluginsPluginIdChannelsIndexRouteImport
+    '/s/$pluginId/playlists/': {
+      id: '/s/$pluginId/playlists/'
+      path: '/s/$pluginId/playlists'
+      fullPath: '/s/$pluginId/playlists/'
+      preLoaderRoute: typeof SPluginIdPlaylistsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/videos/$apiId': {
-      id: '/plugins/$pluginId/videos/$apiId'
-      path: '/plugins/$pluginId/videos/$apiId'
-      fullPath: '/plugins/$pluginId/videos/$apiId'
-      preLoaderRoute: typeof PluginsPluginIdVideosApiIdRouteImport
+    '/s/$pluginId/channels/': {
+      id: '/s/$pluginId/channels/'
+      path: '/s/$pluginId/channels'
+      fullPath: '/s/$pluginId/channels/'
+      preLoaderRoute: typeof SPluginIdChannelsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/playlists/$apiId': {
-      id: '/plugins/$pluginId/playlists/$apiId'
-      path: '/plugins/$pluginId/playlists/$apiId'
-      fullPath: '/plugins/$pluginId/playlists/$apiId'
-      preLoaderRoute: typeof PluginsPluginIdPlaylistsApiIdRouteImport
+    '/s/$pluginId/videos/$apiId': {
+      id: '/s/$pluginId/videos/$apiId'
+      path: '/s/$pluginId/videos/$apiId'
+      fullPath: '/s/$pluginId/videos/$apiId'
+      preLoaderRoute: typeof SPluginIdVideosApiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/channels/$apiId/': {
-      id: '/plugins/$pluginId/channels/$apiId/'
-      path: '/plugins/$pluginId/channels/$apiId'
-      fullPath: '/plugins/$pluginId/channels/$apiId/'
-      preLoaderRoute: typeof PluginsPluginIdChannelsApiIdIndexRouteImport
+    '/s/$pluginId/playlists/$apiId': {
+      id: '/s/$pluginId/playlists/$apiId'
+      path: '/s/$pluginId/playlists/$apiId'
+      fullPath: '/s/$pluginId/playlists/$apiId'
+      preLoaderRoute: typeof SPluginIdPlaylistsApiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/channels/$apiId/live': {
-      id: '/plugins/$pluginId/channels/$apiId/live'
-      path: '/plugins/$pluginId/channels/$apiId/live'
-      fullPath: '/plugins/$pluginId/channels/$apiId/live'
-      preLoaderRoute: typeof PluginsPluginIdChannelsApiIdLiveRouteImport
+    '/s/$pluginId/channels/$apiId/': {
+      id: '/s/$pluginId/channels/$apiId/'
+      path: '/s/$pluginId/channels/$apiId'
+      fullPath: '/s/$pluginId/channels/$apiId/'
+      preLoaderRoute: typeof SPluginIdChannelsApiIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$pluginId/channels/$apiId/live': {
+      id: '/s/$pluginId/channels/$apiId/live'
+      path: '/s/$pluginId/channels/$apiId/live'
+      fullPath: '/s/$pluginId/channels/$apiId/live'
+      preLoaderRoute: typeof SPluginIdChannelsApiIdLiveRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -506,15 +542,16 @@ const rootRouteChildren: RootRouteChildren = {
   PlaylistsPlaylistIdRoute: PlaylistsPlaylistIdRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   PluginsIndexRoute: PluginsIndexRoute,
+  PluginsPluginIdSplatRoute: PluginsPluginIdSplatRoute,
   PluginsPluginIdOptionsRoute: PluginsPluginIdOptionsRoute,
   PluginsPluginIdIndexRoute: PluginsPluginIdIndexRoute,
-  PluginsPluginIdPlaylistsApiIdRoute: PluginsPluginIdPlaylistsApiIdRoute,
-  PluginsPluginIdVideosApiIdRoute: PluginsPluginIdVideosApiIdRoute,
-  PluginsPluginIdChannelsIndexRoute: PluginsPluginIdChannelsIndexRoute,
-  PluginsPluginIdPlaylistsIndexRoute: PluginsPluginIdPlaylistsIndexRoute,
-  PluginsPluginIdChannelsApiIdLiveRoute: PluginsPluginIdChannelsApiIdLiveRoute,
-  PluginsPluginIdChannelsApiIdIndexRoute:
-    PluginsPluginIdChannelsApiIdIndexRoute,
+  SPluginIdIndexRoute: SPluginIdIndexRoute,
+  SPluginIdPlaylistsApiIdRoute: SPluginIdPlaylistsApiIdRoute,
+  SPluginIdVideosApiIdRoute: SPluginIdVideosApiIdRoute,
+  SPluginIdChannelsIndexRoute: SPluginIdChannelsIndexRoute,
+  SPluginIdPlaylistsIndexRoute: SPluginIdPlaylistsIndexRoute,
+  SPluginIdChannelsApiIdLiveRoute: SPluginIdChannelsApiIdLiveRoute,
+  SPluginIdChannelsApiIdIndexRoute: SPluginIdChannelsApiIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

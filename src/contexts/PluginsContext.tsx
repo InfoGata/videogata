@@ -10,6 +10,13 @@ import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
 import { usePluginMigration } from "../hooks/usePluginMigration";
 import {
+  AliasError,
+  aliasFromName,
+  assignAlias,
+  setPluginAliases,
+  validateAlias,
+} from "../lib/plugin-alias";
+import {
   deletePlugin as deletePluginStorage,
   loadAllPlugins,
   savePlugin,
@@ -108,6 +115,7 @@ export interface PluginMessage {
 export class PluginFrameContainer extends PluginFrame<PluginMethodInterface> {
   name?: string;
   id?: string;
+  alias?: string;
   hasOptions?: boolean;
   fileList?: FileList;
   optionsSameOrigin?: boolean;
@@ -124,6 +132,10 @@ export interface PluginContextInterface {
     pluginFiles?: FileList
   ) => Promise<void>;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
+  setPluginAlias: (
+    pluginId: string,
+    alias: string
+  ) => Promise<AliasError | null>;
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
   pluginsLoaded: boolean;
@@ -488,6 +500,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       });
 
       host.id = plugin.id;
+      host.alias = plugin.alias;
       host.optionsSameOrigin = plugin.optionsSameOrigin;
       host.name = plugin.name;
       host.version = plugin.version;
@@ -548,6 +561,44 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     };
   }, [loadPlugins, migrationComplete]);
 
+  // Router params.parse/stringify read the alias registry outside of React, so
+  // keep it in step with whatever is installed. The registry is primed from the
+  // database before the router renders (see src/router.tsx); this refreshes it
+  // after every install, update, rename and delete.
+  //
+  // Sourced from the database rather than the frames, so a plugin whose frame
+  // failed to load still keeps its urls working.
+  React.useEffect(() => {
+    const syncAliases = async () => {
+      setPluginAliases(await db.plugins.toArray());
+    };
+    syncAliases();
+  }, [pluginFrames]);
+
+  const setPluginAlias = React.useCallback(
+    async (pluginId: string, alias: string): Promise<AliasError | null> => {
+      const plugins = await db.plugins.toArray();
+      if (!plugins.some((p) => p.id === pluginId)) return "invalid";
+
+      const error = validateAlias(alias, plugins, pluginId);
+      if (error) return error;
+
+      await db.plugins.update(pluginId, { alias });
+      // Refresh the registry here rather than leaving it to the effect below:
+      // callers navigate as soon as this resolves, and the url they build has
+      // to carry the new alias.
+      setPluginAliases(await db.plugins.toArray());
+      setPluginFrames((prev) =>
+        prev.map((p) => {
+          if (p.id === pluginId) p.alias = alias;
+          return p;
+        })
+      );
+      return null;
+    },
+    []
+  );
+
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
     setPluginFrames(newPlugins);
@@ -565,6 +616,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const loadAndAddPlugin = React.useCallback(
     async (plugin: PluginInfo) => {
+      // The manifest's alias is a request: fall back to the name, and take a
+      // `-N` variant when another plugin already holds it.
+      plugin.alias = assignAlias(
+        plugin.alias || aliasFromName(plugin.name),
+        await db.plugins.toArray(),
+        plugin.id
+      );
       const pluginFrame = await loadPlugin(plugin);
       setPluginFrames((prev) => [...prev, pluginFrame]);
       await savePlugin(plugin);
@@ -574,6 +632,16 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const updatePlugin = React.useCallback(
     async (plugin: PluginInfo, id: string, pluginFiles?: FileList) => {
+      // Keep the alias the plugin already has: it's in urls the user may have
+      // shared or bookmarked, and plugins auto-update on every launch.
+      const existing = await db.plugins.get(id);
+      plugin.alias =
+        existing?.alias ??
+        assignAlias(
+          plugin.alias || aliasFromName(plugin.name),
+          await db.plugins.toArray(),
+          id
+        );
       const oldPlugin = pluginFrames.find((p) => p.id === id);
       oldPlugin?.destroy();
       const pluginFrame = await loadPlugin(plugin, pluginFiles);
@@ -715,7 +783,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             appName: "VideoGata",
             appOrigin: window.location.origin,
             siteMatchPatterns: siteMatch,
-            redirectPath: `/plugins/${plugin.id}`,
+            redirectPath: `/plugins/${plugin.alias ?? plugin.id}`,
           });
         }
       }
@@ -732,6 +800,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     addPlugin: addPlugin,
     deletePlugin: deletePlugin,
     updatePlugin: updatePlugin,
+    setPluginAlias: setPluginAlias,
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
     pluginsLoaded,

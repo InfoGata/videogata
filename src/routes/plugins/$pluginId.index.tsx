@@ -1,5 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
+import PluginAliasField from "@/components/Plugins/PluginAliasField";
+import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
+import { canonicalizePluginUrl, pluginIdParams } from "@/lib/plugin-route";
 import Spinner from "@/components/Spinner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -161,7 +164,9 @@ const PluginDetails: React.FC = () => {
   };
 
   if (!pluginInfo) {
-    return <div>{t("common:notFound")}</div>;
+    // The url may carry an alias that only means something on the device it was
+    // shared from, so name what was asked for rather than a bare not found.
+    return <PluginNotInstalled />;
   }
 
   const aboutLinks: (AboutLinkProps | null)[] = [
@@ -259,6 +264,10 @@ const PluginDetails: React.FC = () => {
           )}
         </div>
         {aboutLinks.map((a) => a && <AboutLink {...a} key={a.title} />)}
+        <PluginAliasField
+          pluginId={pluginInfo.id || ""}
+          alias={pluginInfo.alias}
+        />
       </div>
     </>
   );
@@ -266,4 +275,6 @@ const PluginDetails: React.FC = () => {
 
 export const Route = createFileRoute("/plugins/$pluginId/")({
   component: PluginDetails,
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
 });

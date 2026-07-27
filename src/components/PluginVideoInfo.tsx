@@ -18,7 +18,6 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
   const { video } = props;
   const { t } = useTranslation();
   const [showMore, setShowMore] = React.useState(false);
-  const channelUrl = `/plugins/${video.pluginId}/channels/${video.channelApiId}`;
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
 
   const toggleShowMore = () => {
@@ -37,7 +36,14 @@ const PluginVideoInfo: React.FC<PluginVideoInfoProps> = (props) => {
       />
       <div className="flex gap-4">
         <div className="flex items-center justify-between w-full">
-          <Link to={channelUrl} className="text-muted-foreground">
+          <Link
+            to="/s/$pluginId/channels/$apiId"
+            params={{
+              pluginId: video.pluginId || "",
+              apiId: video.channelApiId || "",
+            }}
+            className="text-muted-foreground"
+          >
             {video.channelName}
           </Link>
           {video.likes ? (
