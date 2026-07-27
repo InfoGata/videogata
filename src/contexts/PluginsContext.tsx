@@ -1,7 +1,6 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import semverGt from "semver/functions/gt";
 import semverValid from "semver/functions/parse";
 import { toast } from "sonner";
@@ -164,8 +163,6 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
-  const loadingPlugin = React.useRef(false);
-  const { t } = useTranslation("plugins");
 
   const pluginsPreinstalled = useAppSelector(
     (state) => state.settings.pluginsPreinstalled
@@ -517,14 +514,20 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
         const framePromises = plugs.map((p) => loadPlugin(p));
         const frames = await Promise.all(framePromises);
-        if (!signal.aborted) {
-          setPluginFrames(frames);
+        if (signal.aborted) {
+          // Nothing will hold on to these, so tear down the iframes they built
+          // rather than leaving them in the document.
+          frames.forEach((f) => f.destroy());
+          return;
         }
+        setPluginFrames(frames);
       } catch (e) {
         if (!signal.aborted) {
           // Log why loading failed
           console.error("Failed to load plugins:", e);
-          toast.error(t("failedPlugins"));
+          // i18n's `t` rather than the hook's: this callback is an effect
+          // dependency, and a new `t` identity would reload every plugin.
+          toast.error(i18n.t("plugins:failedPlugins"));
           setPluginsFailed(true);
         }
       } finally {
@@ -533,12 +536,11 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         }
       }
     },
-    [loadPlugin, t]
+    [loadPlugin]
   );
 
   React.useEffect(() => {
-    if (!migrationComplete || loadingPlugin.current) return;
-    loadingPlugin.current = true;
+    if (!migrationComplete) return;
     const controller = new AbortController();
     loadPlugins(controller.signal);
     return () => {
