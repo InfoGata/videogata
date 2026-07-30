@@ -63,9 +63,16 @@ export default defineConfig({
       },
     }),
   ],
+  // Unique port per app in ~/projects/webapps; strictPort so a collision fails
+  // loudly instead of drifting to the next free port.
   server: {
-    port: 3000,
+    port: 3006,
+    strictPort: true,
     open: true,
+  },
+  preview: {
+    port: 4006,
+    strictPort: true,
   },
   resolve: {
     alias: {
