@@ -76,7 +76,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
           onCheckedChange={onChange(p.id || "")}
         />
       )}
-      <div className="flex-grow">
+      <div className="grow">
         <AboutLink
           title={`${p.name} ${p.version || ""}`}
           description={p.description}
