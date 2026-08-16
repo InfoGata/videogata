@@ -27,7 +27,11 @@ export default defineConfig({
       strategies: "injectManifest",
       srcDir: "src",
       filename: "sw.ts",
-      registerType: "prompt",
+      // "autoUpdate" so a client stuck on a stale precached index.html recovers on
+      // its own instead of waiting for a SKIP_WAITING message from a page that
+      // failed to boot. Unlike generateSW, injectManifest does not get
+      // skipWaiting/clientsClaim injected — src/sw.ts does that itself.
+      registerType: "autoUpdate",
       workbox: {
         navigateFallback: "/",
         navigateFallbackDenylist: [

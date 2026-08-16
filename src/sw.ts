@@ -8,6 +8,18 @@ import { NetworkRequest } from "./types";
 
 declare let self: ServiceWorkerGlobalScope;
 
+// registerType is "autoUpdate", but that only injects skipWaiting/clientsClaim for
+// the generateSW strategy — an injectManifest worker has to activate itself. Without
+// this, a client whose precached index.html points at a deleted bundle can never
+// update: the page that would post SKIP_WAITING is the one that failed to boot.
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 let communicationPort: MessagePort;
 self.addEventListener("message", (event) => {
   if (event.data) {
