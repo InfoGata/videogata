@@ -8,6 +8,7 @@ import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import ConfirmUpdatePluginDialog from "../components/ConfirmUpdatePluginDialog";
 import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
+import { useExtension } from "../hooks/useExtension";
 import { usePluginMigration } from "../hooks/usePluginMigration";
 import {
   AliasError,
@@ -175,6 +176,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
+  const { extensionDetected } = useExtension();
 
   const pluginsPreinstalled = useAppSelector(
     (state) => state.settings.pluginsPreinstalled
@@ -794,7 +796,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     };
 
     registerRedirects();
-  }, [pluginsLoaded, pluginFrames]);
+    // extensionDetected is a dependency so this retries once the extension
+    // injects window.InfoGata, which can happen after the app has rendered.
+  }, [pluginsLoaded, pluginFrames, extensionDetected]);
 
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,
