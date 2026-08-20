@@ -136,6 +136,10 @@ export interface UserChannelRequest {
   pageInfo?: PageInfo;
 }
 
+export interface UserFeedRequest {
+  pageInfo?: PageInfo;
+}
+
 export interface PlaylistVideoRequest {
   apiId?: string;
   isUserPlaylist: boolean;

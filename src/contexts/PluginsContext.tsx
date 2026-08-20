@@ -45,6 +45,7 @@ import {
   SearchRequest,
   SearchVideoResult,
   UserChannelRequest,
+  UserFeedRequest,
   UserPlaylistRequest,
   Video,
   VideoCommentsRequest,
@@ -80,6 +81,7 @@ export interface PluginMethodInterface {
     request: UserPlaylistRequest
   ): Promise<SearchPlaylistResult>;
   onGetUserChannels(request: UserChannelRequest): Promise<SearchChannelResult>;
+  onGetUserFeed(request: UserFeedRequest): Promise<SearchVideoResult>;
   onGetPlaylistVideos(
     request: PlaylistVideoRequest
   ): Promise<PlaylistVideosResult>;
@@ -161,6 +163,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   addPlaylists(playlists: Playlist[]): Promise<void>;
   addVideosToPlaylist(playlistId: string, videos: Video[]): Promise<void>;
   isLoggedIn(): Promise<boolean>;
+  getAuthHeaders(host: string): Promise<Record<string, string>>;
   getTheme(): Promise<Theme>;
   getEnvironmentInfo(): Promise<EnvironmentInfo>;
   isNetworkRequestCorsDisabled(): Promise<boolean>;
@@ -260,6 +263,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           if (hasExtension() && window.InfoGata?.networkRequest) {
             return await window.InfoGata.networkRequest(input, newInit, {
               auth: plugin.manifest?.authentication,
+              // Lets the extension send the real cookie jar for the plugin's
+              // own site, so a signed-in session behaves like a browser tab.
+              siteMatchPatterns: plugin.manifest?.siteMatch,
             });
           }
 
@@ -356,6 +362,21 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           }
           return false;
         },
+        getAuthHeaders: async (host: string) => {
+          const auth = plugin.manifest?.authentication;
+          if (!(await hasAuthentication()) || !auth || !plugin.id) return {};
+
+          // Only hand back headers for a domain this plugin declared itself, so
+          // a plugin can't fish for credentials it never asked the user for.
+          // Declared keys are suffixes (".youtube.com"), matched the same way
+          // isAuthorizedDomain matches them.
+          const declared = Object.keys(auth.domainHeadersToFind ?? {});
+          const key = declared.find((d) => host.endsWith(d));
+          if (!key) return {};
+
+          const pluginAuth = await db.pluginAuths.get(plugin.id);
+          return pluginAuth?.domainHeaders?.[key] ?? {};
+        },
         getTheme: async () => {
           return themeRef.current;
         },
@@ -403,6 +424,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             i.id = nanoid();
           });
           result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+            i.id = nanoid();
+          });
+          return result;
+        },
+        onGetUserFeed: (result: SearchVideoResult) => {
+          result.items.forEach((i) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });

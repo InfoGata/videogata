@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
 import PluginAliasField from "@/components/Plugins/PluginAliasField";
 import PluginNotInstalled from "@/components/Plugins/PluginNotInstalled";
@@ -12,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import { useExtension } from "@/hooks/useExtension";
 import {
   usePluginInfo,
   usePluginScriptSize,
@@ -39,6 +41,14 @@ const PluginDetails: React.FC = () => {
   const [hasUpdate, setHasUpdate] = React.useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const queryClient = useQueryClient();
+  const { extensionDetected } = useExtension();
+
+  // The home page caches its videos for five minutes, so signing in or out has
+  // to drop that cache or Home keeps showing the pre-login list.
+  const invalidateHomeVideos = React.useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["topitems"] });
+  }, [queryClient]);
 
   const updatePluginFromFilelist = async (files: FileList) => {
     const fileType: FileType = {
@@ -83,7 +93,10 @@ const PluginDetails: React.FC = () => {
       setHasAuth(platformHasAuth && !!pluginInfo?.manifest?.authentication);
     };
     getHasAuth();
-  }, [pluginInfo]);
+    // extensionDetected is a dependency so this retries once the extension
+    // injects window.InfoGata, which can happen after the page has rendered.
+    // Without it the Login button silently never appears.
+  }, [pluginInfo, extensionDetected]);
 
   const iframeListener = React.useCallback(
     async (event: MessageEvent<NotifyLoginMessage>) => {
@@ -93,7 +106,9 @@ const PluginDetails: React.FC = () => {
 
       if (event.data.type === "infogata-extension-notify-login") {
         if (plugin && event.data.pluginId === plugin.id) {
-          db.pluginAuths.put({
+          // Awaited so the credentials are readable by the time the plugin's
+          // own onPostLogin runs and goes looking for them.
+          await db.pluginAuths.put({
             pluginId: plugin.id || "",
             headers: event.data.headers,
             domainHeaders: event.data.domainHeaders,
@@ -101,10 +116,11 @@ const PluginDetails: React.FC = () => {
           if (await plugin?.hasDefined.onPostLogin()) {
             await plugin.remote.onPostLogin();
           }
+          invalidateHomeVideos();
         }
       }
     },
-    [plugin]
+    [plugin, invalidateHomeVideos]
   );
 
   React.useEffect(() => {
@@ -156,10 +172,11 @@ const PluginDetails: React.FC = () => {
 
   const onLogout = async () => {
     if (pluginId) {
-      db.pluginAuths.delete(pluginId);
+      await db.pluginAuths.delete(pluginId);
       if (plugin && (await plugin.hasDefined.onPostLogout())) {
         await plugin.remote.onPostLogout();
       }
+      invalidateHomeVideos();
     }
   };
 
