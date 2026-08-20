@@ -1,6 +1,8 @@
 import { Video } from "@/plugintypes";
 import { formatSeconds, getThumbnailImage } from "@infogata/utils";
 import { playlistThumbnailSize } from "@/utils";
+import { cn } from "@/lib/utils";
+import { isPortrait } from "@/lib/thumbnails";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import TimeAgo from "timeago-react";
@@ -15,12 +17,15 @@ interface Props {
 /** Not user-facing copy, so it lives here rather than in the locale files. */
 const META_SEPARATOR = "\u00a0\u00b7\u00a0";
 
+
 const HomeVideoCard: React.FC<Props> = (props) => {
   const { video } = props;
   const { t } = useTranslation();
   const image = getThumbnailImage(video.images, playlistThumbnailSize);
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const sanitizer = DOMPurify.sanitize;
+
+  const portrait = isPortrait(video.images);
 
   const videoParams = {
     pluginId: video.pluginId || "",
@@ -46,14 +51,34 @@ const HomeVideoCard: React.FC<Props> = (props) => {
         params={videoParams}
         className="relative block overflow-hidden rounded-xl bg-muted focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
-        {/* aspect-video keeps 16:9 source art uncropped at every column count */}
-        <div className="aspect-video w-full">
+        {/*
+          aspect-video keeps 16:9 art uncropped at every column count. Vertical
+          art is letterboxed rather than cropped -- filling the slot with it
+          throws away most of the frame and usually lands on someone's chin --
+          over a blown-up blurred copy of itself, so the sides read as
+          deliberate. Same url both times, so it costs one request.
+        */}
+        <div className="relative aspect-video w-full overflow-hidden">
+          {image && portrait && (
+            <img
+              src={image}
+              alt=""
+              aria-hidden
+              loading="lazy"
+              className="absolute inset-0 size-full scale-125 object-cover blur-xl"
+            />
+          )}
           {image && (
             <img
               src={image}
               alt=""
               loading="lazy"
-              className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
+              className={cn(
+                "relative mx-auto transition-transform duration-200 group-hover:scale-105",
+                portrait
+                  ? "h-full w-auto max-w-full object-contain"
+                  : "size-full object-cover"
+              )}
             />
           )}
         </div>
