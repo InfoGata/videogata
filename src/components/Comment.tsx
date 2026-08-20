@@ -62,7 +62,7 @@ const Comment: React.FC<CommentProps> = (props) => {
             </div>
           ) : null}
         </div>
-        <div>{comment.replyCount && replyElement}</div>
+        <div>{!!comment.replyCount && replyElement}</div>
       </div>
     </div>
   );
