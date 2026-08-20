@@ -41,7 +41,8 @@ export interface Video {
   description?: string;
   channelName?: string;
   channelApiId?: string;
-  channelThumbnails?: ImageInfo[];
+  /** Avatar images for the channel, shown beside the title on video cards. */
+  channelImages?: ImageInfo[];
   recommendedVideos?: Video[];
   uploadDate?: string;
   originalUrl?: string;

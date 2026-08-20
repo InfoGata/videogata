@@ -1,6 +1,6 @@
 import { Video } from "@/plugintypes";
 import { formatSeconds, getThumbnailImage } from "@infogata/utils";
-import { playlistThumbnailSize } from "@/utils";
+import { channelThumbnailSize, playlistThumbnailSize } from "@/utils";
 import { cn } from "@/lib/utils";
 import { isPortrait } from "@/lib/thumbnails";
 import React from "react";
@@ -31,6 +31,16 @@ const HomeVideoCard: React.FC<Props> = (props) => {
     pluginId: video.pluginId || "",
     apiId: video.apiId || "",
   };
+
+  const channelParams = {
+    pluginId: video.pluginId || "",
+    apiId: video.channelApiId || "",
+  };
+
+  const channelImage = getThumbnailImage(
+    video.channelImages,
+    channelThumbnailSize
+  );
 
   // Built as a list so the separators land between the parts that actually
   // exist, rather than leaving a stray bullet when views or date are missing.
@@ -88,38 +98,69 @@ const HomeVideoCard: React.FC<Props> = (props) => {
           </span>
         )}
       </Link>
-      <div className="mt-2.5 flex items-start justify-between gap-1">
-        <Link to="/s/$pluginId/videos/$apiId" params={videoParams} className="min-w-0">
-          <h3
-            className="line-clamp-2 text-sm font-medium leading-snug group-hover:text-primary"
-            title={video.title}
-            dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
-          />
-        </Link>
-        <VideoMenu video={video} />
+      <div className="mt-2.5 flex items-start gap-2.5">
+        {/*
+          The avatar slot is kept whenever the video names a channel, falling
+          back to its initial, so cards stay aligned across a feed where only
+          some entries ship an avatar.
+        */}
+        {video.channelName && (
+          <Link
+            to="/s/$pluginId/channels/$apiId"
+            params={channelParams}
+            className="mt-0.5 shrink-0"
+            aria-label={video.channelName}
+          >
+            {channelImage ? (
+              <img
+                src={channelImage}
+                alt=""
+                loading="lazy"
+                className="size-9 rounded-full bg-muted object-cover"
+              />
+            ) : (
+              <span className="flex size-9 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+                {video.channelName.trim().charAt(0).toUpperCase()}
+              </span>
+            )}
+          </Link>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-1">
+            <Link
+              to="/s/$pluginId/videos/$apiId"
+              params={videoParams}
+              className="min-w-0"
+            >
+              <h3
+                className="line-clamp-2 text-sm font-medium leading-snug group-hover:text-primary"
+                title={video.title}
+                dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
+              />
+            </Link>
+            <VideoMenu video={video} />
+          </div>
+          {video.channelName && (
+            <Link
+              to="/s/$pluginId/channels/$apiId"
+              params={channelParams}
+              className="mt-1 block truncate text-xs text-muted-foreground hover:text-foreground"
+            >
+              {video.channelName}
+            </Link>
+          )}
+          {meta.length > 0 && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {meta.map((part, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <span aria-hidden>{META_SEPARATOR}</span>}
+                  {part}
+                </React.Fragment>
+              ))}
+            </p>
+          )}
+        </div>
       </div>
-      {video.channelName && (
-        <Link
-          to="/s/$pluginId/channels/$apiId"
-          params={{
-            pluginId: video.pluginId || "",
-            apiId: video.channelApiId || "",
-          }}
-          className="mt-1 truncate text-xs text-muted-foreground hover:text-foreground"
-        >
-          {video.channelName}
-        </Link>
-      )}
-      {meta.length > 0 && (
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          {meta.map((part, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <span aria-hidden>{META_SEPARATOR}</span>}
-              {part}
-            </React.Fragment>
-          ))}
-        </p>
-      )}
     </div>
   );
 };

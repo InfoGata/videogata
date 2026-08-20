@@ -209,3 +209,5 @@ export const generatePluginId = () => {
 export const searchThumbnailSize = 40;
 
 export const playlistThumbnailSize = 200;
+/** Avatars render at 36px; ask for a little more so they stay crisp on 2x. */
+export const channelThumbnailSize = 72;
