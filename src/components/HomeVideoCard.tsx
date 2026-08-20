@@ -12,6 +12,9 @@ interface Props {
   video: Video;
 }
 
+/** Not user-facing copy, so it lives here rather than in the locale files. */
+const META_SEPARATOR = "\u00a0\u00b7\u00a0";
+
 const HomeVideoCard: React.FC<Props> = (props) => {
   const { video } = props;
   const { t } = useTranslation();
@@ -19,66 +22,79 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   const numberFormatter = Intl.NumberFormat("en", { notation: "compact" });
   const sanitizer = DOMPurify.sanitize;
 
+  const videoParams = {
+    pluginId: video.pluginId || "",
+    apiId: video.apiId || "",
+  };
+
+  // Built as a list so the separators land between the parts that actually
+  // exist, rather than leaving a stray bullet when views or date are missing.
+  const meta: React.ReactNode[] = [];
+  if (video.views) {
+    meta.push(
+      t("numberOfViews", { viewCount: numberFormatter.format(video.views) })
+    );
+  }
+  if (video.uploadDate) {
+    meta.push(<TimeAgo datetime={video.uploadDate} />);
+  }
+
   return (
-    <div className="group">
+    <div className="group flex flex-col">
       <Link
         to="/s/$pluginId/videos/$apiId"
-        params={{ pluginId: video.pluginId || "", apiId: video.apiId || "" }}
-        className="relative block"
+        params={videoParams}
+        className="relative block overflow-hidden rounded-xl bg-muted focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
-        <img
-          src={image}
-          className="rounded-2xl bg-gray-200 w-full h-64 object-cover"
-        />
-        <span className="absolute bottom-2 right-2 bg-gray-900 text-gray-50 text-sm px-1 rounded-sm">
-          {formatSeconds(video.duration)}
-        </span>
-      </Link>
-      <div className="mt-3">
-        <div>
-          <div className="flex justify-between">
-            <Link
-              to="/s/$pluginId/videos/$apiId"
-              params={{
-                pluginId: video.pluginId || "",
-                apiId: video.apiId || "",
-              }}
-            >
-              <h3
-                className="font-medium"
-                dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
-              />
-            </Link>
-            <VideoMenu video={video} />
-          </div>
-          <Link
-            to="/s/$pluginId/channels/$apiId"
-            params={{
-              pluginId: video.pluginId || "",
-              apiId: video.channelApiId || "",
-            }}
-            className="text-muted-foreground text-sm"
-          >
-            {video.channelName}
-          </Link>
-          <p className="text-muted-foreground text-xs">
-            {video.views && (
-              <span>
-                {t("numberOfViews", {
-                  viewCount: numberFormatter.format(video.views),
-                })}
-                •
-              </span>
-            )}
-
-            {video.uploadDate && (
-              <span>
-                <TimeAgo datetime={video.uploadDate} />
-              </span>
-            )}
-          </p>
+        {/* aspect-video keeps 16:9 source art uncropped at every column count */}
+        <div className="aspect-video w-full">
+          {image && (
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              className="size-full object-cover transition-transform duration-200 group-hover:scale-105"
+            />
+          )}
         </div>
+        {!!video.duration && (
+          <span className="pointer-events-none absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 text-xs font-medium text-white tabular-nums">
+            {formatSeconds(video.duration)}
+          </span>
+        )}
+      </Link>
+      <div className="mt-2.5 flex items-start justify-between gap-1">
+        <Link to="/s/$pluginId/videos/$apiId" params={videoParams} className="min-w-0">
+          <h3
+            className="line-clamp-2 text-sm font-medium leading-snug group-hover:text-primary"
+            title={video.title}
+            dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
+          />
+        </Link>
+        <VideoMenu video={video} />
       </div>
+      {video.channelName && (
+        <Link
+          to="/s/$pluginId/channels/$apiId"
+          params={{
+            pluginId: video.pluginId || "",
+            apiId: video.channelApiId || "",
+          }}
+          className="mt-1 truncate text-xs text-muted-foreground hover:text-foreground"
+        >
+          {video.channelName}
+        </Link>
+      )}
+      {meta.length > 0 && (
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {meta.map((part, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <span aria-hidden>{META_SEPARATOR}</span>}
+              {part}
+            </React.Fragment>
+          ))}
+        </p>
+      )}
     </div>
   );
 };

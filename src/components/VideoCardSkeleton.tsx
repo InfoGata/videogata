@@ -1,15 +1,14 @@
 import React from "react";
 import { Skeleton } from "./ui/skeleton";
 
+/** Mirrors HomeVideoCard's shape so the grid doesn't reflow once videos land. */
 const VideoCardSkeleton: React.FC = () => {
   return (
-    <div>
-      <div className="rounded-2xl bg-gray-200 w-full h-64 object-cover"></div>
-      <div className="mt-3">
-        <Skeleton className="h-6 grow mt-1" />
-        <Skeleton className="h-6 grow mt-1" />
-        <Skeleton className="h-6 grow mt-1" />
-      </div>
+    <div className="flex flex-col">
+      <Skeleton className="aspect-video w-full rounded-xl" />
+      <Skeleton className="mt-2.5 h-4 w-full" />
+      <Skeleton className="mt-1.5 h-4 w-4/5" />
+      <Skeleton className="mt-2 h-3 w-1/2" />
     </div>
   );
 };

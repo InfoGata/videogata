@@ -18,10 +18,15 @@ interface SelectPluginProps {
   methodName: keyof PluginMethodInterface;
   pluginId: string;
   setPluginId: (value: React.SetStateAction<string>) => void;
+  /**
+   * Drops the label and the full-width field for a control that sits inline
+   * next to a heading, where the selected plugin name is label enough.
+   */
+  compact?: boolean;
 }
 
 const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
-  const { methodName, setPluginId, pluginId } = props;
+  const { methodName, setPluginId, pluginId, compact } = props;
   const { plugins } = usePlugins();
   const [options, setOptions] = React.useState<[string, string][]>();
   const dispatch = useAppDispatch();
@@ -62,6 +67,20 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
     dispatch(setCurrentPluginId(pluginId));
     setPluginId(pluginId);
   };
+
+  if (compact) {
+    return (
+      <Select value={pluginId} onValueChange={onSelectPluginChange}>
+        <SelectTrigger
+          className="h-9 w-auto min-w-[9rem] max-w-[14rem]"
+          aria-label={t("selectPlugin")}
+        >
+          <SelectValue placeholder={t("plugin")} />
+        </SelectTrigger>
+        <SelectContent>{optionsComponents}</SelectContent>
+      </Select>
+    );
+  }
 
   return (
     <div className="grid w-full items-center gap-1.5">
