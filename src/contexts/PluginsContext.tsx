@@ -24,6 +24,7 @@ import {
 } from "../storage/pluginStorage";
 import i18n from "../i18n";
 import {
+  ChannelSearchRequest,
   ChannelVideosRequest,
   ChannelVideosResult,
   CommentReplyRequest,
@@ -89,6 +90,9 @@ export interface PluginMethodInterface {
   onGetChannelVideos(
     request: ChannelVideosRequest
   ): Promise<ChannelVideosResult>;
+  onSearchChannelVideos(
+    request: ChannelSearchRequest
+  ): Promise<SearchVideoResult>;
   onUiMessage(message: any): Promise<void>;
   onUsePlayer(): Promise<boolean>;
   onGetVideoComments(

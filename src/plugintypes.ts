@@ -190,6 +190,12 @@ export interface ChannelVideosResult extends SearchVideoResult {
   isLive?: boolean;
 }
 
+export interface ChannelSearchRequest {
+  apiId?: string;
+  query: string;
+  pageInfo?: PageInfo;
+}
+
 export type FilterType = "radio" | "select" | "text";
 
 export interface Filter {
