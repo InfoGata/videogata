@@ -32,13 +32,14 @@ export default defineConfig({
       // failed to boot. Unlike generateSW, injectManifest does not get
       // skipWaiting/clientsClaim injected — src/sw.ts does that itself.
       registerType: "autoUpdate",
-      workbox: {
-        navigateFallback: "/",
-        navigateFallbackDenylist: [
-          /\.html$/,
-          /\.html\?/,
-          /login_popup\.html/,
-        ],
+      // The navigation fallback and its denylist live in src/sw.ts: the
+      // `workbox` options here only apply to generateSW.
+      injectManifest: {
+        // Workbox silently drops anything over its 2 MiB default from the
+        // precache, and a missing bundle means an app that installs and then
+        // won't open offline. Sized with headroom rather than to the current
+        // build, because falling under it fails without a build error.
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {
         short_name: "VideoGata",

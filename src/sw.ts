@@ -97,4 +97,16 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 cleanupOutdatedCaches();
 
-registerRoute(new NavigationRoute(createHandlerBoundToURL("index.html")));
+// The denylist has to live here: vite.config.ts's `workbox.navigateFallback*`
+// options only apply to generateSW and are ignored under injectManifest.
+//
+// public/ holds real pages rather than routes: pluginframe.html is the iframe
+// each plugin executes in, ui.html backs the options screen, and
+// login_popup.html is the OAuth redirect target. The precache only matches
+// their bare urls, so an OAuth redirect to `/login_popup.html?code=...` would
+// otherwise fall through to the app shell and the login would never complete.
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL("index.html"), {
+    denylist: [/\.html$/, /\.html\?/],
+  })
+);
