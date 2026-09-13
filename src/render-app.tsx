@@ -11,7 +11,8 @@ import store, { persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PluginsProvider } from "./contexts/PluginsContext";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
-import { PostHogProvider } from "posthog-js/react";
+import AnalyticsProvider from "./components/AnalyticsProvider";
+import AnalyticsPreference from "./components/AnalyticsPreference";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 
 const queryClient = new QueryClient({
@@ -28,17 +29,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     {/* Outermost on purpose: everything below can throw during first render,
         and the router's own error handling only covers routes. */}
     <AppErrorBoundary>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        cookieless_mode: "always"
-      }}
-    >
+    <AnalyticsProvider>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
+          {/* Inside PersistGate so it acts on the remembered choice rather than
+              the default, and inside the provider so there is a client to tell. */}
+          <AnalyticsPreference />
           <title>VideoGata</title>
           <ThemeProvider defaultTheme="system">
             <ExtensionProvider>
@@ -53,7 +49,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </ThemeProvider>
         </PersistGate>
       </Provider>
-    </PostHogProvider>
+    </AnalyticsProvider>
     </AppErrorBoundary>
   </React.StrictMode>
 );

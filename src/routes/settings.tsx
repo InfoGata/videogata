@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import AnalyticsSetting from "@/components/Settings/AnalyticsSetting";
 import DisableAutoUpdateSetting from "@/components/Settings/DisableAutoUpdateSetting";
 import ThemeChangeSetting from "@/components/Settings/ThemeChangeSetting";
 import UpdateCorsSetting from "@/components/Settings/UpdateCorsSetting";
@@ -12,6 +13,7 @@ const Settings: React.FC = () => {
       <UpdateCorsSetting />
       <UseMiniPlayerSetting />
       <ThemeChangeSetting />
+      <AnalyticsSetting />
     </div>
   );
 };
