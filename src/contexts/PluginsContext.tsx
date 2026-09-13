@@ -739,7 +739,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
                 if (newPlugin && p.id) {
                   newPlugin.id = p.id;
-                  newPlugin.manifestUrl = p.manifestUrl;
+                  // The new manifest's own updateUrl is kept, not overwritten
+                  // with the old one. Otherwise a plugin can never be moved to
+                  // another host: every installed copy would go on asking the
+                  // url it was first installed from, forever. getPlugin already
+                  // falls back to the url it fetched from when a manifest
+                  // declares no updateUrl, so a plugin that says nothing keeps
+                  // the channel it had.
                   await updatePlugin(newPlugin, p.id);
                 }
               }
@@ -782,6 +788,12 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           if (newPlugin.script !== cached) {
             scriptCache.set(dbPlugin.id, newPlugin.script);
             newPlugin.id = dbPlugin.id;
+            // Deliberately unlike the released-update path, which lets the new
+            // manifest choose where the next update comes from. A plugin served
+            // from localhost still carries whatever updateUrl it will ship with
+            // -- usually the CDN -- so honouring it here would redirect the copy
+            // being developed away from the dev server on the first poll and end
+            // the reload loop.
             newPlugin.manifestUrl = dbPlugin.manifestUrl;
             console.log(`[dev] Auto-updating plugin: ${newPlugin.name}`);
             await updatePluginRef.current(newPlugin, dbPlugin.id);

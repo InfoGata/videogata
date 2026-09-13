@@ -4,11 +4,12 @@ import { getFileTypeFromPluginUrl, getPlugin } from "@/utils";
 const INSTALLED_FROM =
   "https://cdn.jsdelivr.net/gh/InfoGata/youtube-videogata@latest/manifest.json";
 
-const manifest = () => ({
+const manifest = (updateUrl?: string) => ({
   id: "youtube",
   name: "YouTube",
   version: "1.0.0",
   script: "dist/index.js",
+  ...(updateUrl ? { updateUrl } : {}),
 });
 
 // getFileText derives every file url from the manifest url, so one stub covers
@@ -41,5 +42,29 @@ describe("fetching plugin files", () => {
     for (const [, init] of calls) {
       expect((init as RequestInit).cache).toBe("no-cache");
     }
+  });
+});
+
+describe("where the next update is fetched from", () => {
+  it("takes the url the new manifest asks for", async () => {
+    // This is what lets a plugin be moved to another host. Without it every
+    // installed copy asks its original url forever, and a dead url can never be
+    // redirected remotely.
+    const moved = "https://example.com/youtube/manifest.json";
+    serve(manifest(moved));
+
+    const plugin = await getPlugin(getFileTypeFromPluginUrl(INSTALLED_FROM));
+
+    expect(plugin?.manifestUrl).toBe(moved);
+  });
+
+  it("keeps the url it was fetched from when the manifest names none", async () => {
+    // The fallback the update paths rely on: a manifest that says nothing about
+    // updates must not lose the channel it already had.
+    serve(manifest());
+
+    const plugin = await getPlugin(getFileTypeFromPluginUrl(INSTALLED_FROM));
+
+    expect(plugin?.manifestUrl).toBe(INSTALLED_FROM);
   });
 });
