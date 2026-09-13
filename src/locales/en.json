@@ -160,5 +160,14 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "errors": {
+    "appCrashTitle": "VideoGata couldn't start",
+    "appCrashDescription": "Something went wrong before the app finished loading. Trying again is usually enough; if it keeps happening, resetting removes the stored data that's most likely causing it.",
+    "tryAgain": "Try again",
+    "reloadApp": "Reload",
+    "resetAppData": "Reset app data",
+    "resetAppDataConfirm": "This removes your installed plugins, saved logins, playlists, favorites and settings, then reloads. It can't be undone.",
+    "showDetails": "Details"
   }
 }

@@ -1,54 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { IconContext } from "react-icons";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import "./i18n";
-import "./index.css";
-import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
-import Router from "./router";
-import store, { persistor } from "./store/store";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { PluginsProvider } from "./contexts/PluginsContext";
-import { ExtensionProvider } from "./contexts/ExtensionContext";
-import { PostHogProvider } from "posthog-js/react";
+import { runPendingAppDataReset } from "./lib/reset-app-data";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  },
-});
-
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        cookieless_mode: "always"
-      }}
-    >
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <title>VideoGata</title>
-          <ThemeProvider defaultTheme="system">
-            <ExtensionProvider>
-              <IconContext.Provider value={{ className: "size-5" }}>
-                <QueryClientProvider client={queryClient}>
-                  <PluginsProvider>
-                    <Router />
-                  </PluginsProvider>
-                </QueryClientProvider>
-              </IconContext.Provider>
-            </ExtensionProvider>
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </PostHogProvider>
-  </React.StrictMode>
-);
+// The reset has to finish before the app's modules are even evaluated, not just
+// before it renders. Static imports are hoisted, and importing the store runs
+// persistStore, which reads the persisted state from localStorage on the spot
+// and writes it back after rehydrating -- so a reset awaited in the same module
+// as those imports clears the flag and nothing else. Hence the dynamic import.
+// A no-op unless the error boundary's reset button was used.
+await runPendingAppDataReset();
+await import("./render-app");
