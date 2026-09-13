@@ -148,7 +148,10 @@
     "aliasErrorTaken": "Another plugin already uses this alias.",
     "pluginNotInstalledTitle": "Plugin not installed",
     "pluginNotInstalledDescription": "No installed plugin answers to \"{{alias}}\".",
-    "browsePlugins": "Browse plugins"
+    "browsePlugins": "Browse plugins",
+    "pluginUpdated": "{{name}} updated to {{version}}",
+    "pluginsUpdated_one": "{{count}} plugin updated",
+    "pluginsUpdated_other": "{{count}} plugins updated"
   },
   "settings": {
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",

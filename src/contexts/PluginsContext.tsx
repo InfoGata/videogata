@@ -679,7 +679,12 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       const oldPlugin = pluginFrames.find((p) => p.id === id);
       oldPlugin?.destroy();
       const pluginFrame = await loadPlugin(plugin, pluginFiles);
-      setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
+      // Functional update: the automatic check runs every plugin's update at
+      // once, and mapping over this closure's `pluginFrames` would let the
+      // second write put back the first plugin's destroyed frame.
+      setPluginFrames((prev) =>
+        prev.map((p) => (p.id === id ? pluginFrame : p))
+      );
       await savePlugin(plugin);
     },
     [loadPlugin, pluginFrames]
@@ -718,6 +723,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     const checkUpdate = async () => {
       if (pluginsLoaded && !disableAutoUpdatePlugins && !hasUpdated.current) {
         hasUpdated.current = true;
+        const updated: { name: string; version: string }[] = [];
         await mapAsync(pluginFrames, async (p) => {
           if (p.manifestUrl) {
             const fileType = getFileTypeFromPluginUrl(p.manifestUrl);
@@ -747,11 +753,36 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
                   // declares no updateUrl, so a plugin that says nothing keeps
                   // the channel it had.
                   await updatePlugin(newPlugin, p.id);
+                  updated.push({
+                    name: newPlugin.name || p.name || p.id,
+                    version: manifest.version,
+                  });
                 }
               }
             }
           }
         });
+
+        if (updated.length === 0) return;
+
+        const list = updated.map((u) => `${u.name} ${u.version}`).join(", ");
+        // Logged as well as shown. A toast is easy to miss or to land while the
+        // tab is in the background, and plugin code changing underneath someone
+        // is worth being able to find afterwards.
+        console.info("[plugins] Updated:", list);
+        if (updated.length === 1) {
+          toast.message(
+            i18n.t("plugins:pluginUpdated", {
+              name: updated[0].name,
+              version: updated[0].version,
+            })
+          );
+        } else {
+          toast.message(
+            i18n.t("plugins:pluginsUpdated", { count: updated.length }),
+            { description: list }
+          );
+        }
       }
     };
     checkUpdate();
