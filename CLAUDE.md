@@ -93,6 +93,14 @@ fails with an explicit plugin-order error if that is swapped.
 This moves route code off the critical path; it does not reduce what is
 eventually downloaded, since the service worker precaches every chunk.
 
+### Versioning
+
+`package.json` is the single source of truth; bump it with `npm version`.
+`build-info.ts` injects `__APP_VERSION__` and `__APP_COMMIT__` into both vite
+configs, `src/lib/app-version.ts` is what the app reads, and
+`android/app/build.gradle` derives `versionCode`/`versionName` from the same
+file (`0.1.0` -> `100`). Never hardcode a version anywhere else.
+
 ### Plugin API
 
 Plugins implement the `PluginMethodInterface` and can:

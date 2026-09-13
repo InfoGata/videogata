@@ -95,7 +95,10 @@
     "homeFeedErrorDescription": "{{pluginName}} failed to respond. It may be offline or need to be updated.",
     "homeFeedNoPlugins": "No plugins yet",
     "homeFeedNoPluginsDescription": "Install a plugin below to start watching.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "version": "Version",
+    "buildDetailsCopied": "Build details copied",
+    "buildDetailsCopyFailed": "Couldn't copy the build details"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

@@ -11,6 +11,13 @@ npm install
 npm run dev
 ```
 
+## Versioning
+
+`package.json` holds the version and `npm version <major|minor|patch>` is the
+only thing that changes it. The web and desktop builds stamp it in alongside the
+commit, the Android build derives `versionCode` from it, and the About page
+shows it; tapping it copies the build, platform and user agent for bug reports.
+
 ## Plugins
 
 The plugin scripts are run in sandboxed iframes using [plugin-frame](https://github.com/elijahgreen/plugin-frame). Every iframe is ran on it's own subdomain with it's subdomain being the id of the plugin ([pluginId].videogata.com).
