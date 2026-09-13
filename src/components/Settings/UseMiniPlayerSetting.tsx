@@ -19,7 +19,7 @@ const UseMiniPlayerSetting: React.FC = () => {
       <Switch
         id="mini-player"
         checked={useMiniPlayer}
-        onChange={onToggleUseMiniPlayer}
+        onCheckedChange={onToggleUseMiniPlayer}
       />
       <Label htmlFor="mini-player">{t("useMiniPlayer")}</Label>
     </div>

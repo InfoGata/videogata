@@ -33,7 +33,7 @@ const settingsSlice = createSlice({
     toggleDisableAutoUpdatePlugins: (state) => {
       return {
         ...state,
-        autoUpdatePlugins: !state.disableAutoUpdatePlugins,
+        disableAutoUpdatePlugins: !state.disableAutoUpdatePlugins,
       };
     },
     toggleUseMiniPlayer: (state) => {
