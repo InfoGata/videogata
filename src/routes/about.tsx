@@ -2,11 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
 import { appBuild, buildReport } from "@/lib/app-version";
 import { toast } from "sonner";
+import { contactEmail, repoUrl } from "@/lib/contact";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   FaCircleInfo,
   FaEnvelope,
+  FaFlag,
   FaGitAlt,
   FaGlobe,
   FaHeart,
@@ -17,13 +19,13 @@ import {
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();
-  const email = "contact@videogata.com";
+  const email = contactEmail;
   const website = "https://www.infogata.com";
   const xUrl = "https://x.com/info_gata";
   const xAt = "@info_gata";
   const mastodonUrl = "https://mastodon.online/@InfoGata";
   const mastodonAt = "@InfoGata@mastodon.online";
-  const gitUrl = "https://github.com/InfoGata/videogata";
+  const gitUrl = repoUrl;
 
   // Tapping the version copies the build plus the platform behind it: the
   // things a bug report is useless without and that nobody can be expected to
@@ -78,6 +80,11 @@ const AboutPage: React.FC = () => {
       title: t("privacyPolicy"),
       icon: <FaLock />,
       link: { to: "/privacy" },
+    },
+    {
+      title: t("reportAbuse"),
+      icon: <FaFlag />,
+      link: { to: "/abuse" },
     },
     {
       title: t("version"),
