@@ -21,8 +21,15 @@ export default defineConfig({
   },
   plugins: [
     tailwindcss(),
+    // Each route becomes its own chunk, so opening the app parses the shell and
+    // the route being visited rather than all of them. The service worker still
+    // precaches every chunk, so this changes when code is parsed rather than how
+    // much is eventually downloaded.
+    //
+    // Must come before the react plugin: it rewrites route files and has to see
+    // them before JSX is transformed. The build fails loudly if reordered.
+    tanstackRouter({ target: "react", autoCodeSplitting: true }),
     react(),
-    tanstackRouter({ target: "react" }),
     VitePWA({
       strategies: "injectManifest",
       srcDir: "src",

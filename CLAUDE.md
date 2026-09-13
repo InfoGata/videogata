@@ -83,6 +83,16 @@ VideoGata is a plugin-based web application that plays videos from different pla
    - Desktop via Electron
    - Mobile via Capacitor (Android)
 
+### Bundle
+
+`autoCodeSplitting` on the tanstackRouter plugin gives each route its own
+chunk. The plugin must be listed **before** `react()` in `vite.config.ts` -- it
+rewrites route files and has to see them before JSX is transformed. The build
+fails with an explicit plugin-order error if that is swapped.
+
+This moves route code off the critical path; it does not reduce what is
+eventually downloaded, since the service worker precaches every chunk.
+
 ### Plugin API
 
 Plugins implement the `PluginMethodInterface` and can:
