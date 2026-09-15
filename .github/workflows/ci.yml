@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
   pull_request:
+  # Lets a commit be re-checked without pushing a new one, e.g. after Actions
+  # was turned on for commits that had already landed.
+  workflow_dispatch:
 
 # Nothing here writes to the repo; a fork's pull request gets a read-only token.
 permissions:
