@@ -6,6 +6,7 @@ import { DirectoryFile, FileType } from "./types";
 import isElectron from "is-electron";
 import semverGte from "semver/functions/gte";
 import { toast } from "sonner";
+import { hasExtension } from "@infogata/extension-components";
 
 export const directoryProps = {
   directory: "",
@@ -159,9 +160,11 @@ export const getPluginUrl = (id: string, path: string): URL => {
 };
 
 
-export const hasExtension = () => {
-  return typeof window !== "undefined" && typeof window.InfoGata !== "undefined";
-};
+// Re-exported so the rest of the app keeps importing detection from one place.
+// The shared version also honours `?noextension`, which makes the app behave as
+// if the extension were not installed -- the only way to exercise that path in
+// a browser that has it.
+export { hasExtension };
 
 export const isCorsDisabled = () => {
   return hasExtension() || isElectron() || Capacitor.isNativePlatform();
