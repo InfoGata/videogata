@@ -1,3 +1,5 @@
+import { Capacitor } from "@capacitor/core";
+import { nativeNetworkRequest } from "../lib/native-http";
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import React from "react";
@@ -271,6 +273,10 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               // own site, so a signed-in session behaves like a browser tab.
               siteMatchPatterns: plugin.manifest?.siteMatch,
             });
+          }
+          if (Capacitor.isNativePlatform()) {
+            const result = await nativeNetworkRequest(input, newInit);
+            if (result) return result;
           }
 
           const response = await fetch(input, newInit);
