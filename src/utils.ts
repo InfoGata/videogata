@@ -179,22 +179,6 @@ export const hasAuthentication = async () => {
   return Capacitor.isNativePlatform();
 };
 
-export const getCookiesFromUrl = (
-  url: string
-): Promise<Map<string, string>> => {
-  return new Promise((resolve) => {
-    window.cordova.plugins.CookiesPlugin.getCookie(url, (cookies) => {
-      const cookieMap = new Map<string, string>(
-        cookies
-          .split(";")
-          .map((c) => c.trim().split("="))
-          .map((c) => [c[0], c[1]])
-      );
-      resolve(cookieMap);
-    });
-  });
-};
-
 export const isAuthorizedDomain = (
   input: string,
   loginUrl?: string,

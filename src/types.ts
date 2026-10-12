@@ -51,16 +51,9 @@ export interface InfoGataExtension {
   registerRedirects?: (rules: SiteRedirectRule[]) => void;
 }
 
-interface CookiePlugins {
-  getCookie(url: string, callback: (cookies: string) => void): void;
-}
-
 declare global {
   interface Window {
     InfoGata?: InfoGataExtension;
-  }
-  interface CordovaPlugins {
-    CookiesPlugin: CookiePlugins;
   }
 }
 

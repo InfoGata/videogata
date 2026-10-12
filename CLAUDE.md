@@ -53,7 +53,21 @@ npm run electron:start
 
 # Build and run for Android
 npm run android
+
+# Build and run on an iOS simulator/device (macOS only)
+npm run ios
 ```
+
+iOS needs Xcode, so it is built on the Mac mini (`ssh mac`, i.e.
+`elijahs-mac-mini.local`; its node comes from nvm, so use a login shell:
+`zsh -lc`). Its checkout is `~/projects/webapps/videogata`. The project uses
+Swift Package Manager, not CocoaPods: `cap sync` writes
+`ios/App/CapApp-SPM/Package.swift`, and wraps each Cordova plugin in a package
+of its own, which SwiftPM refuses for a plugin with no header -- that is why
+`cordova-plugin-cookies` was dropped. The iOS WebView's origin is
+`capacitor://localhost`, which `vercel.json`'s `frame-ancestors` has to allow or
+every plugin frame is refused. `index.html` sets `viewport-fit=cover`, so fixed
+bars pad by `env(safe-area-inset-*)`.
 
 ## Architecture
 
@@ -89,7 +103,7 @@ VideoGata is a plugin-based web application that plays videos from different pla
 5. **Multi-platform**:
    - Web (primary platform)
    - Desktop via Electron
-   - Mobile via Capacitor (Android)
+   - Mobile via Capacitor (Android, iOS)
 
 ### Bundle
 
@@ -107,7 +121,9 @@ eventually downloaded, since the service worker precaches every chunk.
 `build-info.ts` injects `__APP_VERSION__` and `__APP_COMMIT__` into both vite
 configs, `src/lib/app-version.ts` is what the app reads, and
 `android/app/build.gradle` derives `versionCode`/`versionName` from the same
-file (`0.1.0` -> `100`). Never hardcode a version anywhere else.
+file (`0.1.0` -> `100`); the iOS target's "Version from package.json" build
+phase sets `CFBundleShortVersionString` and `CFBundleVersion` the same way.
+Never hardcode a version anywhere else.
 
 ### Plugin API
 
