@@ -53,7 +53,7 @@ export const Root: React.FC = () => {
       <div className="flex h-screen overflow-hidden">
         <Toaster closeButton />
         <SideBar />
-        <main className="pt-20 flex-1 pl-2 overflow-auto pb-1">
+        <main className="pt-[calc(5rem+env(safe-area-inset-top))] flex-1 pl-2 overflow-auto pb-[calc(0.25rem+env(safe-area-inset-bottom))]">
           <MiniPlayer />
           <Outlet />
         </main>

@@ -84,7 +84,7 @@ const MiniPlayer: React.FC = () => {
     <div
       className={cn(
         !useDefaultPlayer &&
-          "fixed right-4 bottom-16 w-64 h-40 z-50 transition duraion-200 ease-in-out"
+          "fixed right-4 bottom-[calc(4rem+env(safe-area-inset-bottom))] w-64 h-40 z-50 transition duraion-200 ease-in-out"
       )}
     >
       {!useDefaultPlayer && (
