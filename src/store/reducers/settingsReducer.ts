@@ -10,7 +10,20 @@ interface SettingsState {
   // has no key, means analytics on. Do Not Track overrides it and a build with
   // no key has nothing to enable; see lib/analytics.
   disableAnalytics?: boolean;
+  cloudSync?: CloudSyncSettings;
 }
+
+export interface CloudSyncSettings {
+  /** The sync plugin chosen in Settings; sync is off without one. */
+  pluginId?: string;
+  autoSync: boolean;
+  syncIntervalSeconds: number;
+}
+
+export const defaultCloudSync: CloudSyncSettings = {
+  autoSync: true,
+  syncIntervalSeconds: 60,
+};
 
 const initialState: SettingsState = {};
 
@@ -48,6 +61,19 @@ const settingsSlice = createSlice({
     setDisableAnalytics: (state, action: PayloadAction<boolean>) => {
       return { ...state, disableAnalytics: action.payload };
     },
+    updateCloudSync: (
+      state,
+      action: PayloadAction<Partial<CloudSyncSettings>>
+    ) => {
+      return {
+        ...state,
+        cloudSync: {
+          ...defaultCloudSync,
+          ...state.cloudSync,
+          ...action.payload,
+        },
+      };
+    },
   },
 });
 
@@ -58,5 +84,6 @@ export const {
   toggleUseMiniPlayer,
   setPluginsPreInstalled,
   setDisableAnalytics,
+  updateCloudSync,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

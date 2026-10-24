@@ -6,10 +6,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { db } from "@/database";
 import { cn } from "@/lib/utils";
 import { Video } from "@/plugintypes";
-import { useAppSelector } from "@/store/hooks";
+import { addFavorite, removeFavorite } from "@/sync/library";
+import { useIsFavorite, usePlaylists } from "@/sync/useLibrary";
 import {
   MoreVertical,
   MoreHorizontal,
@@ -33,33 +33,29 @@ interface Props {
 const VideoMenu: React.FC<Props> = (props) => {
   const { video, notCardVideo, dropdownItems } = props;
   const { t } = useTranslation();
-  const [isFavorited, setIsFavorited] = React.useState(false);
+  const isFavorited = useIsFavorite("videos", video);
   const [open, setOpen] = React.useState(false);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const addVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
   };
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
 
   const favoriteVideo = async () => {
-    if (video) {
-      await db.favoriteVideos.add(video);
-      toast(t("addedToFavorites"));
-    }
+    await addFavorite("videos", video);
+    toast(t("addedToFavorites"));
   };
 
-  const removeFavorite = async () => {
-    if (video.id) {
-      await db.favoriteVideos.delete(video.id);
-      toast(t("removedFromFavorites"));
-    }
+  const unfavoriteVideo = async () => {
+    await removeFavorite("videos", video);
+    toast(t("removedFromFavorites"));
   };
 
   const items: (DropdownItemProps | undefined)[] = [
     {
       title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
       icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
-      action: isFavorited ? removeFavorite : favoriteVideo,
+      action: isFavorited ? unfavoriteVideo : favoriteVideo,
     },
     video.channelApiId
       ? {
@@ -88,26 +84,6 @@ const VideoMenu: React.FC<Props> = (props) => {
       action: addVideoToNewPlaylist,
     },
   ];
-
-  React.useEffect(() => {
-    const checkFavorite = async () => {
-      if (open) {
-        if (video.pluginId && video.apiId) {
-          const hasFavorite = await db.favoriteVideos.get({
-            pluginId: video.pluginId,
-            apiId: video.apiId,
-          });
-          setIsFavorited(!!hasFavorite);
-        } else if (video.id) {
-          const hasFavorite = await db.favoriteVideos.get(video.id);
-          setIsFavorited(!!hasFavorite);
-        } else {
-          setIsFavorited(false);
-        }
-      }
-    };
-    checkFavorite();
-  }, [open, video]);
 
   const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (

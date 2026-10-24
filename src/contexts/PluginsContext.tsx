@@ -1,3 +1,4 @@
+import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { nativeNetworkRequest } from "../lib/native-http";
 import { nanoid } from "@reduxjs/toolkit";
@@ -34,6 +35,9 @@ import {
   GetLiveVideoRequest,
   GetSearchSuggestionRequest,
   GetVideoRequest,
+  LoginCallbackRequest,
+  LoginRequest,
+  LoginResponse,
   Manifest,
   NotificationMessage,
   ParseUrlType,
@@ -47,6 +51,10 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchVideoResult,
+  SyncDownloadRequest,
+  SyncDownloadResponse,
+  SyncUploadRequest,
+  SyncUploadResponse,
   UserChannelRequest,
   UserFeedRequest,
   UserPlaylistRequest,
@@ -55,10 +63,8 @@ import {
   VideoCommentsResult,
 } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addPlaylistVideos,
-  addPlaylists,
-} from "../store/reducers/playlistReducer";
+import * as library from "../sync/library";
+import { resolvePendingLogin } from "../lib/pending-logins";
 import { setPluginsPreInstalled } from "../store/reducers/settingsReducer";
 import { NetworkRequest, SiteRedirectRule } from "../types";
 import { mapAsync } from "@infogata/utils";
@@ -113,6 +119,12 @@ export interface PluginMethodInterface {
   onPostLogin(): Promise<void>;
   onPostLogout(): Promise<void>;
   onChangeTheme(theme: Theme): Promise<void>;
+  onLogin(request: LoginRequest): Promise<LoginResponse | void>;
+  onLoginCallback(request: LoginCallbackRequest): Promise<void>;
+  onLogout(): Promise<void>;
+  onIsLoggedIn(): Promise<boolean>;
+  onSyncUpload(request: SyncUploadRequest): Promise<SyncUploadResponse>;
+  onSyncDownload(request: SyncDownloadRequest): Promise<SyncDownloadResponse>;
 }
 
 export interface PluginMessage {
@@ -201,9 +213,6 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const currentVideo = useAppSelector((state) => state.queue.currentVideo);
   const currentVideoRef = React.useRef(currentVideo);
   currentVideoRef.current = currentVideo;
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-  const playlistsRef = React.useRef(playlists);
-  playlistsRef.current = playlists;
   const disableAutoUpdatePlugins = useAppSelector(
     (state) => state.settings.disableAutoUpdatePlugins
   );
@@ -341,13 +350,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           }
         },
         getPlaylists: async () => {
-          return await db.playlists.toArray();
+          return await library.getPlaylists();
         },
         getPlaylistsInfo: async () => {
-          return playlistsRef.current;
+          return await library.getPlaylistsInfo();
         },
         addPlaylists: async (playlists: Playlist[]) => {
-          dispatch(addPlaylists(playlists));
+          await library.addPlaylists(playlists);
         },
         addVideosToPlaylist: async (playlistId: string, videos: Video[]) => {
           videos.forEach((t) => {
@@ -355,12 +364,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               t.pluginId = plugin.id;
             }
           });
-          const playlist = playlistsRef.current.find(
-            (p) => p.id === playlistId
-          );
-          if (playlist) {
-            dispatch(addPlaylistVideos(playlist, videos));
-          }
+          await library.addPlaylistVideos({ id: playlistId }, videos);
         },
         getLocale: async () => {
           return i18n.language;
@@ -556,7 +560,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       await host.executeCode(plugin.script);
       return host;
     },
-    [dispatch]
+    []
   );
 
   const loadPlugins = React.useCallback(
@@ -614,6 +618,25 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     };
     syncAliases();
   }, [pluginFrames]);
+
+  // The OAuth callback of a sign-in started from the app's own login button
+  // (usePluginLogin) comes back to the Android and iOS apps as a deep link.
+  React.useEffect(() => {
+    const listener = App.addListener(
+      "appUrlOpen",
+      (event: URLOpenListenerEvent) => {
+        if (event.url.startsWith("com.videogata.app://message")) {
+          const url = new URL(event.url);
+          const pluginId = url.searchParams.get("pluginId");
+          const message = url.searchParams.get("message") || "";
+          if (pluginId) resolvePendingLogin(pluginId, message);
+        }
+      }
+    );
+    return () => {
+      listener.then((l) => l.remove());
+    };
+  }, []);
 
   const setPluginAlias = React.useCallback(
     async (pluginId: string, alias: string): Promise<AliasError | null> => {

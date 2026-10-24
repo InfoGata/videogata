@@ -17,7 +17,7 @@ import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import useSelected from "@/hooks/useSelected";
 import { PageInfo, PlaylistInfo } from "@/plugintypes";
-import { useAppSelector } from "@/store/hooks";
+import { usePlaylists } from "@/sync/useLibrary";
 import { z } from "zod";
 
 const PluginPlaylist: React.FC = () => {
@@ -30,7 +30,7 @@ const PluginPlaylist: React.FC = () => {
     PlaylistInfo | undefined
   >(state.playlistInfo);
   const { isUserPlaylist } = Route.useSearch();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);

@@ -12,12 +12,11 @@ import PluginVideoInfo from "@/components/PluginVideoInfo";
 import PluginVideoPlaylist from "@/components/PluginVideoPlaylist";
 import RecommendedVideos from "@/components/RecommendVideos";
 import Spinner from "@/components/Spinner";
-import { db } from "@/database";
 import useFindPlugin from "@/hooks/useFindPlugin";
 import usePlugins from "@/hooks/usePlugins";
-import { Video } from "@/plugintypes";
 import { useAppDispatch } from "@/store/hooks";
 import { setPlayerInfo } from "@/store/reducers/playerReducer";
+import { usePlaylist } from "@/sync/useLibrary";
 import { z } from "zod";
 
 const PluginVideo: React.FC = () => {
@@ -26,7 +25,7 @@ const PluginVideo: React.FC = () => {
   const { videoId, playlistId } = Route.useSearch();
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
-  const [playlistVideos, setPlaylistVideos] = React.useState<Video[]>();
+  const playlistVideos = usePlaylist(playlistId ?? "")?.videos;
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
     pluginId,
@@ -52,18 +51,6 @@ const PluginVideo: React.FC = () => {
     queryFn: getVideo,
     enabled: pluginsLoaded,
   });
-
-  React.useEffect(() => {
-    const getPlaylistVideos = async () => {
-      if (playlistId) {
-        const playlist = await db.playlists.get(playlistId);
-        setPlaylistVideos(playlist?.videos);
-      } else {
-        setPlaylistVideos(undefined);
-      }
-    };
-    getPlaylistVideos();
-  }, [playlistId]);
 
   if (pluginsLoaded && !plugin && !pendingPlugin && !isLoading) {
     return <PluginNotInstalled />;

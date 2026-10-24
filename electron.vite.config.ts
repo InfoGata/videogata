@@ -4,6 +4,7 @@ import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
 import tailwindcss from "@tailwindcss/vite";
+import wasm from "vite-plugin-wasm";
 import { buildInfoDefine } from "./build-info";
 
 export default defineConfig({
@@ -54,6 +55,8 @@ export default defineConfig({
     },
     root: ".",
     build: {
+      // automerge wasm + top-level await; see vite.config.ts.
+      target: "es2022",
       rollupOptions: {
         input: {
           index: resolve(__dirname, "index.html"),
@@ -61,6 +64,7 @@ export default defineConfig({
       },
     },
     plugins: [
+      wasm(),
       tailwindcss(),
       react(),
       VitePWA({

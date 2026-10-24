@@ -1,9 +1,8 @@
 import React from "react";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { PlaylistInfo, Video } from "@/plugintypes";
-import { addPlaylistVideos } from "../store/reducers/playlistReducer";
+import { addPlaylistVideos } from "@/sync/library";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@/store/hooks";
 import { toast } from "sonner";
 
 type Props = {
@@ -14,11 +13,10 @@ type Props = {
 const DropdownPlaylistMenuItem: React.FC<Props> = (props) => {
   const { playlist, videos } = props;
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const addToPlaylist = () => {
     if (playlist.id) {
-      dispatch(addPlaylistVideos(playlist, videos));
+      addPlaylistVideos(playlist, videos);
       toast(
         t("addedVideosToPlaylist", {
           playlistName: playlist.name,

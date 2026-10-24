@@ -1,16 +1,15 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import ChannelListItem from "@/components/ChannelListItem";
-import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "@/contexts/PluginsContext";
-import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import { useFavorites } from "@/sync/useLibrary";
 import { filterAsync } from "@infogata/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 const FavoriteChannels: React.FC = () => {
-  const channels = useLiveQuery(() => db.favoriteChannels.toArray());
+  const channels = useFavorites("channels");
   const { t } = useTranslation();
   const { plugins } = usePlugins();
   const [channelPlugins, setChannelPlugins] = React.useState<
@@ -26,10 +25,6 @@ const FavoriteChannels: React.FC = () => {
     };
     setPlugins();
   }, [plugins]);
-
-  if (!channels) {
-    return null;
-  }
 
   if (channels.length === 0) {
     return <h3>{t("noFavoriteChannels")}</h3>;

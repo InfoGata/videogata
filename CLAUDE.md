@@ -90,6 +90,8 @@ VideoGata is a plugin-based web application that plays videos from different pla
    - Redux is used for state management (see `src/store`)
    - Plugins communicate through a bridge defined in `ApplicationPluginInterface`
    - Video/playlist data is normalized with IDs and stored in Redux and IndexedDB
+   - Playlists and favorites live in an automerge document (see Cloud Sync),
+     not Dexie. The old Dexie tables are only read once, to import into it.
 
 3. **UI Components**:
    - Built with React and Tailwind CSS using shadcn/ui components
@@ -104,6 +106,36 @@ VideoGata is a plugin-based web application that plays videos from different pla
    - Web (primary platform)
    - Desktop via Electron
    - Mobile via Capacitor (Android, iOS)
+
+### Cloud Sync
+
+Playlists and favorites are one automerge document (`src/sync/`), stored in
+IndexedDB (`videogata-library`) by automerge-repo and shared between tabs over
+BroadcastChannel. It is the only copy on the device: components read it with
+the hooks in `src/sync/useLibrary.ts` and write with the functions in
+`src/sync/library.ts`, which edit in place (`library-ops.ts`) so concurrent
+edits on two devices merge instead of overwriting each other.
+
+- **Shared genesis**: every device starts the document from the fixed bytes in
+  `library-doc.ts` (`GENESIS_BASE64`), never `repo.create()`. Documents without
+  a common first change can't be merged -- each would have its own `playlists`
+  map. Never regenerate it.
+- **Syncing** goes through a plugin implementing `onSyncUpload` /
+  `onSyncDownload` (Dropbox, Google Drive), chosen in Settings → Cloud Sync.
+  `CloudSyncManager` downloads the cloud copy, merges it with
+  `repo.import(bytes, { docId })`, and uploads only if the cloud copy was
+  missing something. With auto sync on it syncs on startup, ~5s after a local
+  change, on the interval, when the page is hidden or shown, and when back
+  online; one tab at a time via a Web Lock. The same file is in AudioGata and
+  SocialGata; keep them in step.
+- **Login** is started from the app (`usePluginLogin`): it opens a blank popup,
+  the plugin's `onLogin` returns the OAuth url, and the callback url comes back
+  from `public/login_popup.html` (opener message or the `videogata-oauth`
+  BroadcastChannel) or, on Android and iOS, as a `com.videogata.app://` deep
+  link (intent filter in `AndroidManifest.xml`, `CFBundleURLTypes` in
+  `Info.plist`) that `PluginsContext` hands to `resolvePendingLogin`.
+- The automerge wasm is ~3.6MB, so the precache limit in `vite.config.ts` must
+  stay above it or the app won't open offline.
 
 ### Bundle
 

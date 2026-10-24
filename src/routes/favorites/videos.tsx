@@ -2,21 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DropdownItemProps } from "@/components/DropdownItem";
 import HomeVideoCard from "@/components/HomeVideoCard";
 import VideoContainer from "@/components/VideoContainer";
-import { useLiveQuery } from "dexie-react-hooks";
 import { FileUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ImportDialog from "@/components/ImportDialog";
 import PlaylistMenu from "@/components/PlaylistMenu";
-import { db } from "@/database";
 import { Playlist, Video } from "@/plugintypes";
-import { useAppSelector } from "@/store/hooks";
+import { addFavorites } from "@/sync/library";
+import { useFavorites, usePlaylists } from "@/sync/useLibrary";
 
 const FavoriteVideos: React.FC = () => {
-  const videos = useLiveQuery(() => db.favoriteVideos.toArray());
+  const videos = useFavorites("videos");
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
   const { t } = useTranslation();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
 
   const openImportDialog = () => {
     setImportDialogOpen(true);
@@ -27,7 +26,7 @@ const FavoriteVideos: React.FC = () => {
 
   const onImport = async (item: Video[] | Playlist) => {
     if (Array.isArray(item)) {
-      await db.favoriteVideos.bulkAdd(item);
+      await addFavorites("videos", item);
       closeImportDialog();
     }
   };
@@ -39,10 +38,6 @@ const FavoriteVideos: React.FC = () => {
       action: openImportDialog,
     },
   ];
-
-  if (!videos) {
-    return null;
-  }
 
   if (videos.length === 0) {
     return <h3>{t("noFavoriteVideos")}</h3>;
@@ -56,7 +51,7 @@ const FavoriteVideos: React.FC = () => {
     <div>
       <PlaylistMenu
         playlists={playlists}
-        videoList={videos ?? []}
+        videoList={videos}
         dropdownItems={dropdownItems}
       />
       <VideoContainer>{videoCards}</VideoContainer>

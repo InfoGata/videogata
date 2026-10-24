@@ -138,17 +138,20 @@ describe("app data reset", () => {
   });
 
   it("clears persisted state and the app's databases on the next boot", async () => {
-    const open = indexedDB.open("VideoDatabase", 1);
-    await new Promise((resolve, reject) => {
-      open.onsuccess = () => {
-        // Closed to stand in for the reload: on a real boot nothing holds it.
-        open.result.close();
-        resolve(undefined);
-      };
-      open.onerror = reject;
-    });
+    for (const name of ["VideoDatabase", "videogata-library"]) {
+      const open = indexedDB.open(name, 1);
+      await new Promise((resolve, reject) => {
+        open.onsuccess = () => {
+          // Closed to stand in for the reload: on a real boot nothing holds it.
+          open.result.close();
+          resolve(undefined);
+        };
+        open.onerror = reject;
+      });
+    }
     window.localStorage.setItem("persist:root", "{}");
     window.localStorage.setItem("vite-ui-theme", "dark");
+    window.localStorage.setItem("videogata-library-doc-url", "automerge:x");
 
     requestAppDataReset();
     await runPendingAppDataReset();
@@ -161,5 +164,8 @@ describe("app data reset", () => {
 
     const remaining = await indexedDB.databases();
     expect(remaining.map((d) => d.name)).not.toContain("VideoDatabase");
+    // The library document goes too, along with the pointer to it.
+    expect(remaining.map((d) => d.name)).not.toContain("videogata-library");
+    expect(window.localStorage.getItem("videogata-library-doc-url")).toBeNull();
   });
 });

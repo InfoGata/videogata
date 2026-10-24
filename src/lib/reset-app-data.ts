@@ -22,7 +22,16 @@ const RESET_FLAG = "videogata:reset-app-data";
  * Deleted even when `indexedDB.databases()` isn't available to enumerate them
  * (Firefox only shipped it in 126). Keep in sync with src/database.ts.
  */
-const KNOWN_DATABASES = ["VideoDatabase"];
+const KNOWN_DATABASES = ["VideoDatabase", "videogata-library"];
+
+/**
+ * Point at the library document in "videogata-library"; see src/sync/library.ts.
+ * Not imported from there, since that would load automerge before the reset.
+ */
+const LIBRARY_KEYS = [
+  "videogata-library-doc-url",
+  "videogata-library-legacy-imported",
+];
 
 /** Everything redux-persist owns; see the persist config in store/store.ts. */
 const LOCAL_STORAGE_PREFIX = "persist:";
@@ -89,7 +98,7 @@ export const runPendingAppDataReset = async (): Promise<void> => {
     const persisted = Object.keys(window.localStorage).filter((key) =>
       key.startsWith(LOCAL_STORAGE_PREFIX)
     );
-    for (const key of persisted) {
+    for (const key of [...persisted, ...LIBRARY_KEYS]) {
       window.localStorage.removeItem(key);
     }
   } catch {

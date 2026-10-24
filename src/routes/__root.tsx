@@ -7,8 +7,6 @@ import useOffline from "../hooks/useOffline";
 import useUpdateServiceWorker from "../hooks/useUpdateServiceWorker";
 import SideBar from "../layouts/SideBar";
 import TopBar from "../layouts/TopBar";
-import { useAppDispatch } from "../store/hooks";
-import { initializePlaylists } from "../store/reducers/playlistReducer";
 import { hasExtension } from "../utils";
 
 const messageChannel = new MessageChannel();
@@ -39,13 +37,8 @@ messageChannel.port1.onmessage = async (event) => {
 };
 
 export const Root: React.FC = () => {
-  const dispatch = useAppDispatch();
   useUpdateServiceWorker();
   useOffline();
-
-  React.useEffect(() => {
-    dispatch(initializePlaylists());
-  }, [dispatch]);
 
   return (
     <>

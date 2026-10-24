@@ -8,19 +8,18 @@ import { PluginFrameContainer } from "../contexts/PluginsContext";
 import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
 import { Playlist, Video } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
+import { addPlaylist, deletePlaylist } from "../sync/library";
+import { usePlaylists } from "../sync/useLibrary";
 import { filterAsync } from "@infogata/utils";
 import { ItemMenuType } from "@/types";
 import { toast } from "sonner";
 
 const Playlists: React.FC = () => {
   const { plugins } = usePlugins();
-  const dispatch = useAppDispatch();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
   const { t } = useTranslation();
   const [openImportDialog, setOpenImportDialog] = React.useState(false);
   const onOpenImportDialog = () => setOpenImportDialog(true);
@@ -51,13 +50,13 @@ const Playlists: React.FC = () => {
 
   const onDelete = (item?: ItemMenuType) => {
     if (item?.type === "playlist") {
-      dispatch(deletePlaylist(item.item));
+      deletePlaylist(item.item);
     }
   };
 
   const onImport = (item: Playlist | Video[]) => {
     if ("videos" in item) {
-      dispatch(addPlaylist(item));
+      addPlaylist(item);
       toast(t("playlistImported", { playlistName: item.name }));
     }
   };

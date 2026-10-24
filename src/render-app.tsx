@@ -10,6 +10,7 @@ import Router from "./router";
 import store, { persistor } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PluginsProvider } from "./contexts/PluginsContext";
+import { LibraryProvider } from "./sync/LibraryContext";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 import AnalyticsProvider from "./components/AnalyticsProvider";
 import AnalyticsPreference from "./components/AnalyticsPreference";
@@ -41,7 +42,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <IconContext.Provider value={{ className: "size-5" }}>
                 <QueryClientProvider client={queryClient}>
                   <PluginsProvider>
-                    <Router />
+                    {/* Inside PluginsProvider: syncing goes through a plugin. */}
+                    <LibraryProvider>
+                      <Router />
+                    </LibraryProvider>
                   </PluginsProvider>
                 </QueryClientProvider>
               </IconContext.Provider>

@@ -5,9 +5,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { db } from "@/database";
+import { addFavorite, removeFavorite } from "@/sync/library";
+import type { FavoriteType } from "@/sync/library-doc";
+import { useIsFavorite } from "@/sync/useLibrary";
 import { ItemMenuType } from "@/types";
-import Dexie from "dexie";
 import {
   ExternalLink,
   MoreHorizontal,
@@ -24,35 +25,27 @@ interface Props {
   noFavorite?: boolean;
 }
 
-const getTable = (item: ItemMenuType): Dexie.Table => {
-  switch (item.type) {
-    case "video":
-      return db.favoriteVideos;
-    case "channel":
-      return db.favoriteChannels;
-    case "playlist":
-      return db.favoritePlaylists;
-  }
+const favoriteTypes: Record<ItemMenuType["type"], FavoriteType> = {
+  video: "videos",
+  channel: "channels",
+  playlist: "playlists",
 };
 
 const ItemMenu: React.FC<Props> = (props) => {
   const { itemType, dropdownItems, noFavorite } = props;
   const { t } = useTranslation();
-  const [open, setOpen] = React.useState(false);
-  const [isFavorited, setIsFavorited] = React.useState(false);
+  const [, setOpen] = React.useState(false);
+  const favoriteType = favoriteTypes[itemType.type];
+  const isFavorited = useIsFavorite(favoriteType, itemType.item);
 
   const onFavorite = async () => {
-    const table = getTable(itemType);
-    await table.add(itemType.item);
+    await addFavorite(favoriteType, itemType.item);
     toast(t("addedToFavorites"));
   };
 
-  const removeFavorite = async () => {
-    if (itemType.item?.id) {
-      const table = getTable(itemType);
-      await table.delete(itemType.item.id);
-      toast(t("removedFromFavorites"));
-    }
+  const onRemoveFavorite = async () => {
+    await removeFavorite(favoriteType, itemType.item);
+    toast(t("removedFromFavorites"));
   };
 
   const items: (DropdownItemProps | undefined)[] = [
@@ -60,7 +53,7 @@ const ItemMenu: React.FC<Props> = (props) => {
       ? {
           title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
           icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
-          action: isFavorited ? removeFavorite : onFavorite,
+          action: isFavorited ? onRemoveFavorite : onFavorite,
         }
       : undefined,
     itemType.item.originalUrl
@@ -72,27 +65,6 @@ const ItemMenu: React.FC<Props> = (props) => {
       : undefined,
     ...(dropdownItems || []),
   ];
-
-  React.useEffect(() => {
-    const checkFavorite = async () => {
-      if (open) {
-        const table = getTable(itemType);
-        if (itemType.item.pluginId && itemType.item.apiId) {
-          const hasFavorite = await table.get({
-            pluginId: itemType.item.pluginId,
-            apiId: itemType.item.apiId,
-          });
-          setIsFavorited(!!hasFavorite);
-        } else if (itemType.item.id) {
-          const hasFavorite = await table.get(itemType.item.id);
-          setIsFavorited(!!hasFavorite);
-        } else {
-          setIsFavorited(false);
-        }
-      }
-    };
-    checkFavorite();
-  }, [open, itemType]);
 
   const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (

@@ -54,14 +54,14 @@ export const defaultPlugins: PluginDescription[] = [
     id: "7bCIGEj1VK40kHZkBe416",
     alias: "google-drive",
     name: "Plugin for Google Drive",
-    description: "Store and retrieve playlists from Google Drive",
+    description: "Sync your playlists and favorites between devices with Google Drive",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/googledrive-videogata@latest/manifest.json",
   },
   {
     id: "G0y4w_PEjvc3cGEJA1Qfq",
     alias: "dropbox",
     name: "Plugin for Dropbox",
-    description: "Store and retrieve playlists from Dropbox",
+    description: "Sync your playlists and favorites between devices with Dropbox",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/dropbox-videogata@latest/manifest.json",
   },
 ];
