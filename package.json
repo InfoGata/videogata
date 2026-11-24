@@ -19,6 +19,7 @@
     "@capacitor/ios": "^8.5.3",
     "@capacitor/keyboard": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
+    "@capgo/capacitor-updater": "^8.54.2",
     "@dnd-kit/core": "^6.0.5",
     "@dnd-kit/sortable": "^7.0.1",
     "@dnd-kit/utilities": "^3.2.0",
@@ -87,7 +88,9 @@
     "electron:dev": "electron-vite dev",
     "electron:build": "electron-vite build",
     "android": "npm run build && cap run android",
-    "ios": "npm run build && cap run ios"
+    "ios": "npm run build && cap run ios",
+    "ota:publish": "node scripts/ota-publish.ts",
+    "ota:keygen": "node scripts/ota-keygen.ts"
   },
   "browserslist": {
     "production": [

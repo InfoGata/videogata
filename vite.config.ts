@@ -49,6 +49,12 @@ export default defineConfig({
       // failed to boot. Unlike generateSW, injectManifest does not get
       // skipWaiting/clientsClaim injected — src/sw.ts does that itself.
       registerType: "autoUpdate",
+      // Registered by src/hooks/useUpdateServiceWorker.tsx, which only does it
+      // outside the native app. Importing virtual:pwa-register already stops
+      // the plugin injecting its own script; this makes that explicit. In the
+      // native app a worker would answer requests from its precache and keep
+      // serving the old bundle after an over-the-air update swaps the files.
+      injectRegister: false,
       // The navigation fallback and its denylist live in src/sw.ts: the
       // `workbox` options here only apply to generateSW.
       injectManifest: {

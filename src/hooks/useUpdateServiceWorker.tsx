@@ -2,8 +2,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { isServiceWorkerAllowed } from "@/lib/service-worker";
 
-const useUpdateServiceWorker = () => {
+const useRegisterServiceWorker = () => {
   const { t } = useTranslation();
 
   // onNeedReload is registered once, so read t() through a ref to keep the toast
@@ -28,5 +29,13 @@ const useUpdateServiceWorker = () => {
     },
   });
 };
+
+// The native app registers no worker: it would keep serving the old bundle
+// from its precache after an over-the-air update (see lib/service-worker.ts,
+// which removes one left by an older install). Chosen once at module load, so
+// every render calls the same hooks.
+const useUpdateServiceWorker = isServiceWorkerAllowed()
+  ? useRegisterServiceWorker
+  : () => {};
 
 export default useUpdateServiceWorker;

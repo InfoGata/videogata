@@ -100,7 +100,12 @@ VideoGata is a plugin-based web application that plays videos from different pla
 
 4. **Offline Support**:
    - Service worker (`sw.ts`) handles caching and HLS (.m3u8/.ts) proxying
-   - `useUpdateServiceWorker` hook manages service worker updates
+   - `useUpdateServiceWorker` hook registers it and manages updates, on the
+     web and Electron only. In the native app it is a no-op, and
+     `src/lib/service-worker.ts` unregisters any worker an older install left
+     (plus its `workbox-*` caches): it would keep serving the old bundle after
+     an OTA update. `injectRegister: false` in `vite.config.ts` makes explicit
+     that the plugin injects no registration script of its own.
 
 5. **Multi-platform**:
    - Web (primary platform)
@@ -146,6 +151,41 @@ fails with an explicit plugin-order error if that is swapped.
 
 This moves route code off the critical path; it does not reduce what is
 eventually downloaded, since the service worker precaches every chunk.
+
+### OTA Updates (native app)
+
+`@capgo/capacitor-updater`, self-hosted, with `autoUpdate: false` and stats
+off, so nothing goes to Capgo. `npm run ota:publish` (`scripts/ota-publish.ts`)
+builds, zips `dist`, and attaches the zip plus `ota.json` to GitHub release
+`v<version>`. `src/lib/ota-update.ts` reads `releases/latest/download/ota.json`.
+- A bundle is only installed on a binary with the same **native fingerprint**
+  (`native-fingerprint.ts`): a hash of the Java/Swift, the gradle files,
+  `capacitor.config.ts`, `ota-public-key.pem`, and installed native plugin
+  versions (Capacitor packages, anything with `android/`/`ios/`, and Cordova
+  plugins with a `plugin.xml`). The binary gets it through the
+  CapacitorUpdater `version` (`<version>+native.<hash>`), and the bundle
+  through `__NATIVE_FINGERPRINT__`. Changing any hashed file means the next
+  release needs a store build. Don't add `cap sync`-generated files to the
+  hash: sync writes them after it reads the config, so the binary would get a
+  stale fingerprint.
+- `capacitor.config.ts` is transpiled to CommonJS by the Capacitor CLI, so
+  neither it nor `native-fingerprint.ts` may use `import.meta`; paths resolve
+  from `process.cwd()`.
+- `notifyAppReady` runs from `components/OtaUpdates.tsx` (just inside
+  `AppErrorBoundary` in `render-app.tsx`) after the first commit. A bundle
+  that doesn't reach it within 10s is rolled back and kept as `error`
+  (`autoDeleteFailed: false`), so it is never downloaded again.
+- One OTA per version: the app only installs versions newer than the one it
+  is running.
+- **Signed**: `capacitor.config.ts` embeds `ota-public-key.pem` as Capgo's
+  `publicKey`, and Capgo refuses any bundle without a session key and checksum
+  made by the private key (`scripts/ota-crypto.ts`, the "encryption v2"
+  format). The private key is outside the repo (`scripts/ota-paths.ts`,
+  `OTA_PRIVATE_KEY_PATH`, default `~/.android/videogata-release/ota-private.pem`).
+  The signature doesn't cover the version label in `ota.json`, so downloads
+  are labelled `<version>+native.<fingerprint>` and a running bundle whose
+  label doesn't match its own `__APP_VERSION__` and fingerprint marks itself
+  failed and resets.
 
 ### Versioning
 

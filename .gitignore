@@ -13,6 +13,10 @@ node_modules/
 /build
 /dist
 /out
+# Over-the-air update output (scripts/ota-publish.ts)
+/ota-out
+# The OTA signing key lives outside the repo; this catches a misplaced copy.
+ota-private*.pem
 
 # typescript
 *.tsbuildinfo

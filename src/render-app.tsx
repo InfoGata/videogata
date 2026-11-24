@@ -15,6 +15,10 @@ import { ExtensionProvider } from "./contexts/ExtensionContext";
 import AnalyticsProvider from "./components/AnalyticsProvider";
 import AnalyticsPreference from "./components/AnalyticsPreference";
 import AppErrorBoundary from "./components/AppErrorBoundary";
+import OtaUpdates from "./components/OtaUpdates";
+import { removeNativeServiceWorker } from "./lib/service-worker";
+
+removeNativeServiceWorker();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     {/* Outermost on purpose: everything below can throw during first render,
         and the router's own error handling only covers routes. */}
     <AppErrorBoundary>
+    <OtaUpdates />
     <AnalyticsProvider>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
