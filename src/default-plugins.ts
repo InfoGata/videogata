@@ -20,7 +20,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Youtube",
     description: "Plugin for playing videos from youtube.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-videogata@latest/manifest.json",
-    preinstall: true,
+    requiresCorsDisabled: true,
   },
   {
     id: "MLWVs6Y6j3EI6mT76Jo-S",
@@ -42,6 +42,9 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Peertube",
     description: "Plugin for playing videos from peertube",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/peertube-videogata@latest/manifest.json",
+    // Preinstalled because it works fully in a plain browser tab: PeerTube
+    // serves CORS headers, so it needs no extension, proxy, key or login.
+    preinstall: true,
   },
   {
     id: "b87fe67b-1b62-4c44-a5a4-e7cc6cd30c84",
@@ -49,6 +52,9 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Twitch",
     description: "Plugin for playing videos from twitch.tv",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/twitch-videogata@latest/manifest.json",
+    // Also works without the extension: the Helix API and the token service
+    // both serve CORS headers.
+    preinstall: true,
   },
   {
     id: "7bCIGEj1VK40kHZkBe416",
