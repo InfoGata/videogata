@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
 import { useExtension } from "@/hooks/useExtension";
+import { usePluginLogin } from "@/hooks/usePluginLogin";
 import {
   usePluginInfo,
   usePluginScriptSize,
@@ -47,8 +48,20 @@ const PluginDetails: React.FC = () => {
   // The home page caches its videos for five minutes, so signing in or out has
   // to drop that cache or Home keeps showing the pre-login list.
   const invalidateHomeVideos = React.useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["topitems"] });
+    queryClient.invalidateQueries({ queryKey: ["homeVideos"] });
   }, [queryClient]);
+
+  // Plugins that run their own OAuth (onLogin) sign in from here, without the
+  // extension. Extension-based login is only offered to plugins without it.
+  const pluginLogin = usePluginLogin(plugin);
+  const onPluginLogin = async () => {
+    await pluginLogin.login();
+    invalidateHomeVideos();
+  };
+  const onPluginLogout = async () => {
+    await pluginLogin.logout();
+    invalidateHomeVideos();
+  };
 
   const updatePluginFromFilelist = async (files: FileList) => {
     const fileType: FileType = {
@@ -277,12 +290,26 @@ const PluginDetails: React.FC = () => {
               <span>{t("plugins:reloadPlugin")}</span>
             </Button>
           )}
-          {hasAuth && pluginAuth && (
+          {pluginLogin.hasLogin &&
+            (pluginLogin.isLoggedIn ? (
+              <Button variant="outline" onClick={onPluginLogout}>
+                {t("plugins:logout")}
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={onPluginLogin}
+                disabled={pluginLogin.isLoggingIn}
+              >
+                {t("plugins:login")}
+              </Button>
+            ))}
+          {!pluginLogin.hasLogin && hasAuth && pluginAuth && (
             <Button variant="outline" onClick={onLogout}>
-              {t("plugins:login")}
+              {t("plugins:logout")}
             </Button>
           )}
-          {hasAuth && !pluginAuth && (
+          {!pluginLogin.hasLogin && hasAuth && !pluginAuth && (
             <Button variant="outline" onClick={onLogin}>
               {t("plugins:login")}
             </Button>
