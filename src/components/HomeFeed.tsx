@@ -68,7 +68,17 @@ const HomeFeed: React.FC<Props> = ({ onFeedResolved }) => {
   // A plugin that can't be picked at all is its own kind of empty, distinct
   // from one that answered with nothing.
   const noPlugin = pluginsLoaded && !pluginId;
-  const videos = query.data?.videos ?? [];
+  // Plugins have returned the same video twice in one feed; that is never
+  // worth showing, and the repeated key would confuse React's reconciliation.
+  const videos = React.useMemo(() => {
+    const seen = new Set<string>();
+    return (query.data?.videos ?? []).filter((v) => {
+      if (!v.apiId) return true;
+      if (seen.has(v.apiId)) return false;
+      seen.add(v.apiId);
+      return true;
+    });
+  }, [query.data]);
   const isUserFeed = query.data?.source === "userFeed";
 
   const { isSuccess } = query;
