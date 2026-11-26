@@ -129,20 +129,24 @@ export function getPinnedFileType(
 async function getReleaseFileText(
   fileType: FileType,
   pinned: FileType | undefined,
-  name: string
+  name: string,
+  suppressErrors = false
 ): Promise<string | null> {
-  if (!pinned?.url) return getFileText(fileType, name);
+  if (!pinned?.url) return getFileText(fileType, name, suppressErrors);
   const url = pinned.url.url.replace("manifest.json", encodeURIComponent(name));
   try {
     // No "no-cache" here: a tagged url never changes, so the browser's copy
     // is always the right one.
     const result = await fetch(url, { headers: pinned.url.headers });
     if (result.ok) return await result.text();
-    if (result.status === 404) return getFileText(fileType, name);
+    if (result.status === 404)
+      return getFileText(fileType, name, suppressErrors);
   } catch {
     // Fall through to the error below.
   }
-  toast.error(i18next.t("common:cantGetFile", { name }));
+  if (!suppressErrors) {
+    toast.error(i18next.t("common:cantGetFile", { name }));
+  }
   return null;
 }
 
@@ -150,7 +154,11 @@ export async function getPlugin(
   fileType: FileType,
   suppressErrors = false
 ): Promise<PluginInfo | null> {
-  const manifestText = await getFileText(fileType, "manifest.json");
+  const manifestText = await getFileText(
+    fileType,
+    "manifest.json",
+    suppressErrors
+  );
   if (!manifestText) return null;
 
   const manifest = JSON.parse(manifestText) as Manifest;
@@ -163,7 +171,12 @@ export async function getPlugin(
   }
 
   const pinned = getPinnedFileType(fileType, manifest.version);
-  const script = await getReleaseFileText(fileType, pinned, manifest.script);
+  const script = await getReleaseFileText(
+    fileType,
+    pinned,
+    manifest.script,
+    suppressErrors
+  );
   if (!script) return null;
 
   const plugin: PluginInfo = {
@@ -185,7 +198,12 @@ export async function getPlugin(
       typeof manifest.options === "string"
         ? manifest.options
         : manifest.options.page;
-    const optionsText = await getReleaseFileText(fileType, pinned, optionsFile);
+    const optionsText = await getReleaseFileText(
+      fileType,
+      pinned,
+      optionsFile,
+      suppressErrors
+    );
     if (!optionsText) return null;
 
     if (typeof manifest.options !== "string") {
@@ -195,7 +213,12 @@ export async function getPlugin(
   }
 
   if (manifest.player) {
-    const playerText = await getReleaseFileText(fileType, pinned, manifest.player);
+    const playerText = await getReleaseFileText(
+      fileType,
+      pinned,
+      manifest.player,
+      suppressErrors
+    );
     if (!playerText) return null;
 
     plugin.playerHtml = playerText;
