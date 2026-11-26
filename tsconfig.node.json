@@ -3,7 +3,9 @@
     "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    // Vite's native config loader wants explicit .ts extensions.
+    "rewriteRelativeImportExtensions": true
   },
   "include": [
     "vite.config.ts",

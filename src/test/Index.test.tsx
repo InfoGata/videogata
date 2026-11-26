@@ -3,7 +3,7 @@ import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, test } from "vitest";
 import i18next from "../i18n";
 import { renderWithProviders } from "./renderWithProviders";
-import { Index } from "@/routes";
+import { Home } from "@/components/Home";
 
 describe("App", () => {
   afterEach(() => {
@@ -13,7 +13,7 @@ describe("App", () => {
   test(
     "Should render properly",
     async () => {
-      renderWithProviders(<Index />);
+      renderWithProviders(<Home />);
       expect(screen).toBeDefined();
 
       await waitFor(
