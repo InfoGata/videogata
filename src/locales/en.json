@@ -48,6 +48,7 @@
     "loadMore": "Load More",
     "viewReplies": "View Replies",
     "numberOfViews": "{{viewCount}} views",
+    "numberOfViewers": "{{viewerCount}} watching",
     "linkToOriginal": "Link To Original",
     "videos": "Videos",
     "channels": "Channels",

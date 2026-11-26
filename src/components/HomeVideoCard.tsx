@@ -37,6 +37,12 @@ const HomeVideoCard: React.FC<Props> = (props) => {
     apiId: video.channelApiId || "",
   };
 
+  // A stream has no page of its own: it plays through its channel's live page,
+  // and its id goes stale the moment it ends.
+  const watchLink = video.isLive
+    ? ({ to: "/s/$pluginId/channels/$apiId/live", params: channelParams } as const)
+    : ({ to: "/s/$pluginId/videos/$apiId", params: videoParams } as const);
+
   const channelImage = getThumbnailImage(
     video.channelImages,
     channelThumbnailSize
@@ -46,8 +52,11 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   // exist, rather than leaving a stray bullet when views or date are missing.
   const meta: React.ReactNode[] = [];
   if (video.views) {
+    const count = numberFormatter.format(video.views);
     meta.push(
-      t("numberOfViews", { viewCount: numberFormatter.format(video.views) })
+      video.isLive
+        ? t("numberOfViewers", { viewerCount: count })
+        : t("numberOfViews", { viewCount: count })
     );
   }
   if (video.uploadDate) {
@@ -57,8 +66,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
   return (
     <div className="group flex flex-col">
       <Link
-        to="/s/$pluginId/videos/$apiId"
-        params={videoParams}
+        {...watchLink}
         className="relative block overflow-hidden rounded-xl bg-muted focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
         {/*
@@ -92,7 +100,11 @@ const HomeVideoCard: React.FC<Props> = (props) => {
             />
           )}
         </div>
-        {!!video.duration && (
+        {video.isLive ? (
+          <span className="pointer-events-none absolute bottom-1.5 right-1.5 rounded bg-destructive px-1.5 py-0.5 text-xs font-semibold uppercase text-white">
+            {t("live")}
+          </span>
+        ) : !!video.duration && (
           <span className="pointer-events-none absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 text-xs font-medium text-white tabular-nums">
             {formatSeconds(video.duration)}
           </span>
@@ -127,10 +139,7 @@ const HomeVideoCard: React.FC<Props> = (props) => {
         )}
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-1">
-            <Link
-              to="/s/$pluginId/videos/$apiId"
-              params={videoParams}
-              className="min-w-0"
+            <Link {...watchLink} className="min-w-0"
             >
               <h3
                 className="line-clamp-2 text-sm font-medium leading-snug group-hover:text-primary"
@@ -138,7 +147,11 @@ const HomeVideoCard: React.FC<Props> = (props) => {
                 dangerouslySetInnerHTML={{ __html: sanitizer(video.title) }}
               />
             </Link>
-            <VideoMenu video={video} />
+            {/*
+              Favorites and playlists keep a video to come back to, and a
+              stream can't be come back to once it ends.
+            */}
+            {!video.isLive && <VideoMenu video={video} />}
           </div>
           {video.channelName && (
             <Link

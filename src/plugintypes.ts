@@ -46,6 +46,11 @@ export interface Video {
   recommendedVideos?: Video[];
   uploadDate?: string;
   originalUrl?: string;
+  /**
+   * A stream in progress rather than a recording: it is opened through its
+   * channel's live page, and `views` counts current viewers.
+   */
+  isLive?: boolean;
 }
 
 export interface VideoSource {
