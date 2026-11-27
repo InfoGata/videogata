@@ -25,6 +25,11 @@ const SearchBar: React.FC = () => {
     React.useState<PluginFrameContainer>();
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState("");
+  // cmdk highlights the first suggestion on its own, and Enter then picks it
+  // instead of searching what was typed. Only let a suggestion be highlighted
+  // once the user moves to one with the arrow keys or the pointer.
+  const [activeOption, setActiveOption] = React.useState("");
+  const hasNavigated = React.useRef(false);
 
   React.useEffect(() => {
     const getSearchPlugin = async () => {
@@ -91,7 +96,20 @@ const SearchBar: React.FC = () => {
   }, [search, selected, getSuggestionDebounce]);
 
   const onValueChange = (value: string) => {
+    hasNavigated.current = false;
+    setActiveOption("");
     setSearch(value);
+  };
+
+  const onActiveOptionChange = (value: string) => {
+    if (hasNavigated.current) {
+      setActiveOption(value);
+    } else {
+      // cmdk has already stored the value it picked, and only resyncs when the
+      // controlled value changes, so alternate between two blank values (it
+      // trims them) to clear the highlight.
+      setActiveOption((prev) => (prev === "" ? " " : ""));
+    }
   };
 
   const handleBlur = () => {
@@ -107,7 +125,13 @@ const SearchBar: React.FC = () => {
       setOpen(true);
     }
 
-    if (event.key === "Enter") {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      hasNavigated.current = true;
+    }
+
+    // With a suggestion highlighted, cmdk's own Enter handling selects it.
+    if (event.key === "Enter" && !activeOption.trim()) {
+      event.preventDefault();
       searchQuery(search);
     }
   };
@@ -128,6 +152,8 @@ const SearchBar: React.FC = () => {
       onKeyDown={handleKeyDown}
       className="rounded-full border flex-1"
       shouldFilter={false}
+      value={activeOption}
+      onValueChange={onActiveOptionChange}
     >
       <CommandInput
         placeholder="Search"
@@ -139,7 +165,12 @@ const SearchBar: React.FC = () => {
       <div className="relative">
         {open && (
           <div className="absolute top-1 z-50 w-full rounded-xl bg-popover outline-none animate-in fade-in-0 zoom-in-95">
-            <CommandList className="ring-1 ring-border rounded-lg">
+            <CommandList
+              className="ring-1 ring-border rounded-lg"
+              onPointerMoveCapture={() => {
+                hasNavigated.current = true;
+              }}
+            >
               {options.length > 0 && (
                 <CommandGroup>
                   {options.map((result) => (
