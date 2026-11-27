@@ -57,6 +57,14 @@ export const defaultPlugins: PluginDescription[] = [
     preinstall: true,
   },
   {
+    id: "EqzsHePc2k6Rg5Lmo0r7T",
+    alias: "kick",
+    name: "Plugin for Kick",
+    description: "Plugin for playing videos from Kick.com",
+    url: "https://cdn.jsdelivr.net/gh/InfoGata/kick-videogata@latest/manifest.json",
+    requiresCorsDisabled: true,
+  },
+  {
     id: "7bCIGEj1VK40kHZkBe416",
     alias: "google-drive",
     name: "Plugin for Google Drive",
