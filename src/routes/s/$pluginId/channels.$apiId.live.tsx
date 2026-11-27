@@ -31,7 +31,7 @@ const PluginVideo: React.FC = () => {
 
   const getVideo = async () => {
     if (pluginsLoaded && plugin && apiId) {
-      if (await plugin.hasDefined.onGetVideo()) {
+      if (await plugin.hasDefined.onGetLiveVideo()) {
         const video = await plugin.remote.onGetLiveVideo({
           channelApiId: apiId,
         });
