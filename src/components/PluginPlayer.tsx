@@ -1,6 +1,6 @@
 import React from "react";
 import { PluginFrameContainer } from "../contexts/PluginsContext";
-import usePlugins from "../hooks/usePlugins";
+import usePluginMessages from "../hooks/usePluginMessages";
 import { loadPluginField } from "../storage/pluginStorage";
 import { getPluginUrl } from "../utils";
 
@@ -18,7 +18,6 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     props;
   const [playerHtml, setPlayerHtml] = React.useState<string>();
   const ref = React.useRef<HTMLIFrameElement>(null);
-  const { pluginMessage } = usePlugins();
 
   React.useEffect(() => {
     const getPlayerHtml = async () => {
@@ -44,11 +43,7 @@ const PluginPlayer: React.FC<PluginPlayerProps> = (props) => {
     return () => window.removeEventListener("message", iframeListener);
   }, [iframeListener]);
 
-  React.useEffect(() => {
-    if (pluginMessage?.pluginId === plugin?.id) {
-      ref.current?.contentWindow?.postMessage(pluginMessage?.message, "*");
-    }
-  }, [pluginMessage, plugin?.id]);
+  usePluginMessages(plugin?.id, ref);
 
   const iframeOnload = async () => {
     const html = await loadPluginField(plugin?.id || "", "playerHtml");

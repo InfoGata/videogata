@@ -158,7 +158,13 @@ export interface PluginContextInterface {
     alias: string
   ) => Promise<AliasError | null>;
   plugins: PluginFrameContainer[];
-  pluginMessage?: PluginMessage;
+  /**
+   * Calls `listener` with every message a plugin posts to its UI, and returns
+   * the unsubscribe function.
+   */
+  subscribeToPluginMessages: (
+    listener: (message: PluginMessage) => void
+  ) => () => void;
   pluginsLoaded: boolean;
   pluginsFailed: boolean;
   preinstallComplete: boolean;
@@ -194,7 +200,21 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
-  const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  // Not state: a plugin's UI messages can arrive several in one tick (a
+  // player's proxied responses), and React would batch the updates and render
+  // only the last, so the earlier ones were never delivered.
+  const pluginMessageListeners = React.useRef(
+    new Set<(message: PluginMessage) => void>()
+  );
+  const subscribeToPluginMessages = React.useCallback(
+    (listener: (message: PluginMessage) => void) => {
+      pluginMessageListeners.current.add(listener);
+      return () => {
+        pluginMessageListeners.current.delete(listener);
+      };
+    },
+    []
+  );
   const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
   const { extensionDetected } = useExtension();
@@ -309,7 +329,10 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return isCorsDisabled();
         },
         postUiMessage: async (message: any) => {
-          setPluginMessage({ pluginId: plugin.id, message });
+          const pluginMessage = { pluginId: plugin.id, message };
+          pluginMessageListeners.current.forEach((listener) =>
+            listener(pluginMessage)
+          );
         },
         getPluginId: async () => {
           return plugin.id || "";
@@ -910,7 +933,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     updatePlugin: updatePlugin,
     setPluginAlias: setPluginAlias,
     plugins: pluginFrames,
-    pluginMessage: pluginMessage,
+    subscribeToPluginMessages,
     pluginsLoaded,
     pluginsFailed,
     preinstallComplete: preinstallComplete ?? false,
